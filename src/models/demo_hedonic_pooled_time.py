@@ -30,6 +30,7 @@ from src.models.hedonic_model import (
     fit_strategy_c_pooled_time,
     _classify_features,
 )
+from src.preprocessing.split import discover_weeks
 
 CATEGORY_ORDER = ["pc_bureau", "pc_portables", "smartphones", "telephones_portables", "televiseurs"]
 DATA_PROCESSED_ROOT = Path(__file__).resolve().parents[2] / "data" / "processed"
@@ -44,9 +45,12 @@ def run_demo():
                   "cf. Evolution_Temporelle_Marche_Mytek.ipynb) -- non testée ici.\n")
             continue
 
-        # -- 3 modeles separes, un par semaine (Strategie A) --------------------
+        # -- Modeles separes, un par semaine (Strategie A) -----------------------
+        # Semaines decouvertes dynamiquement (jamais figees a (1, 2, 3), cf.
+        # discover_weeks / fit_strategy_c_pooled_time) -- une semaine 4+ ajoutee
+        # au depot est incluse ici sans modification de code.
         per_week_rows = []
-        for w in (1, 2, 3):
+        for w in discover_weeks(DATA_PROCESSED_ROOT):
             path = DATA_PROCESSED_ROOT / f"week_{w}" / f"{category}_clean.csv"
             if not path.exists():
                 continue
@@ -60,7 +64,7 @@ def run_demo():
                 "adj_r2": model_w.rsquared_adj, "aic": model_w.aic, "bic": model_w.bic,
             })
         per_week_df = pd.DataFrame(per_week_rows)
-        print("\nModèles séparés (Stratégie A, un par semaine) :")
+        print(f"\nModèles séparés (Stratégie A, {len(per_week_rows)} semaine(s)) :")
         print(per_week_df.to_string(index=False))
 
         # -- Modele poole avec effet fixe semaine (Strategie C) -----------------
@@ -79,7 +83,7 @@ def run_demo():
 
         # -- Verdict empirique ---------------------------------------------------
         mean_adj_r2_separate = per_week_df["adj_r2"].mean()
-        print(f"\nadj_R² moyen des 3 modèles séparés = {mean_adj_r2_separate:.3f} vs. "
+        print(f"\nadj_R² moyen des {len(per_week_rows)} modèles séparés = {mean_adj_r2_separate:.3f} vs. "
               f"adj_R² du modèle poolé = {model_c.rsquared_adj:.3f}")
         if model_c.rsquared_adj >= mean_adj_r2_separate - 0.03:
             print("-> Pooling statistiquement défendable : le modèle poolé n'est pas nettement moins bon "

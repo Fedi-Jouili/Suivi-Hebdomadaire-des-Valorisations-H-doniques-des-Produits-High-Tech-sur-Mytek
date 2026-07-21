@@ -54,37 +54,50 @@ GARDE-FOU DE CIRCULARITE (critique) :
     prix_tnd et gamme_prix (et toute variable derivee du prix) ne peuvent
     JAMAIS atteindre la matrice de design -- gamme_prix a ete construite
     A PARTIR du prix (§ compute_price_tiers), l'utiliser comme regresseur
-    "expliquerait" le prix par lui-meme. Les clusters TECHNIQUES
-    (cluster_id) sont en revanche autorises : ils sont construits
-    uniquement a partir de caracteristiques techniques (RAM, stockage,
-    ecran...), jamais du prix (cf. build_feature_matrix dans le notebook
-    de segmentation, meme logique ici). Ce garde-fou est applique par
+    "expliquerait" le prix par lui-meme. Ce garde-fou est applique par
     _check_no_circularity(), qui leve CircularityError des qu'une colonne
     interdite apparait dans les colonnes passees a build_design_matrix
     OU dans la matrice assemblee finale (double verification).
 
-NOTE DE CONCEPTION -- pas de dummies de MARQUE separees :
-    cluster_id est construit comme "marque::gamme::sous-cluster" (imbrique
-    par construction, puisque le clustering du notebook de segmentation est
-    lui-meme calcule separement pour chaque couple marque x gamme -- un
-    "cluster 0" chez MSI et un "cluster 0" chez DELL n'ont aucun rapport,
-    ce ne sont pas des groupes comparables). Ajouter des dummies de marque
-    EN PLUS de cluster_id rendrait la matrice de design singuliere
-    (connaitre les dummies cluster_id d'une ligne determine sa marque de
-    facon deterministe -- colinearite parfaite). L'effet marque est donc
-    deja entierement absorbe par cluster_id, a un grain plus fin ; c'est
-    la seule specification statistiquement coherente compte tenu de la
-    facon dont le clustering amont a ete construit.
+    CORRECTIF (2026-07-21, cf. reports/audit_code.md §3.1) -- cluster_id
+    EST DESORMAIS INTERDIT COMME REGRESSEUR, comme gamme_prix :
+    cluster_id est construit comme "marque::gamme::sous-cluster" (§
+    compute_cluster_labels) -- la sous-chaine "gamme" y est LITTERALEMENT
+    la valeur de gamme_prix. Le garde-fou original ne comparait que des
+    NOMS de colonnes a une liste interdite ; il ne pouvait donc jamais
+    detecter qu'une colonne nommee "cluster_id" encode, dans ses VALEURS,
+    l'information meme qu'il est cense bannir. Consequence mesuree :
+    utiliser cluster_id comme effet fixe categoriel gonflait
+    artificiellement R²/adj-R² (ex. jusqu'a 0.978 avec seulement 2
+    variables continues, cf. Evolution_Temporelle_Marche_Mytek.ipynb) --
+    le modele "expliquait" en partie le prix par une version discretisee
+    du prix lui-meme, pas uniquement par les caracteristiques hedoniques.
+    "cluster_id" est donc desormais dans FORBIDDEN_REGRESSORS au meme
+    titre que "gamme_prix". compute_price_tiers/compute_cluster_labels
+    restent utilisables tels quels pour leur usage DESCRIPTIF legitime
+    (segmentation marque x gamme x profil technique, cf. notebook de
+    segmentation) -- seule leur reutilisation comme regresseur d'un
+    modele de PRIX est desormais bloquee.
+
+NOTE DE CONCEPTION -- effet fixe de MARQUE (pas cluster_id) :
+    fit_strategy_a/fit_strategy_c_pooled_time/compare_strategies ajoutent
+    desormais "marque" comme categorielle (effet fixe), pas cluster_id :
+    la marque est une caracteristique du produit exogene a SON PROPRE prix
+    (ce n'est pas une variable calculee a partir de prix_tnd de la ligne
+    courante, contrairement a gamme_prix/cluster_id) -- un effet fixe de
+    marque est une pratique standard et non circulaire en econometrie
+    hedonique. fit_strategy_b n'a pas besoin de cet ajout : la marque est
+    deja constante au sein de chaque regression par marque.
 
 INTERPRETATION DES COEFFICIENTS (Halvorsen & Palmquist, 1980) :
     y = log(prix). Pour une variable CONTINUE, coefficient * 100 est
     l'approximation usuelle de la semi-elasticite (cf. ridge_model.py,
-    meme convention). Pour une variable CATEGORIELLE/INDICATRICE (marque
-    absorbee par cluster_id, OS, tier CPU, connectivite, cluster_id
-    lui-meme), l'approximation devient trompeuse des que le coefficient
-    n'est plus tres proche de 0 -- get_coefficients() utilise donc la
-    formule EXACTE (exp(coefficient) - 1) * 100 pour toute variable qui
-    n'est pas dans `continuous_cols`, jamais le coefficient brut.
+    meme convention). Pour une variable CATEGORIELLE/INDICATRICE (marque,
+    OS, tier CPU, connectivite...), l'approximation devient trompeuse des
+    que le coefficient n'est plus tres proche de 0 -- get_coefficients()
+    utilise donc la formule EXACTE (exp(coefficient) - 1) * 100 pour toute
+    variable qui n'est pas dans `continuous_cols`, jamais le coefficient
+    brut.
 
 UTILISATION :
     from src.models.hedonic_model import (
@@ -146,15 +159,20 @@ GAMME_ORDER_3 = ["Économique", "Milieu de gamme", "Premium"]
 GAMME_ORDER_2 = ["Économique", "Premium"]
 
 # Variables de prix / derivees du prix -- JAMAIS des regresseurs (cf. garde-fou
-# de circularite dans le docstring du module).
-FORBIDDEN_REGRESSORS = frozenset({"prix_tnd", "gamme_prix", "log_prix_tnd"})
+# de circularite dans le docstring du module). "cluster_id" y figure au meme
+# titre que "gamme_prix" depuis le correctif du 2026-07-21 : cluster_id =
+# "marque::gamme::sous-cluster" (compute_cluster_labels) encode litteralement
+# gamme_prix dans ses valeurs -- un nom de colonne different ne le rend pas
+# moins derive du prix. Reste utilisable comme sortie DESCRIPTIVE (segmentation),
+# desormais interdit comme entree d'un modele de prix.
+FORBIDDEN_REGRESSORS = frozenset({"prix_tnd", "gamme_prix", "log_prix_tnd", "cluster_id"})
 
 _ID_COLUMNS = {"url", "nom", "prix_tnd", "marque", "gamme_prix", "cluster_id"}
 
 
 class CircularityError(ValueError):
-    """Levee quand une variable de prix ou derivee du prix (gamme_prix)
-    atteint la matrice de design d'un modele hedonique."""
+    """Levee quand une variable de prix ou derivee du prix (gamme_prix,
+    cluster_id) atteint la matrice de design d'un modele hedonique."""
 
 
 def _check_no_circularity(columns, blocklist=FORBIDDEN_REGRESSORS):
@@ -166,8 +184,9 @@ def _check_no_circularity(columns, blocklist=FORBIDDEN_REGRESSORS):
         raise CircularityError(
             f"Variable(s) interdite(s) dans la matrice de design (prix ou "
             f"derivee du prix -- jamais une entree du modele hedonique) : "
-            f"{sorted(forbidden_found)}. Les CLUSTERS techniques (cluster_id) "
-            f"sont autorises ; les GAMMES de prix (gamme_prix) ne le sont jamais."
+            f"{sorted(forbidden_found)}. cluster_id/gamme_prix encodent le "
+            f"positionnement de prix du produit lui-meme (jamais autorises) ; "
+            f"pour un effet fixe de marque, utiliser 'marque' directement."
         )
 
 
@@ -317,12 +336,24 @@ def _choose_k(X, min_size: int) -> int:
     au moins min_size produits. Si aucun k teste ne satisfait cette
     contrainte, retourne 1 (AUCUNE structure retenue) plutot qu'un k>=2
     degenere -- correction appliquee dans le notebook de segmentation,
-    reprise ici a l'identique (cf. §2.6ter)."""
+    reprise ici a l'identique (cf. §2.6ter).
+
+    GARDE-FOU EFFONDREMENT KMeans (bug reel, decouvert en poolant plusieurs
+    semaines -- src/models/save_artifacts.py) : avec des points dupliques
+    (meme produit technique vu a plusieurs semaines), KMeans(n_clusters=k)
+    peut converger vers STRICTEMENT MOINS de k clusters distincts que
+    demande (ConvergenceWarning "Number of distinct clusters found smaller
+    than n_clusters"). Si l'effondrement est total (1 seul label malgre
+    k>=2 demande), silhouette_score() leve ValueError ("Number of labels
+    is 1") -- ce k est alors ignore (comme s'il ne passait pas le
+    garde-fou min_size), jamais un plantage."""
     n = X.shape[0]
     best_k, best_sil = None, -1.0
     for k in range(2, _max_k_for(n) + 1):
         km = KMeans(n_clusters=k, random_state=RANDOM_STATE, n_init=10)
         labels = km.fit_predict(X)
+        if pd.Series(labels).nunique() < 2:
+            continue
         if pd.Series(labels).value_counts().min() >= min_size:
             sil = silhouette_score(X, labels)
             if sil > best_sil:
@@ -518,8 +549,8 @@ class HedonicOLS:
         - variable CONTINUE (dans continuous_cols) : pct_effect =
           coefficient * 100 (semi-elasticite approximative, meme
           convention que RidgeModel.get_coefficients).
-        - variable CATEGORIELLE/INDICATRICE (tout le reste, y compris
-          cluster_id qui absorbe la marque) : pct_effect =
+        - variable CATEGORIELLE/INDICATRICE (tout le reste, ex. marque,
+          os_platform, tier CPU) : pct_effect =
           (exp(coefficient) - 1) * 100 -- formule EXACTE, jamais le
           coefficient brut (l'approximation lineaire est mauvaise des
           que |coefficient| s'eloigne de 0, frequent pour des effets de
@@ -587,19 +618,29 @@ def fit_strategy_a(df: pd.DataFrame, continuous_features: list, categorical_feat
                     cov_type: str = "HC3"):
     """
     Strategie A : UN modele pour toute la categorie -- pentes communes sur
-    les caracteristiques continues, cluster_id (imbrique marque x gamme x
-    sous-cluster, cf. compute_cluster_labels) decale l'intercept.
+    les caracteristiques continues, "marque" (effet fixe) decale
+    l'intercept.
+
+    Historique (correctif 2026-07-21, cf. reports/audit_code.md §3.1) :
+    cette fonction ajoutait auparavant cluster_id (imbrique marque x gamme
+    x sous-cluster) plutot que marque seule -- mais gamme_prix, encodee
+    dans cluster_id, est derivee du prix de la ligne elle-meme : un effet
+    fixe qui "sait" dans quel tercile de prix se trouve deja le produit
+    gonfle artificiellement R²/adj-R² (verifie empiriquement : jusqu'a
+    0.978 avec seulement 2 variables continues). "marque" seule n'a pas ce
+    probleme (une caracteristique du produit exogene a son propre prix) et
+    reste un effet fixe standard en econometrie hedonique.
 
     Args:
-        categorical_features: categorielles A AJOUTER en plus de
-            cluster_id (ex: os_platform, has_5g...). "cluster_id" est
-            toujours inclus automatiquement -- ne pas le repeter ici.
+        categorical_features: categorielles A AJOUTER en plus de "marque"
+            (ex: os_platform, has_5g...). "marque" est toujours incluse
+            automatiquement -- ne pas la repeter ici.
 
     Returns: (model: HedonicOLS deja ajuste, X, y)
     """
     categorical_features = list(categorical_features) if categorical_features else []
-    if "cluster_id" not in categorical_features:
-        categorical_features = categorical_features + ["cluster_id"]
+    if "marque" not in categorical_features:
+        categorical_features = categorical_features + ["marque"]
 
     X, y = build_design_matrix(df, list(continuous_features), categorical_features)
     model = HedonicOLS(cov_type=cov_type).fit(X, y, continuous_cols=continuous_features)
@@ -635,8 +676,10 @@ def fit_strategy_b(df: pd.DataFrame, continuous_features: list, categorical_feat
         n_min_requis] pour les marques ecartees.
     """
     categorical_features = list(categorical_features) if categorical_features else []
-    if "cluster_id" not in categorical_features:
-        categorical_features = categorical_features + ["cluster_id"]
+    # Pas d'ajout automatique ici (contrairement a fit_strategy_a) : chaque
+    # regression est deja limitee a UNE marque, "marque" y serait constante
+    # (aucune variance a exploiter) -- et cluster_id/gamme_prix restent de
+    # toute facon interdits (§garde-fou de circularite).
 
     results, skipped_rows = {}, []
     top_brands = df["marque"].value_counts().head(top_n_brands).index.tolist()
@@ -696,11 +739,11 @@ def fit_strategy_c_pooled_time(
 
     cluster_id est recalcule INDEPENDAMMENT pour chaque semaine (meme
     fonction compute_cluster_labels qu'ailleurs, pas de dependance aux
-    labels persistes dans outputs/labels/ qui ne couvrent que S1) --
-    chaque semaine a donc son propre decoupage marque x gamme x
-    sous-cluster, une hypothese raisonnable puisque le marche (les
-    marques presentes, leurs gammes) peut legerement evoluer d'une
-    semaine a l'autre.
+    labels persistes dans outputs/labels/ qui ne couvrent que S1) et reste
+    disponible en colonne de df_pooled pour un usage DESCRIPTIF (ex.
+    tableau de bord) -- mais n'entre plus dans la matrice de design
+    (§garde-fou de circularite : cluster_id encode gamme_prix). L'effet
+    fixe categoriel utilise ici est "marque", pas cluster_id.
 
     ERREURS-TYPES GROUPEES PAR PRODUIT (cov_type="cluster", groups=url) :
     un meme produit apparait plusieurs fois (une fois par semaine, cf.
@@ -756,8 +799,8 @@ def fit_strategy_c_pooled_time(
 
     continuous_features = continuous_features if continuous_features is not None else _classify_features(df_pooled)[0]
     categorical_features = list(categorical_features) if categorical_features else []
-    if "cluster_id" not in categorical_features:
-        categorical_features = categorical_features + ["cluster_id"]
+    if "marque" not in categorical_features:
+        categorical_features = categorical_features + ["marque"]
     categorical_features = categorical_features + ["semaine"]
 
     X, y = build_design_matrix(df_pooled, list(continuous_features), categorical_features)
@@ -777,7 +820,7 @@ def compare_strategies(df: pd.DataFrame, continuous_features: list, categorical_
     (pentes libres par marque dominante), via un modele groupe avec
     interactions marque x caracteristique :
 
-        restreint (= strategie A)     : y ~ continues + C(cluster_id)
+        restreint (= strategie A)     : y ~ continues + C(marque)
         non-restreint (= strategie B) : restreint + (marque_dominante x
                                           caracteristique) pour chaque
                                           marque dominante et chaque
@@ -797,8 +840,8 @@ def compare_strategies(df: pd.DataFrame, continuous_features: list, categorical_
         chow : dict {F, p_value, df_diff, conclusion}
     """
     categorical_features = list(categorical_features) if categorical_features else []
-    if "cluster_id" not in categorical_features:
-        categorical_features = categorical_features + ["cluster_id"]
+    if "marque" not in categorical_features:
+        categorical_features = categorical_features + ["marque"]
 
     dominant_brands = df["marque"].value_counts().head(top_n_brands).index.tolist()
 
@@ -838,9 +881,13 @@ def compare_strategies(df: pd.DataFrame, continuous_features: list, categorical_
 def check_tier_monotonicity(df: pd.DataFrame, model: HedonicOLS) -> pd.DataFrame:
     """
     Utilise les prix PREDITS par `model` (a partir des seules
-    caracteristiques techniques -- gamme_prix n'est jamais une entree du
-    modele, §garde-fou) pour verifier que le prix predit croit bien
-    Economique -> Milieu de gamme -> Premium AU SEIN de chaque marque.
+    caracteristiques techniques + marque -- ni gamme_prix ni cluster_id ne
+    sont jamais une entree du modele, §garde-fou) pour verifier que le
+    prix predit croit bien Economique -> Milieu de gamme -> Premium AU
+    SEIN de chaque marque. Ce test n'a de sens QUE parce que `model` ne
+    connait pas deja la gamme (sans quoi il "predirait" trivialement une
+    monotonie parfaite, cf. correctif 2026-07-21 -- avant que cluster_id
+    ne soit retire des regresseurs, ce test etait quasi tautologique).
     Une marque non-monotone revele que son etiquette "Premium" (fondee
     UNIQUEMENT sur le prix observe, cf. compute_price_tiers) n'est PAS
     corroboree par les caracteristiques une fois celles-ci controlees --
@@ -969,18 +1016,29 @@ if __name__ == "__main__":
 
     toy_df = pd.DataFrame({
         "marque": marque, "ram_go": ram_go, "stockage_go": stockage_go,
+        # cluster_id present dans le DataFrame source (comme dans un vrai
+        # df_clustered) mais PAS passe a build_design_matrix ci-dessous --
+        # seule "marque" sert d'effet fixe categoriel (cf. correctif
+        # 2026-07-21). Garde ce champ pour la demonstration du garde-fou
+        # plus bas.
         "cluster_id": cluster_id, "prix_tnd": np.exp(log_prix),
     })
 
-    X_toy, y_toy = build_design_matrix(toy_df, ["ram_go", "stockage_go"], ["cluster_id"])
+    X_toy, y_toy = build_design_matrix(toy_df, ["ram_go", "stockage_go"], ["marque"])
     toy_model = HedonicOLS().fit(X_toy, y_toy, continuous_cols=["ram_go", "stockage_go"])
     print("R2 ajuste :", toy_model.rsquared_adj)
     print("\nCoefficients :")
     print(toy_model.get_coefficients())
 
-    # Verifie que le garde-fou de circularite se declenche bien
-    try:
-        build_design_matrix(toy_df.assign(gamme_prix="Premium"), ["ram_go", "gamme_prix"], ["cluster_id"])
-        raise AssertionError("CircularityError attendue mais non levee !")
-    except CircularityError as exc:
-        print("\nGarde-fou de circularite OK :", exc)
+    # Verifie que le garde-fou de circularite se declenche bien, pour
+    # gamme_prix ET pour cluster_id (qui l'encode -- correctif 2026-07-21).
+    for label, cat_features, extra_cols in [
+        ("gamme_prix", ["marque"], {"gamme_prix": "Premium"}),
+        ("cluster_id", ["cluster_id"], {}),
+    ]:
+        try:
+            candidate_continuous = ["ram_go", "gamme_prix"] if label == "gamme_prix" else ["ram_go", "stockage_go"]
+            build_design_matrix(toy_df.assign(**extra_cols), candidate_continuous, cat_features)
+            raise AssertionError(f"CircularityError attendue mais non levee pour {label} !")
+        except CircularityError as exc:
+            print(f"\nGarde-fou de circularite OK ({label}) :", exc)

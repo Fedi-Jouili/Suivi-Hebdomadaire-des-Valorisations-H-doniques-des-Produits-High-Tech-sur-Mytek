@@ -84,8 +84,9 @@ def hedonic_df_clustered(hedonic_df_tiered):
 
 
 class TestCircularityGuard:
-    """Le garde-fou est le point le plus critique du module : prix_tnd et
-    gamme_prix ne doivent JAMAIS pouvoir atteindre la matrice de design."""
+    """Le garde-fou est le point le plus critique du module : prix_tnd,
+    gamme_prix et cluster_id (qui encode gamme_prix, cf. correctif
+    2026-07-21) ne doivent JAMAIS pouvoir atteindre la matrice de design."""
 
     def test_prix_tnd_leve_circularity_error(self):
         with pytest.raises(CircularityError):
@@ -95,12 +96,24 @@ class TestCircularityGuard:
         with pytest.raises(CircularityError):
             _check_no_circularity(["ram_go", "gamme_prix"])
 
-    def test_cluster_id_est_autorise(self):
-        _check_no_circularity(["ram_go", "cluster_id"])  # ne doit pas lever
+    def test_cluster_id_leve_circularity_error(self):
+        """cluster_id = 'marque::gamme::sous-cluster' (compute_cluster_labels)
+        encode litteralement gamme_prix dans ses valeurs -- l'utiliser comme
+        regresseur reintroduirait la circularite que gamme_prix est censee
+        interdire. Le garde-fou original ne comparait que des noms de
+        colonnes et ne le detectait pas (bug reel, cf.
+        reports/audit_code.md §3.1) ; cluster_id est desormais banni au
+        meme titre que gamme_prix."""
+        with pytest.raises(CircularityError):
+            _check_no_circularity(["ram_go", "cluster_id"])
 
     def test_build_design_matrix_leve_si_gamme_prix_demandee(self, hedonic_df_clustered):
         with pytest.raises(CircularityError):
-            build_design_matrix(hedonic_df_clustered, ["ram_go", "gamme_prix"], ["cluster_id"])
+            build_design_matrix(hedonic_df_clustered, ["ram_go", "gamme_prix"], ["marque"])
+
+    def test_build_design_matrix_leve_si_cluster_id_demande(self, hedonic_df_clustered):
+        with pytest.raises(CircularityError):
+            build_design_matrix(hedonic_df_clustered, ["ram_go", "stockage_go"], ["cluster_id"])
 
     def test_hedonic_ols_fit_leve_si_prix_tnd_dans_X(self, hedonic_df_clustered):
         X = hedonic_df_clustered[["ram_go", "prix_tnd"]].astype(float)
@@ -159,17 +172,17 @@ class TestComputeClusterLabels:
 
 class TestHedonicOLS:
     def test_fit_avant_predict_requis(self, hedonic_df_clustered):
-        X, y = build_design_matrix(hedonic_df_clustered, ["ram_go", "stockage_go"], ["cluster_id"])
+        X, y = build_design_matrix(hedonic_df_clustered, ["ram_go", "stockage_go"], ["marque"])
         with pytest.raises(NotFittedError):
             HedonicOLS().predict(X)
 
     def test_predict_forme_attendue(self, hedonic_df_clustered):
-        X, y = build_design_matrix(hedonic_df_clustered, ["ram_go", "stockage_go"], ["cluster_id"])
+        X, y = build_design_matrix(hedonic_df_clustered, ["ram_go", "stockage_go"], ["marque"])
         model = HedonicOLS().fit(X, y, continuous_cols=["ram_go", "stockage_go"])
         assert len(model.predict(X)) == len(X)
 
     def test_get_coefficients_colonnes(self, hedonic_df_clustered):
-        X, y = build_design_matrix(hedonic_df_clustered, ["ram_go", "stockage_go"], ["cluster_id"])
+        X, y = build_design_matrix(hedonic_df_clustered, ["ram_go", "stockage_go"], ["marque"])
         model = HedonicOLS().fit(X, y, continuous_cols=["ram_go", "stockage_go"])
         coefs = model.get_coefficients()
         assert list(coefs.columns) == ["feature", "coefficient", "std_err", "p_value", "pct_effect"]
@@ -177,17 +190,17 @@ class TestHedonicOLS:
     def test_pct_effect_formule_exacte_pour_categoriel(self, hedonic_df_clustered):
         """Pour une variable categorielle, pct_effect doit etre
         EXACTEMENT (exp(beta)-1)*100, jamais l'approximation beta*100."""
-        X, y = build_design_matrix(hedonic_df_clustered, ["ram_go", "stockage_go"], ["cluster_id"])
+        X, y = build_design_matrix(hedonic_df_clustered, ["ram_go", "stockage_go"], ["marque"])
         model = HedonicOLS().fit(X, y, continuous_cols=["ram_go", "stockage_go"])
         coefs = model.get_coefficients().set_index("feature")
-        cluster_rows = [f for f in coefs.index if f.startswith("cluster_id_")]
-        assert cluster_rows, "aucune colonne cluster_id dans la matrice de design"
-        row = coefs.loc[cluster_rows[0]]
+        marque_rows = [f for f in coefs.index if f.startswith("marque_")]
+        assert marque_rows, "aucune colonne marque dans la matrice de design"
+        row = coefs.loc[marque_rows[0]]
         expected = (np.exp(row["coefficient"]) - 1) * 100
         assert row["pct_effect"] == pytest.approx(expected)
 
     def test_pct_effect_approx_lineaire_pour_continu(self, hedonic_df_clustered):
-        X, y = build_design_matrix(hedonic_df_clustered, ["ram_go", "stockage_go"], ["cluster_id"])
+        X, y = build_design_matrix(hedonic_df_clustered, ["ram_go", "stockage_go"], ["marque"])
         model = HedonicOLS().fit(X, y, continuous_cols=["ram_go", "stockage_go"])
         coefs = model.get_coefficients().set_index("feature")
         assert coefs.loc["ram_go", "pct_effect"] == pytest.approx(coefs.loc["ram_go", "coefficient"] * 100)
@@ -198,12 +211,20 @@ class TestStrategiesAB:
         model, X, y = fit_strategy_a(hedonic_df_clustered, ["ram_go", "stockage_go"], ["cpu_serie", "os_platform"])
         assert model.nobs == len(hedonic_df_clustered)
 
+    def test_strategie_a_utilise_marque_jamais_cluster_id(self, hedonic_df_clustered):
+        """Regression test du correctif 2026-07-21 (reports/audit_code.md
+        §3.1) : fit_strategy_a doit ajouter 'marque' comme effet fixe,
+        jamais 'cluster_id' (qui encode gamme_prix -- circularite)."""
+        model, X, y = fit_strategy_a(hedonic_df_clustered, ["ram_go", "stockage_go"], ["cpu_serie", "os_platform"])
+        assert any(c.startswith("marque_") for c in X.columns)
+        assert not any(c.startswith("cluster_id") for c in X.columns)
+
     def test_strategie_b_ecarte_les_segments_trop_petits(self, hedonic_df_clustered):
         """BRANDC (n=6, la plus petite marque) doit toujours etre ecartee
         pour un nombre de predicteurs qui exige >= 10 lignes/predicteur --
         sur un jeu de donnees aussi petit, meme BRANDA (n=20) peut l'etre
-        aussi une fois cluster_id/cpu_serie/os_platform pris en compte,
-        ce qui est le comportement ATTENDU du garde-fou, pas une erreur."""
+        aussi une fois cpu_serie/os_platform pris en compte, ce qui est le
+        comportement ATTENDU du garde-fou, pas une erreur."""
         results, skipped = fit_strategy_b(
             hedonic_df_clustered, ["ram_go", "stockage_go"], ["cpu_serie", "os_platform"],
             top_n_brands=3, min_rows_ratio=10,

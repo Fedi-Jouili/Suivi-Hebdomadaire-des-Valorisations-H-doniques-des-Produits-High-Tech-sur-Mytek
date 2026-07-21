@@ -69,7 +69,7 @@ def run_demo(category: str = "pc_bureau") -> None:
 
     # 4. Stratégie A -----------------------------------------------------------
     print(f"\n{'-' * 70}\nStratégie A -- un modèle pour {category}, pentes communes, "
-          f"cluster_id en effets fixes\n{'-' * 70}")
+          f"marque en effets fixes\n{'-' * 70}")
     model_a, X_a, y_a = fit_strategy_a(df_clustered, continuous_features, categorical_features)
     print(f"n={int(model_a.nobs)}, {X_a.shape[1] + 1} paramètres, adj_R²={model_a.rsquared_adj:.3f}, "
           f"AIC={model_a.aic:.1f}, BIC={model_a.bic:.1f}")
@@ -123,7 +123,8 @@ def run_demo(category: str = "pc_bureau") -> None:
           f"{diag['n_influential_points']} / {int(model_a.nobs)}")
     if diag["n_singular_leverage_points"]:
         print(f"  dont {diag['n_singular_leverage_points']} à levier singulier (Cook's D non défini, "
-              f"levier=1 -- un point qui EST son propre paramètre, ex. seule observation d'un cluster_id).")
+              f"levier=1 -- un point qui EST son propre paramètre, ex. seule observation d'une modalité "
+              f"catégorielle rare comme marque/cpu_serie/os_platform).")
 
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     qq_path = REPORTS_DIR / f"hedonic_qq_{category}.png"

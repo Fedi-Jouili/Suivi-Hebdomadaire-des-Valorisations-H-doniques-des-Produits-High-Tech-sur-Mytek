@@ -1,0 +1,12 @@
+# Dependances specifiques au dashboard (src/dashboard/).
+# Le reste (pandas, scikit-learn, statsmodels, joblib...) est deja requis par
+# src/preprocessing et src/models -- non repete ici. Aucun requirements.txt
+# n'existait a la racine du projet avant ce dashboard ; si un fichier global
+# est souhaite plus tard, un `pip freeze` de .venv en sera la source la plus
+# fiable plutot qu'une liste reconstruite a la main.
+
+dash==4.4.0
+dash-mantine-components==2.8.0
+dash-ag-grid==35.3.0
+dash-iconify==0.1.2
+plotly==6.9.0

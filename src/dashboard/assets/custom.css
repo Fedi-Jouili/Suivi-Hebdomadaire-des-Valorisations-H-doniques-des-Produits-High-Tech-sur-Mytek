@@ -1,0 +1,25 @@
+/* src/dashboard/assets/custom.css
+   Charge automatiquement par Dash (convention assets/). Chiffres tabulaires
+   partout (alignement vertical des colonnes numeriques dans les cartes KPI
+   et les grilles) + quelques ajustements mineurs de lisibilite. */
+
+:root, body {
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.ag-theme-quartz, .ag-theme-quartz-dark {
+  font-feature-settings: "tnum" 1, "lnum" 1;
+  --ag-font-size: 13px;
+}
+
+/* Colonnes numeriques alignees a droite dans les grilles (demande explicite) */
+.ag-right-aligned-cell {
+  text-align: right !important;
+}
+
+/* Cartes de navigation (page d'accueil) : leger effet au survol */
+a:hover .mantine-Card-root {
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: box-shadow 0.15s ease;
+}
