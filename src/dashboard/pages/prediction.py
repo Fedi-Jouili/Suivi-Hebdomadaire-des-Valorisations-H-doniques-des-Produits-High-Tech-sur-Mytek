@@ -12,7 +12,7 @@ import dash_mantine_components as dmc
 from dash import ALL, Input, Output, State, callback, dcc, html
 from dash_iconify import DashIconify
 
-from src.dashboard.components import category_selector, provenance_strip, section_header
+from src.dashboard.components import category_selector, info_tip, provenance_strip, section_header
 from src.dashboard.data_loader import (
     ArtifactsMissingError,
     artifacts_available,
@@ -56,23 +56,41 @@ def layout():
             category_selector("prediction-category"),
             dmc.Grid([
                 dmc.GridCol(
-                    dmc.Select(id="prediction-model", label="Modèle de prédiction", data=_MODEL_DATA, value="ridge"),
+                    dmc.Select(
+                        id="prediction-model",
+                        label=dmc.Group([dmc.Text("Modèle de prédiction", size="sm", fw=500),
+                                          info_tip("Modèle utilisé pour estimer le prix — Ridge et Random Forest "
+                                                    "sont évalués hors-échantillon ; Hedonic OLS fournit en plus "
+                                                    "un intervalle de prédiction.")], gap=0),
+                        data=_MODEL_DATA, value="ridge",
+                    ),
                     span={"base": 12, "sm": 6},
                 ),
                 dmc.GridCol(
-                    dmc.Select(id="prediction-segmentation", label="Type de segmentation", data=_SEGMENTATION_DATA, value="n1"),
+                    dmc.Select(
+                        id="prediction-segmentation",
+                        label=dmc.Group([dmc.Text("Type de segmentation", size="sm", fw=500),
+                                          info_tip("N1 : clustering technique pur, calculable directement pour un "
+                                                    "produit hypothétique. N2 : marque × gamme de prix, estimée en "
+                                                    "2 temps (prix provisoire → gamme) car la gamme dépend du prix.")], gap=0),
+                        data=_SEGMENTATION_DATA, value="n1",
+                    ),
                     span={"base": 12, "sm": 6},
                 ),
             ], mb="md"),
             html.Div(id="prediction-form"),
             dmc.Button(
                 "Prédire le prix", id="prediction-submit", leftSection=DashIconify(icon="tabler:calculator"),
-                mt="md", size="md",
+                mt="md", size="md", color="red",
             ),
-            dmc.LoadingOverlay(visible=False, id="prediction-loading", zIndex=10),
+            dmc.LoadingOverlay(
+                visible=False, id="prediction-loading", zIndex=10,
+                loaderProps={"type": "dots", "color": "blue"},
+            ),
             html.Div(id="prediction-results", style={"marginTop": "1.5rem"}),
         ],
         pos="relative",
+        className="page-fade",
     )
 
 
@@ -241,11 +259,12 @@ def on_predict(n_clicks, values, ids, category, model_name, segmentation):
         section_header("Produits réels similaires", order=4,
                         subtitle="Plus proches voisins dans l'espace des caractéristiques techniques standardisées — pour vérifier la prédiction."),
         dag.AgGrid(
-            className="ag-theme-quartz",
+            className="ag-theme-quartz-dark",
             rowData=similar[grid_cols].round(2).to_dict("records") if not similar.empty else [],
             columnDefs=col_defs,
             defaultColDef={"sortable": True, "resizable": True},
             style={"height": "380px"}, columnSize="sizeToFit",
+            dashGridOptions={"theme": "legacy"},
         ) if not similar.empty else dmc.Text("Aucun produit comparable trouvé.", c="dimmed"),
     ])
     return results, False

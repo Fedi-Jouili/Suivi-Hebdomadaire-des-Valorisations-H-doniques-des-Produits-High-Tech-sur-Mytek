@@ -23,7 +23,7 @@ from src.dashboard.data_loader import (
     raw_vs_clean_counts,
 )
 from src.dashboard.format_utils import fmt_number, fmt_price
-from src.dashboard.theme import CATEGORY_COLORS, GRAPH_CONFIG
+from src.dashboard.theme import CATEGORY_COLORS, GRAPH_CONFIG, TEXT_MUT
 from src.utils.config import CATEGORY_ORDER
 
 dash.register_page(__name__, path="/descriptif", name="Statistiques descriptives")
@@ -39,10 +39,14 @@ def layout():
                 "Volumes, prix, marques et caractéristiques techniques sur les 4 dernières semaines de collecte.",
             ),
             category_selector("descriptive-category"),
-            dmc.LoadingOverlay(visible=False, id="descriptive-loading", zIndex=10),
+            dmc.LoadingOverlay(
+                visible=False, id="descriptive-loading", zIndex=10,
+                loaderProps={"type": "dots", "color": "blue"},
+            ),
             html.Div(id="descriptive-content"),
         ],
         pos="relative",
+        className="page-fade",
     )
 
 
@@ -76,7 +80,7 @@ def _missing_data_panel(category: str, weeks: tuple):
             size="xs", c="dimmed", mb="xs",
         ),
         dag.AgGrid(
-            className="ag-theme-quartz",
+            className="ag-theme-quartz-dark",
             id="descriptive-missing-grid",
             rowData=df.to_dict("records"),
             columnDefs=[
@@ -88,7 +92,7 @@ def _missing_data_panel(category: str, weeks: tuple):
             ],
             defaultColDef={"sortable": True, "resizable": True},
             style={"height": "180px"},
-            dashGridOptions={"domLayout": "normal"},
+            dashGridOptions={"domLayout": "normal", "theme": "legacy"},
         ),
     ])
 
@@ -112,15 +116,23 @@ def render_descriptive(category):
     color = CATEGORY_COLORS.get(category, "#2a78d6")
 
     # ── KPIs (semaine la plus récente = catalogue "actuel") ──────────────────
+    median_price = float(df_latest["prix_tnd"].median())
+    n_brands = int(df_latest["marque"].nunique())
     kpis = kpi_row([
-        kpi_card("Produits (S" + str(latest_week) + ")", fmt_number(len(df_latest)), "tabler:package", color=color),
-        kpi_card("Prix médian", fmt_price(df_latest["prix_tnd"].median()), "tabler:coin", color=color),
+        kpi_card(
+            "Produits (S" + str(latest_week) + ")", fmt_number(len(df_latest)), "tabler:package", color=color,
+            raw_value=len(df_latest),
+        ),
+        kpi_card(
+            "Prix médian", fmt_price(median_price), "tabler:coin", color=color,
+            raw_value=median_price, suffix=" TND",
+        ),
         kpi_card(
             "Prix min / max",
             f"{fmt_price(df_latest['prix_tnd'].min())} / {fmt_price(df_latest['prix_tnd'].max())}",
             "tabler:arrows-vertical", color=color,
         ),
-        kpi_card("Marques distinctes", fmt_number(df_latest["marque"].nunique()), "tabler:tag", color=color),
+        kpi_card("Marques distinctes", fmt_number(n_brands), "tabler:tag", color=color, raw_value=n_brands),
     ])
 
     # ── Effectifs par semaine ─────────────────────────────────────────────────
@@ -138,7 +150,7 @@ def render_descriptive(category):
     price_evol["semaine_label"] = price_evol["semaine"].apply(lambda w: f"S{w}")
     fig_price_evol = px.line(
         price_evol, x="semaine_label", y=["median", "mean"], markers=True,
-        color_discrete_sequence=[color, "#c7ccd1"],
+        color_discrete_sequence=[color, TEXT_MUT],
     )
     fig_price_evol.update_layout(
         title="Évolution du prix médian / moyen", xaxis_title="Semaine", yaxis_title="Prix (TND)",
@@ -212,7 +224,7 @@ def render_descriptive(category):
         ]) if spec_figs else None,
         section_header("Répartition par marque", order=4, subtitle=f"Semaine {latest_week}"),
         dag.AgGrid(
-            className="ag-theme-quartz",
+            className="ag-theme-quartz-dark",
             id="descriptive-brand-grid",
             rowData=brand_table.to_dict("records"),
             columnDefs=[
@@ -228,6 +240,7 @@ def render_descriptive(category):
             defaultColDef={"sortable": True, "resizable": True, "filter": True},
             style={"height": "360px"},
             columnSize="sizeToFit",
+            dashGridOptions={"theme": "legacy"},
         ),
         section_header("Valeurs manquantes / produits écartés", order=4),
         _missing_data_panel(category, weeks),

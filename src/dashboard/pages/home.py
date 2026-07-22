@@ -7,6 +7,7 @@ import dash_mantine_components as dmc
 from dash import dcc
 from dash_iconify import DashIconify
 
+from src.dashboard.components import kpi_card, kpi_row
 from src.dashboard.data_loader import available_weeks, load_pooled_category_full
 from src.utils.config import CATEGORY_LABELS, CATEGORY_ORDER
 
@@ -78,29 +79,26 @@ def layout():
                 gap="xs",
                 mb="lg",
             ),
-            dmc.SimpleGrid(
-                cols={"base": 1, "sm": 3},
-                spacing="md",
-                children=[
-                    dmc.Card([
-                        dmc.Text("Semaines de collecte", size="xs", tt="uppercase", c="dimmed", fw=500),
-                        dmc.Text(f"{len(weeks)}", size="xl", fw=700),
-                        dmc.Text(f"S{min(weeks)} → S{max(weeks)}" if weeks else "—", size="xs", c="dimmed"),
-                    ], p="md"),
-                    dmc.Card([
-                        dmc.Text("Produits suivis (cumulé)", size="xs", tt="uppercase", c="dimmed", fw=500),
-                        dmc.Text(f"{total_n:,}".replace(",", " "), size="xl", fw=700),
-                        dmc.Text("toutes semaines, 5 catégories", size="xs", c="dimmed"),
-                    ], p="md"),
-                    dmc.Card([
-                        dmc.Text("Catégories analysées", size="xs", tt="uppercase", c="dimmed", fw=500),
-                        dmc.Text(f"{len(CATEGORY_ORDER)}", size="xl", fw=700),
-                        dmc.Text("toujours séparément, jamais poolées", size="xs", c="dimmed"),
-                    ], p="md"),
-                ],
+            dmc.Box(
+                kpi_row([
+                    kpi_card(
+                        "Semaines de collecte", f"{len(weeks)}", "tabler:calendar-stats",
+                        note=f"S{min(weeks)} → S{max(weeks)}" if weeks else "—",
+                        raw_value=len(weeks),
+                    ),
+                    kpi_card(
+                        "Produits suivis (cumulé)", f"{total_n:,}".replace(",", " "), "tabler:package",
+                        note="toutes semaines, 5 catégories", raw_value=total_n,
+                    ),
+                    kpi_card(
+                        "Catégories analysées", f"{len(CATEGORY_ORDER)}", "tabler:category-2",
+                        note="toujours séparément, jamais poolées", raw_value=len(CATEGORY_ORDER),
+                    ),
+                ]),
                 mb="xl",
             ),
             dmc.Title("Explorer", order=3, mb="sm"),
             dmc.SimpleGrid(cols={"base": 1, "sm": 3}, spacing="md", children=[_nav_card(c) for c in _CARDS]),
-        ]
+        ],
+        className="page-fade",
     )

@@ -70,4 +70,5 @@ layout = dmc.Stack(
         ),
     ],
     maw=780, mx="auto",
+    className="page-fade",
 )

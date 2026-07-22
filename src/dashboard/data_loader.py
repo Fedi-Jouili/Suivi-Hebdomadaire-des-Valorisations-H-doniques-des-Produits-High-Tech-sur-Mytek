@@ -51,6 +51,20 @@ def last_n_weeks(n: int = 4) -> tuple:
     return weeks[-n:] if weeks else ()
 
 
+@functools.lru_cache(maxsize=1)
+def last_data_update() -> str | None:
+    """Date de derniere modification (mtime) la plus recente parmi les CSV
+    de data/processed/ -- affichee dans l'en-tete du dashboard ("Derniere
+    mise a jour"). None si aucun fichier trouve (degrade proprement,
+    l'en-tete omet alors la mention plutot que d'afficher une date fausse)."""
+    csvs = list(Path(DATA_PROCESSED_DIR).glob("week_*/*_clean.csv"))
+    if not csvs:
+        return None
+    latest = max(csvs, key=lambda p: p.stat().st_mtime)
+    from datetime import datetime
+    return datetime.fromtimestamp(latest.stat().st_mtime).strftime("%d/%m/%Y")
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # DONNEES TRAITEES PAR SEMAINE (pour la page descriptive)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -259,7 +273,7 @@ def category_label(category: str) -> str:
 
 
 __all__ = [
-    "available_weeks", "last_n_weeks",
+    "available_weeks", "last_n_weeks", "last_data_update",
     "load_clean_category_week", "load_clean_category_recent", "load_pooled_category_full",
     "raw_vs_clean_counts",
     "ArtifactsMissingError", "artifacts_available",

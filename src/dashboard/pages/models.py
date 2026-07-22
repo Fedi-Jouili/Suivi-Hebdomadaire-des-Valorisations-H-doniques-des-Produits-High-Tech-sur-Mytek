@@ -28,7 +28,7 @@ from src.dashboard.data_loader import (
     load_unit_summary,
 )
 from src.dashboard.format_utils import fmt_number, fmt_pct_effect, fmt_price
-from src.dashboard.theme import CATEGORY_COLORS, GRAPH_CONFIG
+from src.dashboard.theme import CATEGORY_COLORS, GRAPH_CONFIG, TEXT_MUT
 
 dash.register_page(__name__, path="/modeles", name="Modèles & clustering")
 
@@ -79,10 +79,14 @@ def layout():
         [
             section_header("Modèles & clustering", "Décomposition hédonique du prix et segmentation, par catégorie."),
             category_selector("models-category"),
-            dmc.LoadingOverlay(visible=False, id="models-loading", zIndex=10),
+            dmc.LoadingOverlay(
+                visible=False, id="models-loading", zIndex=10,
+                loaderProps={"type": "dots", "color": "blue"},
+            ),
             html.Div(id="models-content"),
         ],
         pos="relative",
+        className="page-fade",
     )
 
 
@@ -131,7 +135,7 @@ def _coefficients_chart(coefs: pd.DataFrame, color: str, top_n: int = 15):
         xaxis_title="Effet sur le prix (%)", yaxis_title="", height=max(340, 28 * len(df)),
         yaxis=dict(automargin=True), margin=dict(l=10),
     )
-    fig.add_vline(x=0, line_color="#c7ccd1", line_width=1)
+    fig.add_vline(x=0, line_color=TEXT_MUT, line_width=1)
     return fig
 
 
@@ -182,13 +186,23 @@ def render_models(category):
     color = CATEGORY_COLORS.get(category, "#2a78d6")
 
     kpis = kpi_row([
-        kpi_card("Adj-R² (OLS, train)", f"{metrics['hedonic_ols']['adj_r2_train']:.3f}", "tabler:chart-line", color=color),
-        kpi_card("R² Ridge (test)", f"{metrics['ridge']['r2_log']:.3f}", "tabler:chart-line", color=color),
-        kpi_card("R² Random Forest (test)", f"{metrics['random_forest']['r2_log']:.3f}", "tabler:chart-line", color=color),
+        kpi_card(
+            "Adj-R² (OLS, train)", f"{metrics['hedonic_ols']['adj_r2_train']:.3f}", "tabler:chart-line", color=color,
+            raw_value=metrics["hedonic_ols"]["adj_r2_train"], decimals=3,
+        ),
+        kpi_card(
+            "R² Ridge (test)", f"{metrics['ridge']['r2_log']:.3f}", "tabler:chart-line", color=color,
+            raw_value=metrics["ridge"]["r2_log"], decimals=3,
+        ),
+        kpi_card(
+            "R² Random Forest (test)", f"{metrics['random_forest']['r2_log']:.3f}", "tabler:chart-line", color=color,
+            raw_value=metrics["random_forest"]["r2_log"], decimals=3,
+        ),
         kpi_card(
             "RMSE Ridge (test)",
             fmt_price(metrics["ridge"]["rmse_tnd"]),
             "tabler:ruler-2", color=color, note="rétro-transformé, sans correction de biais",
+            raw_value=metrics["ridge"]["rmse_tnd"], suffix=" TND",
         ),
     ])
 
@@ -232,7 +246,7 @@ def render_models(category):
         section_header("Coefficients Ridge (échelle d'origine)", order=5,
                         subtitle="Semi-élasticités re-exprimées sur l'échelle des variables, sans inférence (p-values non disponibles pour Ridge)."),
         dag.AgGrid(
-            className="ag-theme-quartz",
+            className="ag-theme-quartz-dark",
             rowData=ridge_coefs.head(20).round(4).to_dict("records"),
             columnDefs=[
                 {"field": "feature", "headerName": "Caractéristique", "flex": 2},
@@ -240,6 +254,7 @@ def render_models(category):
             ],
             defaultColDef={"sortable": True, "resizable": True},
             style={"height": "320px"}, columnSize="sizeToFit",
+            dashGridOptions={"theme": "legacy"},
         ),
     ])
 
@@ -251,18 +266,25 @@ def render_models(category):
 
     clustering_tab = dmc.Stack([
         kpi_row([
-            kpi_card("Clusters techniques (N1)", fmt_number(n1_profile["cluster_direct"].nunique()), "tabler:chart-dots", color=color),
-            kpi_card("Unités marque×gamme (N2)", fmt_number(len(n2_summary)), "tabler:layout-grid", color=color),
+            kpi_card(
+                "Clusters techniques (N1)", fmt_number(n1_profile["cluster_direct"].nunique()), "tabler:chart-dots",
+                color=color, raw_value=int(n1_profile["cluster_direct"].nunique()),
+            ),
+            kpi_card(
+                "Unités marque×gamme (N2)", fmt_number(len(n2_summary)), "tabler:layout-grid", color=color,
+                raw_value=len(n2_summary),
+            ),
             kpi_card(
                 "Unités N2 clusterisées",
                 fmt_number((n2_summary["outcome"] == "Clusterisé").sum()),
                 "tabler:circle-check", color=color,
+                raw_value=int((n2_summary["outcome"] == "Clusterisé").sum()),
             ),
         ]),
         section_header("Clustering technique (N1) — profil par cluster", order=5,
                         subtitle="Construit sans prix ni marque ; prix médian affiché a posteriori, pour validation."),
         dag.AgGrid(
-            className="ag-theme-quartz",
+            className="ag-theme-quartz-dark",
             rowData=n1_profile.to_dict("records"),
             columnDefs=[{"field": "cluster_direct", "headerName": "Cluster", "flex": 1}] +
                        [{"field": "n", "headerName": "n produits", "type": "rightAligned", "flex": 1}] +
@@ -271,21 +293,26 @@ def render_models(category):
                         for c in n1_profile.columns if c not in ("cluster_direct", "n", "prix_median")],
             defaultColDef={"sortable": True, "resizable": True},
             style={"height": "260px"}, columnSize="sizeToFit",
+            dashGridOptions={"theme": "legacy"},
         ),
         section_header("Segmentation marque × gamme (N2) — unités", order=5,
                         subtitle="Une unité en dessous de l'effectif minimal reste un profil descriptif (jamais un clustering forcé)."),
         dag.AgGrid(
-            className="ag-theme-quartz",
+            className="ag-theme-quartz-dark",
             rowData=n2_summary.to_dict("records"),
             columnDefs=[
                 {"field": "marque", "headerName": "Marque", "flex": 2},
                 {"field": "gamme_prix", "headerName": "Gamme", "flex": 2},
                 {"field": "n", "headerName": "n produits", "type": "rightAligned", "flex": 1},
                 {"field": "k", "headerName": "k retenu", "type": "rightAligned", "flex": 1},
-                {"field": "outcome", "headerName": "Résultat", "flex": 2},
+                {
+                    "field": "outcome", "headerName": "Résultat", "flex": 2,
+                    "cellClassRules": {"ag-status-positive": "value == 'Clusterisé'"},
+                },
             ],
             defaultColDef={"sortable": True, "resizable": True, "filter": True},
             style={"height": "360px"}, columnSize="sizeToFit",
+            dashGridOptions={"theme": "legacy"},
         ),
     ])
 

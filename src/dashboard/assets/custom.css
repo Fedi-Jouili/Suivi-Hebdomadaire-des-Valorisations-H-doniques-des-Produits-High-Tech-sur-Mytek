@@ -1,15 +1,84 @@
 /* src/dashboard/assets/custom.css
-   Charge automatiquement par Dash (convention assets/). Chiffres tabulaires
-   partout (alignement vertical des colonnes numeriques dans les cartes KPI
-   et les grilles) + quelques ajustements mineurs de lisibilite. */
+   Charge automatiquement par Dash (convention assets/). Direction visuelle
+   POSTMODERNISTE, sombre, triade rouge/bleu/vert (2026-07-22) -- rupture
+   volontaire avec le minimalisme (Memphis Group / Weingart / David Carson)
+   appliquee au CHROME (cartes, en-tete, badges, ornements). Les GRAPHIQUES
+   et les TABLEAUX restent sobres et lisibles : seule la palette change
+   (cf. theme.py pour le template Plotly), jamais leur structure.
 
+   Couleurs synchronisees a la main avec src/dashboard/theme.py (BG,
+   SURFACE, BORDER, TEXT, RED, BLUE, GREEN) -- ce fichier ne peut pas
+   importer du Python, toute modification de palette doit etre reportee
+   ICI EN PLUS de theme.py. */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   1. DESIGN TOKENS
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Base sombre */
+  --bg:        #0e0e12;
+  --surface:   #16161d;
+  --surface-2: #1e1e28;
+  --border:    #2a2a36;
+  --text:      #f2f0e9;
+  --text-mut:  #a8a6b8;   /* ~8.9:1 sur --bg -- largement AA */
+
+  /* La triade -- affectation semantique constante dans tout le dashboard :
+     rouge = action/alerte, bleu = chrome structurel, vert = statut positif */
+  --red:   #e63946;
+  --blue:  #2d6cdf;
+  --green: #2ecc71;
+  --red-soft:   rgba(230, 57, 70, 0.14);
+  --blue-soft:  rgba(45, 108, 223, 0.14);
+  --green-soft: rgba(46, 204, 113, 0.14);
+
+  /* Ombres decalees DURES -- pas de flou, signature postmoderniste */
+  --shadow-red:   4px 4px 0 var(--red);
+  --shadow-blue:  4px 4px 0 var(--blue);
+  --shadow-green: 4px 4px 0 var(--green);
+
+  /* Rayons volontairement heterogenes selon l'element -- l'incoherence
+     controlee fait partie du langage visuel, jamais sur les graphiques/
+     tableaux qui restent nets. */
+  --radius-sharp: 0px;
+  --radius-soft:  14px;
+  --radius-pill:  999px;
+
+  /* Echelles d'espacement et de typo */
+  --space-1: 4px;  --space-2: 8px;  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+  --fs-xs: 12px; --fs-sm: 14px; --fs-md: 16px;
+  --fs-lg: 22px; --fs-xl: 34px; --fs-2xl: 52px;
+
+  /* Tokens de mouvement */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 0.18s; --dur: 0.32s; --dur-slow: 0.55s;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   2. TYPOGRAPHIE -- volontairement contrastee (postmoderne)
+   ───────────────────────────────────────────────────────────────────────── */
+
+h1, h2, h3, h4, h5, h6,
+.mantine-Title-root {
+  font-family: 'Archivo Black', 'Space Mono', sans-serif;
+  letter-spacing: -0.01em;
+}
+
+body, .mantine-Text-root, table, input, select, button {
+  font-family: 'Space Mono', 'IBM Plex Mono', 'Courier New', monospace;
+}
+
+/* Chiffres tabulaires partout : cartes KPI, grilles, axes de graphiques */
 :root, body {
   font-feature-settings: "tnum" 1, "lnum" 1;
   font-variant-numeric: tabular-nums;
 }
 
-.ag-theme-quartz, .ag-theme-quartz-dark {
+.ag-theme-quartz-dark, .ag-theme-quartz {
   font-feature-settings: "tnum" 1, "lnum" 1;
+  font-family: 'Space Mono', 'IBM Plex Mono', monospace;
   --ag-font-size: 13px;
 }
 
@@ -18,8 +87,222 @@
   text-align: right !important;
 }
 
-/* Cartes de navigation (page d'accueil) : leger effet au survol */
+/* Statut positif dans une grille (ex. "Clusterisé") -- vert, coherent avec
+   la semantique de la triade (statut positif = vert). */
+.ag-status-positive {
+  color: var(--green) !important;
+  font-weight: 700 !important;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   3. COMPORTEMENT GLOBAL / ACCESSIBILITE
+   ───────────────────────────────────────────────────────────────────────── */
+
+body {
+  background-color: var(--bg);
+  /* Grille pointillee tres discrete -- ornement postmoderne en fond de
+     page, jamais au-dessus du contenu (cf. §6, aucun element au-dessus
+     des graphiques/tableaux). */
+  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   4. BARRE DE PROGRESSION DE DEFILEMENT
+   ───────────────────────────────────────────────────────────────────────── */
+
+#scroll-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: var(--blue);
+  z-index: 1000;
+  transition: width 0.1s ease-out;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   5. EN-TETE / PIED DE PAGE -- chrome asymetrique
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Bandeau tricolore sous l'en-tete -- signature postmoderne plutot qu'une
+   simple bordure grise. */
+.mantine-AppShell-header {
+  border-bottom: none !important;
+  box-shadow: inset 0 -3px 0 0 var(--red), inset 0 -3px 0 -1px var(--blue) !important;
+  position: relative;
+}
+.mantine-AppShell-header::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 0; bottom: -3px;
+  height: 3px;
+  background: linear-gradient(90deg, var(--red) 0 33%, var(--blue) 33% 66%, var(--green) 66% 100%);
+}
+
+.app-badge {
+  background: var(--blue-soft) !important;
+  color: var(--blue) !important;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  border: 1px dashed var(--blue);
+  border-radius: var(--radius-pill);
+}
+
+.app-footer {
+  border-top: 3px dashed var(--border);
+  color: var(--text-mut);
+  font-size: var(--fs-xs);
+  padding: var(--space-4) var(--space-5);
+  margin-top: var(--space-7);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   6. ORNEMENTS GEOMETRIQUES -- decor uniquement, jamais sur les donnees
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Cercle creux flottant, coin haut-droit de chaque page -- purement
+   decoratif (pointer-events:none, sous le contenu). */
+.page-fade {
+  position: relative;
+}
+.page-fade::before {
+  content: '';
+  position: fixed;
+  top: 72px; right: 4%;
+  width: 120px; height: 120px;
+  border: 2px solid var(--blue);
+  border-radius: 50%;
+  opacity: 0.10;
+  pointer-events: none;
+  z-index: 0;
+}
+.page-fade::after {
+  content: '';
+  position: fixed;
+  bottom: 8%; left: 2%;
+  width: 70px; height: 70px;
+  border: 2px dashed var(--green);
+  border-radius: 50%;
+  opacity: 0.10;
+  pointer-events: none;
+  z-index: 0;
+}
+.page-fade > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   7. ANIMATIONS -- motion sur changement d'etat, quasi nulle au repos
+   ───────────────────────────────────────────────────────────────────────── */
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.9); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
+@keyframes modalSlide {
+  from { opacity: 0; transform: translateY(-24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.page-fade {
+  animation: fadeSlideIn var(--dur) var(--ease);
+}
+
+/* Cartes KPI : rotation rouge/bleu/vert (chaque carte "possede" une teinte),
+   ombre decalee DURE (jamais de flou), rayon alterne net/arrondi -- l'
+   incoherence controlee est le point. */
+.kpi-card {
+  animation: popIn var(--dur-slow) cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+  transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+  border-width: 2px !important;
+}
+.kpi-card:nth-child(3n+1) {
+  border-color: var(--red) !important;
+  box-shadow: 2px 2px 0 var(--red);
+  border-radius: var(--radius-sharp) !important;
+}
+.kpi-card:nth-child(3n+2) {
+  border-color: var(--blue) !important;
+  box-shadow: 2px 2px 0 var(--blue);
+  border-radius: var(--radius-soft) !important;
+}
+.kpi-card:nth-child(3n+3) {
+  border-color: var(--green) !important;
+  box-shadow: 2px 2px 0 var(--green);
+  border-radius: var(--radius-sharp) !important;
+}
+.kpi-card:nth-child(1) { animation-delay: 0.05s; }
+.kpi-card:nth-child(2) { animation-delay: 0.11s; }
+.kpi-card:nth-child(3) { animation-delay: 0.17s; }
+.kpi-card:nth-child(4) { animation-delay: 0.23s; }
+.kpi-card:nth-child(5) { animation-delay: 0.29s; }
+
+.kpi-card:hover {
+  transform: translate(-2px, -2px);
+  cursor: default;
+}
+.kpi-card:nth-child(3n+1):hover { box-shadow: 6px 6px 0 var(--red); }
+.kpi-card:nth-child(3n+2):hover { box-shadow: 6px 6px 0 var(--blue); }
+.kpi-card:nth-child(3n+3):hover { box-shadow: 6px 6px 0 var(--green); }
+
+/* Cartes de navigation (page d'accueil) : meme logique d'ombre dure */
 a:hover .mantine-Card-root {
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-  transition: box-shadow 0.15s ease;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--blue);
+  transition: transform var(--dur-fast) var(--ease), box-shadow var(--dur-fast) var(--ease);
+}
+
+/* Titres de section : leger desaxage -- jamais sur un graphique/tableau */
+.section-tilt {
+  display: inline-block;
+  transform: rotate(-1deg);
+}
+
+/* Modales : glissement + fondu a l'ouverture */
+.mantine-Modal-content {
+  animation: modalSlide var(--dur) var(--ease);
+  border: 2px solid var(--blue);
+}
+
+/* Effet de chargement (shimmer) sur une zone en cours de calcul */
+.chart-loading {
+  position: relative;
+  overflow: hidden;
+}
+.chart-loading::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, var(--blue-soft), transparent);
+  animation: shimmer 1.4s infinite;
+}
+
+/* Respect du systeme si l'utilisateur reduit les animations */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }
