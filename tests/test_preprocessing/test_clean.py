@@ -31,6 +31,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 import numpy as np
 import pandas as pd
+import pytest
 
 from src.preprocessing.clean import clean_products
 from src.preprocessing.impute import impute_numeric_cascade
@@ -80,6 +81,114 @@ class TestClProduitsRecuperationRam:
         ligne_hp = df[df["marque"] == "HP"]
         assert len(ligne_hp) == 1
         assert ligne_hp.iloc[0]["ram_go"] == 16.0  # recupere depuis specs_brutes["Mémoire"] = "16 Go"
+
+
+class TestClProduitsRamMemoireStockageAmbigu:
+    """
+    Regression directe sur le bug trouve et corrige le 2026-07-25 (cf.
+    notebooks/Etude_Transitions_Clusters_Marque_Gamme.ipynb §4.1) : sur
+    certaines fiches Mytek.tn, le champ "Memoire" duplique numeriquement
+    "Stockage" (128Go == 128 Go) plutot que de designer la RAM -- fix_ram
+    doit ecarter "Memoire" dans ce cas precis et chercher un motif
+    "RAM : NGo" explicite ailleurs dans specs_brutes (ici fusionne dans le
+    champ "Processeur", artefact de scraping reellement observe sur une
+    fiche Xiaomi Redmi Note 14).
+    """
+
+    _SPECS_XIAOMI_BUGUE = {
+        "Marque": "XIAOMI",
+        "Processeur": "Processeur Hélio G99-Ultra, jusqu'à 2,5 GHz- RAM : 8Go",
+        "Mémoire": "128Go",
+        "Stockage": "128 Go",
+    }
+
+    def _produit_smartphone(self, ram_go, specs_brutes):
+        return {
+            "nom": "Smartphone Xiaomi Redmi Note 14 4G  8Go 128Go - Lime Green",
+            "marque": "XIAOMI", "prix_tnd": 749.0, "processeur": "Hélio G99-Ultra",
+            "ram_go": ram_go, "stockage_go": 128.0, "type_stockage": None,
+            "taille_ecran": 6.67, "os": "Xiaomi HyperOS", "connectivite": "4G; Wi-Fi",
+            "url": "https://www.mytek.tn/redmi-note-14-8-128-lime.html",
+            "categorie": "smartphones", "semaine": 3, "date_collecte": "2026-07-15 03:43:16",
+            "specs_brutes": specs_brutes,
+        }
+
+    def test_memoire_dupliquant_stockage_ecartee_repli_sur_ram_fusionnee(self):
+        """raw ram_go=128 (bug scraper, hors de la borne smartphones
+        (1.0, 32.0) resserree le 2026-07-25) -> rejete par clean_products,
+        fix_ram doit retrouver 8.0 via le motif "RAM : 8Go" fusionne dans
+        "Processeur", PAS 128.0 via le doublon "Memoire"/"Stockage"."""
+        produit = self._produit_smartphone(128.0, self._SPECS_XIAOMI_BUGUE)
+        df = clean_products([produit])
+        assert df.iloc[0]["ram_go"] == 8.0
+
+    def test_memoire_distincte_de_stockage_reste_utilisee_normalement(self):
+        """Cas majoritaire (990/1020 smartphones du catalogue reel) : quand
+        "Memoire" NE duplique PAS "Stockage", elle designe bien la RAM et
+        doit continuer a etre utilisee -- le garde-fou ne doit pas
+        sur-corriger le cas normal."""
+        specs = {"Marque": "SAMSUNG", "Mémoire": "2 Go", "Stockage": "16 Go"}
+        # ram_go volontairement hors bornes pour forcer la re-derivation
+        # (0.05 -- imite le second bug corrige le meme jour, cf.
+        # TestClProduitsRamBornesResserrees).
+        produit = self._produit_smartphone(0.05, specs)
+        df = clean_products([produit])
+        assert df.iloc[0]["ram_go"] == 2.0
+
+    def test_aucun_signal_ram_exploitable_retombe_sur_none(self):
+        """Ni "RAM"/"Memoire RAM" specifique, ni motif "RAM : NGo" fusionne
+        ailleurs, et "Memoire" dedoublonne avec "Stockage" -- fix_ram ne
+        doit JAMAIS deviner (retourner 128.0 par defaut serait pire que
+        l'absence de valeur) : None, a charge de l'imputation statistique
+        en aval (impute.py) de completer proprement."""
+        specs = {"Marque": "XIAOMI", "Mémoire": "128Go", "Stockage": "128 Go"}
+        produit = self._produit_smartphone(128.0, specs)
+        df = clean_products([produit])
+        assert pd.isna(df.iloc[0]["ram_go"])
+
+
+class TestClProduitsRamBornesResserrees:
+    """Regression sur le second volet du meme correctif (2026-07-25) : les
+    bornes basses de plausibilite RAM (auparavant 0.0 pour toutes les
+    categories) laissaient passer des valeurs quasi nulles (bug de
+    confusion cache/RAM historique, cf. docstring de fix_ram) sans jamais
+    declencher de re-derivation."""
+
+    def test_smartphone_ram_quasi_nulle_rejetee_et_rederivee(self):
+        specs = {"Marque": "SAMSUNG", "RAM": "8Go", "Stockage": "128 Go"}
+        produit = {
+            "nom": "Smartphone Samsung Galaxy Test 8Go 128Go",
+            "marque": "SAMSUNG", "prix_tnd": 899.0, "processeur": "Exynos",
+            "ram_go": 0.0234375,  # artefact reel observe (cache/RAM confondus)
+            "stockage_go": 128.0, "type_stockage": None, "taille_ecran": 6.5,
+            "os": "Android", "connectivite": "4G; Wi-Fi",
+            "url": "https://www.mytek.tn/galaxy-test.html",
+            "categorie": "smartphones", "semaine": 1, "date_collecte": "2026-07-01 10:00:00",
+            "specs_brutes": specs,
+        }
+        df = clean_products([produit])
+        assert df.iloc[0]["ram_go"] == 8.0  # re-derive depuis specs_brutes["RAM"], plus 0.0234
+
+    def test_telephone_portable_ram_quasi_nulle_reste_intacte(self):
+        """A la difference des smartphones/pc_portables, telephones_portables
+        n'a PAS eu sa borne basse relevee (decision documentee dans
+        VALIDITY_BOUNDS) : certains feature phones basiques ont une RAM
+        reellement de l'ordre de quelques dizaines de Mo (ex. "32 Mo"
+        explicite en specs_brutes) -- ce n'est pas le bug cache/RAM, une
+        borne basse relevee ecarterait ici une valeur correcte."""
+        specs = {"Marque": "NOKIA", "RAM": "32 Mo"}
+        produit = {
+            "nom": "Téléphone Portable Nokia Test",
+            "marque": "NOKIA", "prix_tnd": 45.0, "processeur": None,
+            "ram_go": 32 / 1024,  # ~0.03125 -- valeur EXACTE et legitime, pas un artefact
+            "stockage_go": 32.0, "type_stockage": None, "taille_ecran": 2.0,
+            "os": None, "connectivite": None,
+            "url": "https://www.mytek.tn/nokia-test.html",
+            "categorie": "telephones_portables", "semaine": 1, "date_collecte": "2026-07-01 10:00:00",
+            "specs_brutes": specs,
+        }
+        df = clean_products([produit])
+        assert df.iloc[0]["ram_go"] == pytest.approx(32 / 1024)
 
 
 class TestImputationMediane:

@@ -94,6 +94,13 @@ body, .mantine-Text-root, table, input, select, button {
   font-weight: 700 !important;
 }
 
+/* Statut negatif dans une grille (ex. hausse de prix d'un cluster) -- rouge,
+   symetrique de .ag-status-positive (semantique de la triade : negatif = rouge). */
+.ag-status-negative {
+  color: var(--red) !important;
+  font-weight: 700 !important;
+}
+
 /* ─────────────────────────────────────────────────────────────────────────
    3. COMPORTEMENT GLOBAL / ACCESSIBILITE
    ───────────────────────────────────────────────────────────────────────── */

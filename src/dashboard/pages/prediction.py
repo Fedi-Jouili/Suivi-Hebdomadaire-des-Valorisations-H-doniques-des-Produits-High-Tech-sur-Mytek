@@ -21,7 +21,7 @@ from src.dashboard.data_loader import (
     get_feature_ranges,
     load_unit_summary,
 )
-from src.dashboard.format_utils import fmt_number, fmt_price
+from src.dashboard.format_utils import fmt_number, fmt_pct_effect, fmt_price
 from src.dashboard.prediction_utils import assign_n1_cluster, assign_n2_segment, find_similar_products, predict_price
 from src.dashboard.theme import CATEGORY_COLORS, GRAPH_CONFIG
 
@@ -64,7 +64,7 @@ def layout():
                                                     "un intervalle de prédiction.")], gap=0),
                         data=_MODEL_DATA, value="ridge",
                     ),
-                    span={"base": 12, "sm": 6},
+                    span={"base": 12, "sm": 4},
                 ),
                 dmc.GridCol(
                     dmc.Select(
@@ -75,7 +75,21 @@ def layout():
                                                     "2 temps (prix provisoire → gamme) car la gamme dépend du prix.")], gap=0),
                         data=_SEGMENTATION_DATA, value="n1",
                     ),
-                    span={"base": 12, "sm": 6},
+                    span={"base": 12, "sm": 4},
+                ),
+                dmc.GridCol(
+                    dmc.Select(
+                        id="prediction-week",
+                        label=dmc.Group([dmc.Text("Semaine", size="sm", fw=500),
+                                          info_tip("Situe la prédiction à une semaine donnée, via l'indice de prix "
+                                                    "hédonique déjà calculé (page Évolution hebdomadaire) — les 3 "
+                                                    "modèles sont entraînés sur toutes les semaines poolées sans "
+                                                    "distinction, l'ajustement vient donc de cet indice, pas du "
+                                                    "modèle lui-même. Filtre aussi les produits réels comparables.")], gap=0),
+                        data=[{"value": str(w), "label": f"S{w}"} for w in available_weeks()],
+                        value=str(available_weeks()[-1]) if available_weeks() else None,
+                    ),
+                    span={"base": 12, "sm": 4},
                 ),
             ], mb="md"),
             html.Div(id="prediction-form"),
@@ -108,6 +122,11 @@ def _field_label(col: str) -> str:
     return _FEATURE_LABELS.get(col, col.replace("_", " ").capitalize())
 
 
+def _fmt_capacity(v: float) -> str:
+    """8.0 -> '8 Go' -- paliers materiels, jamais de decimale parasite."""
+    return f"{v:.0f} Go" if float(v).is_integer() else f"{v:g} Go"
+
+
 @callback(Output("prediction-form", "children"), Input("prediction-category", "value"))
 def render_form(category):
     if not artifacts_available(category):
@@ -124,6 +143,17 @@ def render_form(category):
         ),
         span={"base": 12, "sm": 6, "md": 4},
     ))
+
+    for col, values in ranges["discrete_options"].items():
+        fields.append(dmc.GridCol(
+            dmc.Select(
+                id={"type": "predict-input", "field": col}, label=_field_label(col),
+                data=[{"value": str(v), "label": _fmt_capacity(v)} for v in values],
+                value=str(values[len(values) // 2]),
+                description=f"{len(values)} paliers observés dans le catalogue",
+            ),
+            span={"base": 12, "sm": 6, "md": 4},
+        ))
 
     for col, r in ranges["continuous"].items():
         fields.append(dmc.GridCol(
@@ -157,8 +187,15 @@ def render_form(category):
 
 
 def _price_result_card(pred: dict, color: str):
+    header = [dmc.Text("Prix prédit", size="xs", tt="uppercase", c="dimmed", fw=500)]
+    if pred.get("week_adjustment_pct") is not None:
+        adj = pred["week_adjustment_pct"]
+        header.append(dmc.Badge(
+            f"ajustement semaine {fmt_pct_effect(adj)}", color=("red" if adj > 0 else "green"),
+            variant="light", size="sm",
+        ))
     body = [
-        dmc.Text("Prix prédit", size="xs", tt="uppercase", c="dimmed", fw=500),
+        dmc.Group(header, gap="xs"),
         dmc.Text(fmt_price(pred["price"]), size="2rem", fw=700, style={"fontVariantNumeric": "tabular-nums"}),
     ]
     if pred["has_interval"]:
@@ -203,9 +240,10 @@ def _segment_result_card(segmentation: str, category: str, category_color: str, 
     State("prediction-category", "value"),
     State("prediction-model", "value"),
     State("prediction-segmentation", "value"),
+    State("prediction-week", "value"),
     prevent_initial_call=True,
 )
-def on_predict(n_clicks, values, ids, category, model_name, segmentation):
+def on_predict(n_clicks, values, ids, category, model_name, segmentation, week):
     if not ids:
         return dmc.Alert("Formulaire indisponible — sélectionner une catégorie avec des artefacts entraînés.",
                           color="yellow"), False
@@ -219,7 +257,7 @@ def on_predict(n_clicks, values, ids, category, model_name, segmentation):
             form_values[field] = val
 
     try:
-        pred = predict_price(category, model_name, form_values)
+        pred = predict_price(category, model_name, form_values, week=week)
     except ArtifactsMissingError as exc:
         return dmc.Alert(str(exc), color="yellow", title="Artefacts manquants"), False
 
@@ -233,7 +271,7 @@ def on_predict(n_clicks, values, ids, category, model_name, segmentation):
         n2_info = assign_n2_segment(category, marque, pred["price"], form_values)
         segment_card = _segment_result_card("n2", category, color, n2_info=n2_info)
 
-    similar = find_similar_products(category, form_values, top_n=10)
+    similar = find_similar_products(category, form_values, top_n=10, week=week)
     display_cols = ["nom", "marque", "prix_tnd", "distance"]
     tech_cols = [c for c in similar.columns if c in form_values and c not in display_cols][:4]
     grid_cols = display_cols[:3] + tech_cols + ["distance"]
@@ -243,10 +281,10 @@ def on_predict(n_clicks, values, ids, category, model_name, segmentation):
     for c in grid_cols:
         if c == "prix_tnd":
             col_defs.append({"field": c, "headerName": "Prix (TND)", "type": "rightAligned",
-                              "valueFormatter": {"function": "params.value.toLocaleString('fr-FR')"}})
+                              "valueFormatter": {"function": "params.value != null ? params.value.toLocaleString('fr-FR') : '—'"}})
         elif c == "distance":
             col_defs.append({"field": c, "headerName": "Distance (écart technique)", "type": "rightAligned",
-                              "valueFormatter": {"function": "params.value.toFixed(2)"}})
+                              "valueFormatter": {"function": "params.value != null ? params.value.toFixed(2) : '—'"}})
         elif c == "nom":
             col_defs.append({"field": c, "headerName": "Produit", "flex": 2})
         else:

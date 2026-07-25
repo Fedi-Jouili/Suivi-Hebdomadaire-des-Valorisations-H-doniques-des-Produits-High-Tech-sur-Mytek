@@ -1,0 +1,17 @@
+﻿categorie,semaine,semaine_reference,indice_prix_ajuste_qualite_pct,p_value
+pc_bureau,1,True,0.0,
+pc_bureau,2,False,-0.17,0.6319
+pc_bureau,3,False,-0.04,0.9158
+pc_bureau,4,False,0.21,0.7969
+pc_portables,1,True,0.0,
+pc_portables,2,False,0.37,0.302
+pc_portables,3,False,0.43,0.4406
+pc_portables,4,False,0.14,0.8097
+smartphones,1,True,0.0,
+smartphones,2,False,1.97,0.0495
+smartphones,3,False,1.69,0.1324
+smartphones,4,False,1.94,0.0824
+televiseurs,1,True,0.0,
+televiseurs,2,False,-0.02,0.9383
+televiseurs,3,False,-0.02,0.9383
+televiseurs,4,False,0.73,0.285

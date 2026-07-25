@@ -12,6 +12,7 @@ _ICONS = {
     "Accueil": "tabler:home",
     "Statistiques descriptives": "tabler:chart-histogram",
     "Modèles & clustering": "tabler:brain",
+    "Évolution hebdomadaire": "tabler:trending-up",
     "Prédiction": "tabler:target-arrow",
     "À propos": "tabler:user-circle",
 }

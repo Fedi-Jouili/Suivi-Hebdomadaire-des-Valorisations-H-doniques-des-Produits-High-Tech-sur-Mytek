@@ -263,6 +263,56 @@ class TestConnectivityFlags:
         assert result.loc[0, "has_ethernet"] == 1
         assert result.loc[1, "has_ethernet"] == 0
 
+    def test_wifi_dual_band_notation_not_read_as_cellular(self):
+        """Regression directe sur le bug trouve et corrige le 2026-07-25
+        (cf. notebooks/Etude_Transitions_Clusters_Marque_Gamme.ipynb §4.2) :
+        'Wi-Fi 2.4G/5G' decrit une connectivite Wi-Fi double bande (2,4 GHz
+        et 5 GHz), jamais une connectivite cellulaire -- mais l'ancien motif
+        \\b4g\\b / \\b5g\\b matchait quand meme "4G" dans "2.4G" et "5G" dans
+        "/5G". Chaine reelle observee sur le scrape televiseurs (aucun
+        televiseur de ce catalogue n'a de carte SIM) : has_4g/has_5g
+        doivent rester a 0, has_wifi doit rester a 1 (seule la lecture
+        cellulaire est corrigee, pas la detection Wi-Fi elle-meme)."""
+        df = pd.DataFrame([{"connectivite": "Interface Réseau: RJ45; Connectivité: Wi-Fi 2.4G/5G, Bluetooth 5.4"}])
+        result = extract_connectivity_flags(df)
+        row = result.iloc[0]
+        assert row["has_4g"] == 0
+        assert row["has_5g"] == 0
+        assert row["has_wifi"] == 1
+        assert row["has_bluetooth"] == 1
+        assert row["has_ethernet"] == 1
+
+    def test_genuine_cellular_mentions_still_detected_alongside_wifi_band(self):
+        """Meme garde-fou que ci-dessus, mais dans l'autre sens : une vraie
+        mention cellulaire ('Reseaux Mobiles: 4G') combinee a une notation
+        de bande Wi-Fi dans la MEME chaine ne doit pas etre masquee par le
+        retrait du motif de bande -- has_4g doit rester a 1."""
+        df = pd.DataFrame([{
+            "connectivite": "Réseaux Mobiles: 4G; Connectivité: Wi-Fi (2,4 GHz | 5 GHz), 4G et Bluetooth 5.4",
+        }])
+        result = extract_connectivity_flags(df)
+        row = result.iloc[0]
+        assert row["has_4g"] == 1
+        assert row["has_wifi"] == 1
+
+    def test_real_smartphone_connectivity_strings_unaffected(self):
+        """Echantillon de chaines connectivite REELLEMENT observees sur le
+        scrape smartphones/telephones_portables (jamais de notation de
+        bande Wi-Fi 'X.XG/Y.YG') -- verifie que le retrait ajoute pour le
+        cas televiseurs ne change RIEN pour ces cas, les plus frequents du
+        catalogue."""
+        cas = [
+            ("4G; Wi-Fi", {"has_4g": 1, "has_5g": 0}),
+            ("5G", {"has_4g": 0, "has_5g": 1}),
+            ("Réseaux Mobiles: 5G; Connectivité: 5G, Wifi 7 et Bluetooth 5.4; 4G; Wi-Fi", {"has_4g": 1, "has_5g": 1}),
+            ("Réseaux Mobiles: 4G; Connectivité: 4G, NFC et Bluetooth", {"has_4g": 1, "has_5g": 0}),
+        ]
+        df = pd.DataFrame([{"connectivite": c} for c, _ in cas])
+        result = extract_connectivity_flags(df)
+        for i, (_, attendu) in enumerate(cas):
+            for flag, valeur in attendu.items():
+                assert result.loc[i, flag] == valeur, f"ligne {i} ({cas[i][0]!r}) : {flag} attendu={valeur}"
+
 
 # ─────────────────────────────────────────────────────────────────────────────
 # extract_os_platform

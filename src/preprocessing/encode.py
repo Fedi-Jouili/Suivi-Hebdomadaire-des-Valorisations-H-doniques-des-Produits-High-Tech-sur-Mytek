@@ -287,9 +287,23 @@ def extract_connectivity_flags(df: pd.DataFrame) -> pd.DataFrame:
         if val is None or (isinstance(val, float) and pd.isna(val)):
             return {f: 0 for f in _CONNECTIVITY_FLAGS}
         s = str(val)
+        # has_4g/has_5g : cherches sur `s` SANS les mentions de bande Wi-Fi
+        # (ex. "Wi-Fi 2.4G/5G") -- sans ce retrait, "2.4G" et "/5G" declenchent
+        # un faux positif cellulaire (confirme sur le scrape reel : la chaine
+        # "Interface Reseau: RJ45; Connectivite: Wi-Fi 2.4G/5G, Bluetooth 5.4",
+        # exclusive aux televiseurs -- aucun televiseur de ce catalogue n'a de
+        # connectivite cellulaire reelle -- faisait basculer has_4g/has_5g a 1
+        # pour des TV sans aucune carte SIM). Les vraies mentions cellulaires
+        # ("Reseaux Mobiles: 4G", "4G; Wi-Fi"...) ne suivent jamais ce format
+        # "Wi-Fi X(.X)G/Y(.Y)G" et restent donc intactes. has_wifi/has_wifi6
+        # restent calcules sur `s` original (la bande Wi-Fi elle-meme doit
+        # rester detectee).
+        s_no_wifi_band = re.sub(
+            r'wi-?fi\s*[:\-]?\s*\d(\.\d)?\s*g(hz)?\s*/\s*\d(\.\d)?\s*g(hz)?', '', s, flags=re.IGNORECASE,
+        )
         return {
-            "has_4g":        int(bool(re.search(r'\b4g\b',         s, re.IGNORECASE))),
-            "has_5g":        int(bool(re.search(r'\b5g\b',         s, re.IGNORECASE))),
+            "has_4g":        int(bool(re.search(r'\b4g\b',         s_no_wifi_band, re.IGNORECASE))),
+            "has_5g":        int(bool(re.search(r'\b5g\b',         s_no_wifi_band, re.IGNORECASE))),
             "has_wifi6":     int(bool(re.search(r'wi-?fi\s*6',     s, re.IGNORECASE))),
             "has_wifi":      int(bool(re.search(r'wi-?fi(?!\s*6)', s, re.IGNORECASE))),
             "has_bluetooth": int(bool(re.search(r'bluetooth',      s, re.IGNORECASE))),

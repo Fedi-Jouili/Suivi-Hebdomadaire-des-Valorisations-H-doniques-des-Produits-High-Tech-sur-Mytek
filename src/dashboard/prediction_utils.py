@@ -36,6 +36,7 @@ import statsmodels.api as sm
 from sklearn.neighbors import NearestNeighbors
 
 from src.dashboard.data_loader import (
+    load_hedonic_price_index,
     load_metrics,
     load_model_artifact,
     load_n1_feature_schema,
@@ -86,7 +87,42 @@ def encode_hypothetical_row(design_columns: list, continuous_features: list, cat
 MODEL_LABELS = {"ols": "Hedonic OLS", "ridge": "Ridge", "rf": "Random Forest"}
 
 
-def predict_price(category: str, model_name: str, values: dict) -> dict:
+def _week_adjustment_pct(category: str, week) -> tuple:
+    """
+    Ajustement (%) a appliquer au prix de base pour "situer" la prediction
+    a une semaine donnee, a partir de l'indice de prix hedonique deja
+    persiste (reports/indice_prix_hedonique_hebdo.csv, cf.
+    src.models.weekly_report.hedonic_price_index) -- jamais recalcule ici
+    (le dashboard ne fit() jamais, cf. docstring du module).
+
+    Les 3 modeles persistes (OLS/Ridge/RF) sont entraines sur les donnees
+    POOLEES sans variable "semaine" -- leur prediction represente donc
+    implicitement une moyenne sur toutes les semaines poolees, pas la
+    semaine 1 (la reference 0% de l'indice). L'ajustement est donc calcule
+    RELATIVEMENT A LA MOYENNE de l'indice sur les semaines disponibles
+    (indice_semaine - moyenne(indice)), pas relativement a la semaine 1 --
+    sans quoi toutes les predictions seraient systematiquement biaisees
+    dans le meme sens par rapport a ce que le modele a reellement appris.
+
+    Returns: (adjustment_pct: float | None, weeks_used: list[int]) --
+        None si la categorie est exclue de l'indice temporel (cf.
+        POOLED_TIME_EXCLUDED_CATEGORIES) ou si la semaine demandee n'y
+        figure pas -- jamais une erreur, un ajustement simplement absent.
+    """
+    if week is None:
+        return None, []
+    idx = load_hedonic_price_index(category)
+    if idx is None or idx.empty:
+        return None, []
+    row = idx[idx["semaine"] == int(week)]
+    if row.empty:
+        return None, sorted(idx["semaine"].unique().tolist())
+    mean_idx = float(idx["indice_prix_ajuste_qualite_pct"].mean())
+    week_idx = float(row["indice_prix_ajuste_qualite_pct"].iloc[0])
+    return week_idx - mean_idx, sorted(idx["semaine"].unique().tolist())
+
+
+def predict_price(category: str, model_name: str, values: dict, week=None) -> dict:
     """
     Predit le prix d'un produit hypothetique.
 
@@ -100,8 +136,12 @@ def predict_price(category: str, model_name: str, values: dict) -> dict:
     retro-transforme) -- Ridge/RF n'offrent pas nativement d'intervalle
     (ni l'un ni l'autre ne sont bayesiens/quantile), signale comme tel.
 
+    week : semaine choisie dans le formulaire -- applique l'ajustement de
+        _week_adjustment_pct (indice hedonique deja persiste) au prix ET a
+        l'intervalle, si disponible pour cette categorie/semaine.
+
     Returns: dict {price, price_lower, price_upper (ou None), log_price,
-        model_label, has_interval, note}
+        model_label, has_interval, week_adjustment_pct (ou None), note}
     """
     metrics = load_metrics(category)
     design_columns = metrics["design_matrix_columns"]
@@ -131,14 +171,35 @@ def predict_price(category: str, model_name: str, values: dict) -> dict:
         raise ValueError(f"Modele inconnu : {model_name}")
 
     price = float(np.exp(log_pred))
+
+    adjustment_pct, weeks_used = _week_adjustment_pct(category, week)
+    if adjustment_pct is not None:
+        factor = 1 + adjustment_pct / 100
+        price *= factor
+        if price_lower is not None:
+            price_lower *= factor
+            price_upper *= factor
+        week_note = (
+            f" Ajusté pour S{int(week)} : indice hédonique {adjustment_pct:+.2f} % par rapport à la moyenne "
+            f"poolée (semaines {min(weeks_used)}–{max(weeks_used)}, cf. page Évolution hebdomadaire)."
+        )
+    elif week is not None:
+        week_note = (
+            f" Aucun ajustement disponible pour S{int(week)} sur « {category} » (indice de prix hédonique non "
+            f"calculé pour cette catégorie/semaine) — prix non ajusté, moyenne poolée sur toutes les semaines."
+        )
+    else:
+        week_note = ""
+
     return {
         "price": price, "price_lower": price_lower, "price_upper": price_upper,
         "log_price": log_pred, "model_label": MODEL_LABELS[model_name], "has_interval": has_interval,
+        "week_adjustment_pct": adjustment_pct,
         "note": (
             "Intervalle de prédiction à 95% (statsmodels), rétro-transformé de log(prix) — pas d'ajustement "
             "supplémentaire au-delà de exp()." if has_interval else
             f"{MODEL_LABELS[model_name]} ne fournit pas nativement d'intervalle de prédiction."
-        ),
+        ) + week_note,
     }
 
 
@@ -214,12 +275,20 @@ def assign_n2_segment(category: str, marque: str, predicted_price: float, values
 # PRODUITS REELS SIMILAIRES (distance technique dans l'espace standardise N1)
 # ─────────────────────────────────────────────────────────────────────────────
 
-def find_similar_products(category: str, values: dict, top_n: int = 10) -> pd.DataFrame:
+def find_similar_products(category: str, values: dict, top_n: int = 10, week=None) -> pd.DataFrame:
     """Plus proches voisins REELS (memes caracteristiques standardisees que
     le clustering N1, cf. scaler_n1) -- sert de verification de bon sens
-    pour la prediction (page 3)."""
+    pour la prediction (page 3). week : si fourni, restreint les
+    comparables a cette seule semaine (produits reellement en vente a ce
+    moment-la) -- retombe sur toutes les semaines poolees si la semaine
+    demandee n'a aucun produit pour cette categorie (jamais une liste vide
+    silencieuse)."""
     schema = load_n1_feature_schema(category)
     df = load_pooled_labeled(category)
+    if week is not None:
+        df_week = df[df["semaine"] == int(week)]
+        if not df_week.empty:
+            df = df_week
     scaler = load_model_artifact(category, "scaler_n1")
 
     row = encode_hypothetical_row(

@@ -113,19 +113,34 @@ VALIDITY_BOUNDS = {
     },
     "pc_portables": {
         "price": (0.0, 16500.0),   # resserre (etait 30000) -- couvre le max observe (16129) avec marge
-        "ram": (0.0, 128.0),       # inchange -- deja bien calibre (max observe 64)
+        "ram": (1.0, 128.0),       # borne basse relevee de 0.0 a 1.0 (2026-07-25) -- 0.0 laissait passer le bug
+                                    # cache/RAM (valeurs de l'ordre de 0,004-0,03 Go) sans jamais declencher la
+                                    # re-derivation depuis specs_brutes/nom, cf. fix_ram -- aucun PC portable reel
+                                    # n'a moins de 1 Go de RAM. Haute inchangee (deja bien calibree, max observe 64).
         "storage": (0.0, 4096.0),  # resserre (etait 8192) -- couvre le max observe (2048) avec marge
         "screen": (9.0, 19.0),     # inchange -- deja bien calibre (observe [10.5,17.3])
     },
     "smartphones": {
         "price": (0.0, 10500.0),   # resserre (etait 20000) -- couvre le max observe (6999) avec marge
-        "ram": (0.0, 192.0),       # auto-calibration (0,23) trop etroite (max observe 128 !) -- marge au-dessus
+        "ram": (1.0, 32.0),        # resserre (etait (0.0, 192.0), 2026-07-25) -- l'ancienne borne haute avait ete
+                                    # elargie a partir d'un max observe de 128 qui est justement le bug identifie
+                                    # (confusion stockage/RAM sur une fiche Xiaomi Redmi Note 14, cf. notebooks/
+                                    # Etude_Transitions_Clusters_Marque_Gamme.ipynb §4.1) -- max REEL apres
+                                    # correction : 24 Go, marge au-dessus. Borne basse relevee de 0.0 a 1.0 pour
+                                    # la meme raison que pc_portables (meme bug cache/RAM).
         "storage": (0.0, 4096.0),  # releve (etait 2048) -- couvre le max observe (2048) avec marge
         "screen": (5.0, 7.5),      # resserre (etait 3,8) -- bien calibre sur 254 produits (observe [5.5,7.0])
     },
     "telephones_portables": {
         "price": (0.0, 120.0),     # fortement resserre (etait 1000) -- calibre sur 47 produits (max observe 85)
-        "ram": (0.0, 24.0),        # releve (etait 2.0) -- des feature phones "connectes" ont jusqu'a 16 Go reels
+        "ram": (0.0, 24.0),        # releve (etait 2.0) -- des feature phones "connectes" ont jusqu'a 16 Go reels ;
+                                    # borne basse VOLONTAIREMENT laissee a 0.0 (verifie 2026-07-25, contrairement a
+                                    # pc_portables/smartphones) -- les feature phones basiques de cette categorie
+                                    # ont reellement une RAM de l'ordre de quelques dizaines de Mo (ex. "32 Mo"
+                                    # explicite dans specs_brutes pour plusieurs Nokia/SMARTEC/EVERTEK reels,
+                                    # confirme produit par produit) : ce n'est PAS le bug cache/RAM constate sur
+                                    # pc_portables/smartphones (qui produit des valeurs sans aucun ancrage dans
+                                    # specs_brutes), une borne basse relevee ecarterait ici des valeurs correctes.
         "storage": (0.0, 64.0),    # echantillon auto degenere (n=5, toutes valeurs=32) -- non fiable pour resserrer,
                                    # marge raisonnable gardee plutot que le point unique [32,32] propose
         "screen": (0.8, 3.0),      # resserre (etait 1,5) -- bien calibre sur 70 produits (observe [1.4,2.4]) ;
@@ -362,6 +377,17 @@ def normalize_brand_column(series: pd.Series) -> pd.Series:
     return aliased.map(lambda v: canonical_by_key.get(_normalize(v), v) if v is not None else v)
 
 
+def _parse_capacity_go(val) -> float | None:
+    """'8Go' / '8 Go' / '8192 Mo' -> Go (float). None si aucun motif capacite."""
+    match = re.search(r'(\d+)\s*(Go|GB|Mo|MB)', str(val), re.IGNORECASE)
+    if not match:
+        return None
+    num = float(match.group(1))
+    if match.group(2).upper() in ("MO", "MB"):
+        num = num / 1024
+    return num
+
+
 def fix_ram(product: dict, seed: float | None = "__unset__") -> float | None:
     """
     Recalcule la RAM (Go) depuis specs_brutes/nom si le champ de depart
@@ -376,13 +402,30 @@ def fix_ram(product: dict, seed: float | None = "__unset__") -> float | None:
               compatible) tout en permettant a clean_products de forcer
               une re-derivation via seed=None.
 
-    exclude=["cache"] est indispensable ici : sans lui, le candidat
-    generique "Memoire" matcherait par substring la cle "Memoire Cache"
-    (cache processeur) au lieu de "Memoire" (RAM) quand cette derniere
-    n'est pas trouvee par les candidats plus specifiques -- confusion
-    reellement observee sur le scrape (RAM aberrante de l'ordre de
-    quelques Mo au lieu de plusieurs Go, corrigee a la source dans
-    scraper/parser.py, mais toujours presente dans les JSON deja scrapes).
+    Trois repli en cascade, du plus fiable au moins fiable -- jamais de
+    nombre invente, un echec passe au repli suivant plutot que de deviner :
+
+    1. Champ EXPLICITEMENT labellise RAM ("Memoire RAM", "Memoire vive",
+       "RAM" -- jamais le "Memoire" generique en premier : constate sur le
+       scrape reel que "Memoire" designe tantot la RAM, tantot -- pour
+       certaines fiches, ex. Xiaomi Redmi Note 14 -- un DOUBLON du champ
+       "Stockage" (meme valeur numerique dans les deux, ex. "128Go" ==
+       "128 Go"). exclude=["cache"] evite de matcher "Memoire Cache"
+       (cache processeur) par substring.
+    2. Si "Memoire" est le seul candidat trouve ET que sa valeur numerique
+       est IDENTIQUE a "Stockage" -- signal fort que ce champ est un
+       doublon du stockage sur cette fiche, pas une vraie RAM -- il est
+       ecarte, et on cherche un motif "RAM : NGo" explicite dans TOUTES
+       les valeurs specs_brutes (repli utile quand la ligne RAM de la
+       fiche produit a ete fusionnee dans un autre champ par le scraper --
+       constate sur le meme Xiaomi Redmi Note 14 : "Processeur" contenait
+       "...jusqu'a 2,5 GHz- RAM : 8Go"). Sinon (Memoire != Stockage), sa
+       valeur est utilisee normalement (cas majoritaire ou "Memoire" EST
+       bien la RAM, distincte du stockage).
+    3. Nom du produit, mais UNIQUEMENT si "RAM"/"DDR" suit explicitement
+       la capacite (jamais une capacite seule, ambigue avec le stockage --
+       ex. "8Go 128Go" sans suffixe ne doit jamais etre lu comme "8 Go de
+       RAM" par coincidence de position).
     """
     if seed == "__unset__":
         seed = product.get("ram_go")
@@ -390,15 +433,25 @@ def fix_ram(product: dict, seed: float | None = "__unset__") -> float | None:
         return seed
 
     specs = product.get("specs_brutes") or {}
-    val = _find_spec(specs, "Memoire RAM", "Memoire vive", "Memoire", "RAM", exclude=["cache"])
+
+    val = _find_spec(specs, "Memoire RAM", "Memoire vive", "RAM", exclude=["cache"])
     if val:
-        match = re.search(r'(\d+)\s*(Go|GB|Mo|MB)', str(val), re.IGNORECASE)
-        if match:
-            num = float(match.group(1))
-            unit = match.group(2).upper()
-            if unit in ("MO", "MB"):
-                num = num / 1024
-            return num
+        parsed = _parse_capacity_go(val)
+        if parsed is not None:
+            return parsed
+
+    memoire_val = _find_spec(specs, "Memoire", exclude=["cache"])
+    if memoire_val:
+        memoire_go = _parse_capacity_go(memoire_val)
+        stockage_go = _parse_capacity_go(specs.get("Stockage")) if specs.get("Stockage") is not None else None
+        if memoire_go is not None and (stockage_go is None or memoire_go != stockage_go):
+            return memoire_go
+        # "Memoire" ecarte (doublon du stockage) -- motif "RAM : NGo" explicite
+        # dans n'importe quel champ (fusion de ligne cote scraper, cf. docstring).
+        for spec_val in specs.values():
+            match = re.search(r'\bram\s*[:\-]?\s*(\d+)\s*(Go|GB)\b', str(spec_val), re.IGNORECASE)
+            if match:
+                return float(match.group(1))
 
     name = product.get("nom") or ""
     match = re.search(r'(\d+)\s*(Go|GB)\s*(RAM|DDR)', name, re.IGNORECASE)

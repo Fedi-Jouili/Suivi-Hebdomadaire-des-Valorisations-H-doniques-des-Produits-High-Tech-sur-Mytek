@@ -30,6 +30,7 @@ import joblib
 import pandas as pd
 
 from src.models.save_artifacts import MODELS_DIR, load_pooled_category
+from src.models.weekly_report import REPORTS_DIR
 from src.preprocessing.split import discover_weeks
 from src.utils.config import CATEGORY_LABELS, CATEGORY_ORDER, DATA_PROCESSED_DIR, DATA_RAW_DIR
 
@@ -205,8 +206,139 @@ def load_model_artifact(category: str, name: str):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# RAPPORTS HEBDOMADAIRES (reports/, produits par src.models.weekly_report --
+# meme convention lecture-seule que les artefacts de save_artifacts.py)
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _report_path(filename: str) -> Path:
+    path = REPORTS_DIR / filename
+    if not path.exists():
+        raise ArtifactsMissingError(
+            f"Rapport manquant : {path}\nExecuter d'abord : python -m src.models.weekly_report"
+        )
+    return path
+
+
+@functools.lru_cache(maxsize=1)
+def _load_clustering_coverage_full() -> pd.DataFrame:
+    return pd.read_csv(_report_path("couverture_clustering_hebdo.csv"))
+
+
+def load_clustering_coverage(category: str | None = None) -> pd.DataFrame:
+    """Couverture (N1/N2) par semaine -- cf. src.models.weekly_report.coverage_by_week."""
+    df = _load_clustering_coverage_full()
+    return df[df["categorie"] == category].reset_index(drop=True) if category else df
+
+
+@functools.lru_cache(maxsize=1)
+def _load_cluster_geometric_means_full() -> pd.DataFrame:
+    return pd.read_csv(_report_path("cluster_prix_geometrique.csv"))
+
+
+def load_cluster_geometric_means(category: str) -> pd.DataFrame:
+    """Moyenne geometrique du prix par cluster (N1 + N2) et par semaine."""
+    df = _load_cluster_geometric_means_full()
+    return df[df["categorie"] == category].reset_index(drop=True)
+
+
+@functools.lru_cache(maxsize=1)
+def _load_weekly_estimates_full() -> pd.DataFrame:
+    return pd.read_csv(_report_path("estimations_prix_hebdo.csv"))
+
+
+def load_weekly_estimates(category: str) -> pd.DataFrame:
+    """Prix reel vs estime (Hedonic OLS / Ridge / RF) par semaine, + erreur."""
+    df = _load_weekly_estimates_full()
+    return df[df["categorie"] == category].reset_index(drop=True)
+
+
+@functools.lru_cache(maxsize=1)
+def _load_hedonic_price_index_full() -> pd.DataFrame:
+    path = REPORTS_DIR / "indice_prix_hedonique_hebdo.csv"
+    if not path.exists():
+        raise ArtifactsMissingError(
+            f"Rapport manquant : {path}\nExecuter d'abord : python -m src.models.weekly_report"
+        )
+    return pd.read_csv(path)
+
+
+def load_hedonic_price_index(category: str) -> pd.DataFrame | None:
+    """Indice de prix hedonique (effet fixe semaine, net des caracteristiques) --
+    None si la categorie est exclue du pooling temporel (cf.
+    src.models.hedonic_model.POOLED_TIME_EXCLUDED_CATEGORIES), jamais une erreur :
+    l'exclusion est un choix methodologique documente, pas une donnee manquante."""
+    df = _load_hedonic_price_index_full()
+    sub = df[df["categorie"] == category].reset_index(drop=True)
+    return sub if not sub.empty else None
+
+
+@functools.lru_cache(maxsize=1)
+def _load_catalog_composition_full() -> pd.DataFrame:
+    return pd.read_csv(_report_path("composition_catalogue_hebdo.csv"))
+
+
+def load_catalog_composition(category: str) -> pd.DataFrame:
+    """Moyenne des caracteristiques techniques continues du catalogue, par
+    semaine -- colonnes non pertinentes pour la categorie restent NaN
+    (features propres a d'autres categories, cf. weekly_report.py)."""
+    df = _load_catalog_composition_full()
+    sub = df[df["categorie"] == category].reset_index(drop=True)
+    return sub.dropna(axis=1, how="all")
+
+
+@functools.lru_cache(maxsize=1)
+def _load_marque_gamme_estimates_full() -> pd.DataFrame:
+    return pd.read_csv(_report_path("marque_gamme_estimations_hebdo.csv"))
+
+
+def load_marque_gamme_estimates(category: str) -> pd.DataFrame:
+    """Prix reel (moyenne geometrique) vs estime par Ridge/Hedonic/RF, PAR
+    CLUSTER (marque x gamme x sous-cluster technique) et par semaine --
+    cf. src.models.weekly_report.marque_gamme_model_estimates."""
+    df = _load_marque_gamme_estimates_full()
+    return df[df["categorie"] == category].reset_index(drop=True)
+
+
+@functools.lru_cache(maxsize=1)
+def _load_cluster_transitions_full() -> pd.DataFrame:
+    return pd.read_csv(_report_path("transitions_cluster_hebdo.csv"))
+
+
+def load_cluster_transitions(category: str) -> pd.DataFrame:
+    """Classification semaine-a-semaine (grille prix reel x prix estime) de
+    chaque cluster -- cf. src.models.weekly_report.cluster_transitions."""
+    df = _load_cluster_transitions_full()
+    return df[df["categorie"] == category].reset_index(drop=True)
+
+
+@functools.lru_cache(maxsize=None)
+def weekly_reports_available() -> bool:
+    return (REPORTS_DIR / "couverture_clustering_hebdo.csv").exists()
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # PLAGES DE VALEURS POUR LE FORMULAIRE DE PREDICTION (page 3)
 # ─────────────────────────────────────────────────────────────────────────────
+
+# Caracteristiques "continues" mais en realite QUANTIFIEES par construction
+# materielle (Go de RAM/stockage vendus par paliers -- 4/8/16/32... jamais
+# une valeur arbitraire entre deux paliers) : un slider suggererait des
+# valeurs qui n'existent dans aucun produit reel. Presentees en Select
+# (options = valeurs REELLEMENT observees, cf. discret_options ci-dessous),
+# jamais un NumberInput/slider -- decision utilisateur du 2026-07-25.
+DISCRETE_OPTION_FEATURES = {"ram_go", "stockage_go"}
+
+# Plancher physique supplementaire pour ram_go : le bug de confusion
+# cache/RAM documente dans src/preprocessing/clean.py produit des valeurs
+# proches de 0 (ex. 0,0039 Go) qui passent les bornes de plausibilite
+# (VALIDITY_BOUNDS accepte "ram": (0.0, ...), 0 est une borne INCLUSE, pas
+# suspecte) -- invisibles sur un slider p1-p99 (juste une position de
+# curseur inutilisee), mais afficheraient une option absurde et
+# selectionnable dans un Select. 1 Go est le plus petit palier RAM
+# reellement commercialise dans ce catalogue -- jamais une grandeur
+# continue, aucune ambiguite a arrondir vers le bas.
+_DISCRETE_OPTION_FLOOR = {"ram_go": 1.0}
+
 
 def get_feature_ranges(category: str) -> dict:
     """
@@ -223,20 +355,33 @@ def get_feature_ranges(category: str) -> dict:
     borne sur le minimum brut serait inutilisable (0 a 64 Go de RAM avec
     l'essentiel du curseur invalide) -- p1/p99 restent honnetes sur la
     distribution reelle sans se laisser dicter par un point aberrant isole.
+
+    DISCRETE_OPTION_FEATURES (ram_go, stockage_go) : memes bornes p1-p99
+    pour ecarter les memes anomalies, mais la liste des valeurs DISTINCTES
+    observees dans cette plage est retournee (ranges["discrete_options"])
+    plutot qu'un min/max continu -- ce sont des paliers materiels, pas une
+    grandeur continue.
     """
     df = load_pooled_labeled(category)
     schema = load_metrics(category)
     continuous = schema["continuous_features"]
     categorical = [c for c in schema["categorical_features"] if c != "marque"]
 
-    ranges = {"continuous": {}, "categorical": {}, "marque": []}
+    ranges = {"continuous": {}, "discrete_options": {}, "categorical": {}, "marque": []}
     for col in continuous:
         series = pd.to_numeric(df[col], errors="coerce").dropna()
         if series.empty:
             continue
+        p1, p99 = float(series.quantile(0.01)), float(series.quantile(0.99))
+        if col in DISCRETE_OPTION_FEATURES:
+            floor = _DISCRETE_OPTION_FLOOR.get(col, p1)
+            values = sorted(v for v in series.unique().tolist() if max(p1, floor) <= v <= p99)
+            if values:
+                ranges["discrete_options"][col] = values
+            continue
         ranges["continuous"][col] = {
-            "min": float(series.quantile(0.01)),
-            "max": float(series.quantile(0.99)),
+            "min": p1,
+            "max": p99,
             "median": float(series.median()),
             "step": _sensible_step(series),
         }
@@ -279,6 +424,9 @@ __all__ = [
     "ArtifactsMissingError", "artifacts_available",
     "load_metrics", "load_coefficients", "load_ridge_coefficients", "load_rf_importances",
     "load_pooled_labeled", "load_brand_plan", "load_unit_summary", "load_n1_feature_schema",
-    "load_model_artifact", "get_feature_ranges", "category_label",
+    "load_model_artifact", "get_feature_ranges", "DISCRETE_OPTION_FEATURES", "category_label",
+    "load_clustering_coverage", "load_cluster_geometric_means", "load_weekly_estimates",
+    "load_hedonic_price_index", "load_catalog_composition",
+    "load_marque_gamme_estimates", "load_cluster_transitions", "weekly_reports_available",
     "CATEGORY_ORDER", "CATEGORY_LABELS",
 ]
