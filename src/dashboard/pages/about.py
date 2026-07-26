@@ -17,7 +17,7 @@ layout = dmc.Stack(
                         DashIconify(icon="tabler:user", width=48), size=120, radius=120,
                         variant="light", color="blue", mx="auto",
                     ),
-                    dmc.Title("TODO : Prénom Nom", order=2, ta="center"),
+                    dmc.Title("Fedi Jouili", order=2, ta="center"),
                     dmc.Text("TODO : intitulé du stage — Institut National de la Statistique (INS), Tunisie",
                              c="dimmed", ta="center"),
                 ],
@@ -33,9 +33,13 @@ layout = dmc.Stack(
                     [
                         dmc.Group([DashIconify(icon="tabler:file-text", width=20), dmc.Text("À propos du projet", fw=600)]),
                         dmc.Text(
-                            "TODO : décrire en 3-4 phrases le contexte du stage, l'objectif du projet "
-                            "(décomposition hédonique des prix high-tech collectés sur Mytek.tn) et ce que "
-                            "ce travail apporte à l'INS.",
+                            "Ce projet applique une approche hédonique pour décomposer les prix des produits "
+                            "technologiques collectés sur Mytek.tn en fonction de leurs caractéristiques techniques. "
+                            "En utilisant un modèle semi-logarithmique combinant une régression Ridge et des Forêts "
+                            "Aléatoires, on extrait l'impact de chaque attribut (RAM, processeur, stockage, écran, etc.) "
+                            "sur le prix. Cette méthodologie, basée sur la théorie de Lancaster (1966) et Rosen (1974), "
+                            "apporte à l'INS une mesure fiable des prix hédoniques pour analyser l'évolution du marché "
+                            "high-tech en Tunisie.",
                             size="sm", c="dimmed", mt="sm",
                         ),
                     ],
@@ -46,9 +50,9 @@ layout = dmc.Stack(
                         dmc.Group([DashIconify(icon="tabler:address-book", width=20), dmc.Text("Contact", fw=600)]),
                         dmc.Stack(
                             [
-                                dmc.Group([DashIconify(icon="tabler:mail", width=16), dmc.Text("TODO : email@example.com", size="sm")]),
-                                dmc.Group([DashIconify(icon="tabler:brand-linkedin", width=16), dmc.Text("TODO : lien LinkedIn", size="sm")]),
-                                dmc.Group([DashIconify(icon="tabler:brand-github", width=16), dmc.Text("TODO : lien GitHub", size="sm")]),
+                                dmc.Group([DashIconify(icon="tabler:mail", width=16), dmc.Text("fedi.jouili@essai.ucar.tn", size="sm")]),
+                                dmc.Group([DashIconify(icon="tabler:brand-linkedin", width=16), dmc.Anchor("Fedi Jouili", href="https://www.linkedin.com/in/fedi-jouili-a91677321/", target="_blank", size="sm")]),
+                                dmc.Group([DashIconify(icon="tabler:brand-github", width=16), dmc.Anchor("Fedi-Jouili", href="https://github.com/Fedi-Jouili", target="_blank", size="sm")]),
                             ],
                             gap="xs", mt="sm",
                         ),
