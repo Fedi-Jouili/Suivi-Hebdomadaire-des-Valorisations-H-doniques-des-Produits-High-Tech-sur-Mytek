@@ -1,0 +1,12 @@
+# Normalise les fins de ligne en LF dans le depot (jamais de diffs bruyants
+# entre contributeurs Windows/Linux) -- checkout local toujours converti
+# selon core.autocrlf de l'utilisateur, seul le depot lui-meme est fige en LF.
+* text=auto eol=lf
+
+# Binaires -- jamais de conversion de fin de ligne (la corromprait).
+*.joblib binary
+*.pdf binary
+*.webp binary
+*.jpg binary
+*.png binary
+*.ico binary

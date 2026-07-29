@@ -3,7 +3,8 @@
 ## Rapport de synthèse du stage
 
 **Auteur :** Fedi Jouili · **Période couverte par les données :** 4 semaines de collecte (S1–S4, juin–juillet 2026)
-**Dernière mise à jour de ce rapport :** 2026-07-27
+**Dernière mise à jour de ce rapport :** 2026-07-29
+**Dashboard public :** https://hedonique-mytek-dashboard.onrender.com
 
 ---
 
@@ -68,6 +69,25 @@ structuré est absent ou aberrant, imputation en cascade (KNN puis repli médian
 sélection de caractéristiques par effet mesuré sur le prix (Kruskal-Wallis pour le catégoriel, |Spearman| pour
 le numérique) plutôt qu'une liste fixée à la main. **Aucun filtrage silencieux** : toute ligne écartée, toute
 valeur corrigée, est journalisée avec sa raison.
+
+**Sélection de features stabilisée (2026-07-28)** : le test statistique de sélection était auparavant recalculé
+indépendamment chaque semaine, sur un échantillon parfois inférieur à 100 lignes — bruité, produisant une
+recommandation différente d'une semaine à l'autre pour la même variable (schéma non identique entre semaines,
+constaté en pratique sur `cpu_brand`/`has_4g`). `python -m src.preprocessing.pipeline --all`
+(`compute_stable_feature_selection`) calcule désormais cette sélection **une seule fois**, sur les 4 semaines
+poolées : le schéma de colonnes est aujourd'hui rigoureusement identique sur les 4 semaines pour chaque
+catégorie (vérifié directement sur les fichiers `data/processed/week_*/*_clean.csv`). L'ancien mode
+semaine-par-semaine reste disponible (`build_processed_datasets` seul) pour un usage ponctuel.
+
+**Recalibration des bornes de plausibilité (2026-07-28/29)** : `VALIDITY_BOUNDS` avait été calibrée une seule
+fois, sur la semaine 1 seule (1181 produits, 2026-07-04) — jamais revue depuis malgré l'accumulation de 3
+semaines supplémentaires. Re-vérification sur les 4 semaines poolées (4843 produits bruts) : la borne de prix
+`telephones_portables` (0-120 TND) rejetait à tort un feature phone réel et vérifié produit par produit (NOKIA
+2660 Flip, 249 TND) — corrigée à 300 TND. Les autres dépassements trouvés (RAM/stockage `telephones_portables`)
+ont été vérifiés produit par produit et confirmés comme des artefacts de parsing (un NOKIA HMD 150 crédité de
+825 Go de stockage SSD, un CLEVER F10 crédité de 256 Go de RAM — techniquement impossibles pour ces appareils
+d'entrée de gamme) : bornes **confirmées**, pas élargies. Cf. `src/preprocessing/clean.py` pour le détail
+produit par produit de chaque décision.
 
 ### 3.2 Deux lectures de la structure du marché (clustering)
 
@@ -262,8 +282,21 @@ le dashboard) :
   par semaine via l'indice de §3.4.
 - **Évolution hebdomadaire** — couverture du clustering, prix par cluster, prix réel vs estimé par modèle,
   et l'étude de transitions de §3.5/§4 (grille de lecture, cas notables, confirmation bootstrap).
+- **Téléchargements** (ajouté 2026-07-29) — notebooks en PDF (pré-générés hors-ligne, cf.
+  `scripts/generate_notebook_pdfs.py`), estimations par cluster × semaine par catégorie (avec les colonnes
+  d'erreur d'estimation par modèle), données produit par catégorie.
 
-Lancement : `python -m src.dashboard.app` → http://127.0.0.1:8050
+Lancement local : `python -m src.dashboard.app` → http://127.0.0.1:8050
+
+**Déploiement public (2026-07-29)** : le dashboard est hébergé sur [Render](https://render.com)
+(https://hedonique-mytek-dashboard.onrender.com), construit automatiquement depuis ce dépôt GitHub à chaque
+push (`render.yaml`, build Docker via `Dockerfile`). `data/processed/` et `models/` sont désormais versionnés
+(anciennement exclus du dépôt) : un déploiement basé sur git a besoin de ces artefacts pour avoir quoi que ce
+soit à servir. `data/raw/` (scrape brut, volumineux, jamais lu par le dashboard) reste exclu. Serveur de
+production : gunicorn (le serveur de développement Flask/Dash, mono-thread par défaut et dont le mode debug
+expose un débogueur Python interactif dans le navigateur, n'est utilisé qu'en local). Niveau gratuit Render :
+l'instance se met en veille après une période d'inactivité, avec un délai de réveil de 30 à 60 secondes sur la
+première requête suivante.
 
 ## 6. Résultats clés (résumé)
 
@@ -294,9 +327,9 @@ Lancement : `python -m src.dashboard.app` → http://127.0.0.1:8050
 python -m venv .venv && .venv\Scripts\activate      # Windows
 pip install -r requirements.txt
 
-# 1. Pretraitement (par semaine deja scrapee sous data/raw/week_N/)
-python -m src.preprocessing.pipeline --raw-dir data/raw/week_1 --out-dir data/processed/week_1
-# ... repeter pour chaque semaine disponible
+# 1. Pretraitement -- TOUTES les semaines sous data/raw/, selection de features
+#    calculee une seule fois sur les donnees poolees (recommande, cf. §3.1)
+python -m src.preprocessing.pipeline --all
 
 # 2. Entrainement des modeles + clustering (tous les artefacts sous models/)
 python -m src.models.save_artifacts
@@ -304,12 +337,15 @@ python -m src.models.save_artifacts
 # 3. Rapports hebdomadaires (tous les CSV sous reports/, alimentent le dashboard)
 python -m src.models.weekly_report
 
-# 4. Dashboard
+# 4. Dashboard (local)
 python -m src.dashboard.app        # http://127.0.0.1:8050
+# ... ou en conteneur, identique a la production (cf. §5) :
+docker compose up --build          # http://localhost:8050
 
 # 5. Notebooks (executes avec leurs sorties, mais reproductibles independamment) :
 #    ordre de lecture recommande dans notebooks/README implicite par prefixe --
 #    EDA -> Clustering -> Comparaison -> Segmentation -> Evolution_Temporelle -> Etude_Transitions
+#    PDF (page Telechargements du dashboard) : python scripts/generate_notebook_pdfs.py
 
 # 6. Tests
 pytest tests/ -v
@@ -317,7 +353,7 @@ pytest tests/ -v
 
 ## 8. Qualité et reproductibilité du code
 
-- **233 tests automatisés** (`pytest tests/`, tous passants), couvrant le prétraitement, les 3 modèles, le
+- **234 tests automatisés** (`pytest tests/`, tous passants), couvrant le prétraitement, les 3 modèles, le
   clustering, les rapports hebdomadaires et les fonctions pures du dashboard — exécutés automatiquement par CI
   sur chaque push/PR depuis le 2026-07-28 (`.github/workflows/tests.yml`), plus manuellement avant. 65 tests
   ajoutés le 2026-07-25 : 8 régressions directes sur les bugs de §4, 40 sur `src/models/weekly_report.py`, 17 sur

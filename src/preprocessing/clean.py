@@ -66,10 +66,23 @@ CALIBRATION DES BORNES :
     dans les donnees -- l'aurait fait rejeter a tort). Ne jamais resserrer
     une borne en dessous du MIN/MAX observe.
 
-    Derniere calibration : 2026-07-04, sur 1181 produits dedupliques
-    (5 categories, semaine 1) via bounds.compute_all_bounds(), puis
+    Calibration initiale : 2026-07-04, sur 1181 produits dedupliques
+    (5 categories, semaine 1 SEULE) via bounds.compute_all_bounds(), puis
     ajustee a la main pour ne jamais etre plus stricte que les valeurs
-    observees (cf. commentaires par categorie ci-dessous).
+    observees.
+
+    RE-VERIFICATION sur les 4 semaines groupees (2026-07-28/29, 4843
+    produits bruts avant dedup) -- chaque borne re-comparee aux valeurs
+    MIN/MAX reellement observees sur l'echantillon elargi (pas seulement
+    la sortie brute de compute_all_bounds(), cf. mise en garde ci-dessus) :
+    deux cas trouves ou une valeur reelle et legitime depassait la borne
+    initiale (prix telephones_portables, cf. commentaire de categorie --
+    NOKIA 2660 Flip a 249 TND) et corriges ; les autres depassements
+    trouves (RAM/stockage telephones_portables) ont ete verifies produit
+    par produit et confirmes comme des artefacts de parsing (feature
+    phones avec des specifications techniquement impossibles), PAS des
+    valeurs a accommoder -- cf. commentaires par categorie ci-dessous
+    pour le detail de chaque cas.
 
 UTILISATION :
     python -m src.preprocessing.clean
@@ -148,8 +161,18 @@ VALIDITY_BOUNDS = {
                                     # confirme produit par produit) : ce n'est PAS le bug cache/RAM constate sur
                                     # pc_portables/smartphones (qui produit des valeurs sans aucun ancrage dans
                                     # specs_brutes), une borne basse relevee ecarterait ici des valeurs correctes.
-        "storage": (0.0, 64.0),    # echantillon auto degenere (n=5, toutes valeurs=32) -- non fiable pour resserrer,
-                                   # marge raisonnable gardee plutot que le point unique [32,32] propose
+                                    # RE-VERIFIE sur les 4 semaines groupees (2026-07-29) : le seul produit
+                                    # au-dessus de cette borne (CLEVER F10, ram_go=256) est le meme type
+                                    # d'artefact de parsing qu'au-dessus (feature phone d'entree de gamme, 256 Go
+                                    # de RAM impossible) -- borne haute confirmee, pas elargie.
+        "storage": (0.0, 64.0),    # RE-VERIFIE sur les 4 semaines groupees (2026-07-29, 43 produits) -- toujours
+                                   # d'actualite, PAS resserre ni elargi : le seul produit au-dessus de cette
+                                   # borne (NOKIA HMD 150 Nina, stockage_go=825, type_stockage="SSD") est un
+                                   # artefact de parsing evident (un feature phone d'entree de gamme n'a ni SSD
+                                   # ni 825 Go) -- exactement le type de valeur que cette borne doit continuer a
+                                   # neutraliser, pas une valeur legitime a accommoder (contrairement au prix
+                                   # ci-dessus, cf. 2026-07-28). Calibration d'origine (n=5, toutes valeurs=32)
+                                   # confirmee non contredite par l'echantillon elargi.
         "screen": (0.8, 3.0),      # resserre (etait 1,5) -- bien calibre sur 70 produits (observe [1.4,2.4]) ;
                                    # capture toujours le bug AMI C14 (14.0 pouces, tres au-dessus de 3.0)
     },

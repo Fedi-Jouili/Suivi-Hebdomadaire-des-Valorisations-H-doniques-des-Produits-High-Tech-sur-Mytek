@@ -1,5 +1,14 @@
 # Audit de logique et de correction — pipeline hédonique Mytek.tn
 
+> **NOTE DE STATUT (2026-07-29)** — Ce document est un **instantané figé** de l'audit du 2026-07-21 et des
+> corrections qui ont suivi immédiatement. Il ne reflète PAS l'état actuel du code : des travaux de rigueur
+> méthodologique substantiels ont eu lieu depuis (erreurs-types groupées par produit sur l'OLS de production,
+> stabilité bootstrap du clustering N2, justification du choix de k, sélection de features calculée une seule
+> fois sur les données poolées, recalibration des bornes de plausibilité, importance par permutation en plus de
+> MDI...) — tous documentés dans `RAPPORT_SYNTHESE.md` (section méthodologie), pas ici. Conserver ce fichier
+> comme trace historique de la découverte du bug de circularité (§3.1, le plus important du projet), mais ne
+> jamais le lire comme une liste de problèmes encore ouverts sans vérifier `RAPPORT_SYNTHESE.md` d'abord.
+
 Date : 2026-07-21
 Périmètre : tous les fichiers `.py` de `src/` (scraper, preprocessing, models, utils) et les 6 notebooks de
 `notebooks/` (EDA, Clustering, Comparaison des approches de clustering, Segmentation, Comparaison des modèles ML,
