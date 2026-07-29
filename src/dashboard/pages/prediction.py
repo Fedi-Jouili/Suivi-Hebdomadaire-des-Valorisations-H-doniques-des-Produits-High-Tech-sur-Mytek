@@ -24,6 +24,7 @@ from src.dashboard.data_loader import (
 from src.dashboard.format_utils import fmt_number, fmt_pct_effect, fmt_price
 from src.dashboard.prediction_utils import assign_n1_cluster, assign_n2_segment, find_similar_products, predict_price
 from src.dashboard.theme import CATEGORY_COLORS, GRAPH_CONFIG
+from src.utils.cluster_names import n1_cluster_name
 
 dash.register_page(__name__, path="/prediction", name="Prédiction")
 
@@ -210,7 +211,7 @@ def _price_result_card(pred: dict, color: str):
 def _segment_result_card(segmentation: str, category: str, category_color: str, n1_cluster=None, n2_info=None):
     if segmentation == "n1":
         unit_summary_note = "Segment technique (N1) — construit sans prix ni marque."
-        value = f"Cluster {n1_cluster}"
+        value = n1_cluster_name(category, n1_cluster)
     else:
         if n2_info["gamme_estimee"] is None:
             value = "Non déterminable"

@@ -32,22 +32,32 @@ import pytest
 from src.dashboard.data_loader import artifacts_available
 from src.models.hedonic_model import POOLED_TIME_EXCLUDED_CATEGORIES
 from src.models.weekly_report import (
+    CAUSE_AUCUNE,
+    CAUSE_EFFECTIF,
+    CAUSE_PRIX,
+    CAUSE_PRIX_ET_QUALITE,
+    CAUSE_QUALITE,
     MATERIALITY_THRESHOLD_PCT,
     MIN_RELIABLE_N,
     QUADRANT_LABELS,
+    _CAUSE_BY_DIRECTIONS,
     _bootstrap_ecart_residuel,
+    _composition_change_label,
     _direction,
     _geo_mean,
     _marque_gamme_product_level,
     _pct_change,
     catalog_composition_by_week,
     cluster_geometric_means,
+    cluster_stability_n2,
     cluster_transitions,
     coverage_by_week,
     hedonic_price_index,
+    k_selection_justification,
     marque_gamme_model_estimates,
     weekly_model_estimates,
 )
+from src.models.save_artifacts import MODELS_DIR
 from src.utils.config import CATEGORY_ORDER
 
 _ANY_ARTIFACTS = any(artifacts_available(c) for c in CATEGORY_ORDER)
@@ -127,6 +137,47 @@ class TestQuadrantLabels:
         labels = list(QUADRANT_LABELS.values())
         assert all(isinstance(lbl, str) and lbl for lbl in labels)
         assert len(set(labels)) == len(labels)  # jamais deux cases avec le meme texte
+
+
+class TestCausePrincipale:
+    """_CAUSE_BY_DIRECTIONS/_composition_change_label portent la reponse
+    directe a la question du projet (decision utilisateur du 2026-07-26) :
+    une transition est-elle due au PRIX, a la QUALITE, ou au NOMBRE de
+    produits ? cause_principale doit toujours valoir l'une de ces 5
+    valeurs, jamais autre chose (cf. cluster_transitions qui l'assigne)."""
+
+    def test_neuf_combinaisons_couvertes_par_une_cause_connue(self):
+        directions = {"stable", "hausse", "baisse"}
+        toutes_combinaisons = {(a, b) for a in directions for b in directions}
+        assert set(_CAUSE_BY_DIRECTIONS.keys()) == toutes_combinaisons
+        causes_connues = {CAUSE_AUCUNE, CAUSE_PRIX, CAUSE_QUALITE, CAUSE_PRIX_ET_QUALITE}
+        assert set(_CAUSE_BY_DIRECTIONS.values()) <= causes_connues
+
+    def test_stable_stable_est_aucune_cause(self):
+        assert _CAUSE_BY_DIRECTIONS[("stable", "stable")] == CAUSE_AUCUNE
+
+    @pytest.mark.parametrize("dirs", [("hausse", "stable"), ("baisse", "stable")])
+    def test_prix_bouge_seul_est_cause_prix(self, dirs):
+        """Le prix reel bouge, la valeur technique implicite non -- un
+        changement de politique commerciale, pas de qualite."""
+        assert _CAUSE_BY_DIRECTIONS[dirs] == CAUSE_PRIX
+
+    @pytest.mark.parametrize("dirs", [("stable", "hausse"), ("stable", "baisse"),
+                                       ("hausse", "hausse"), ("baisse", "baisse")])
+    def test_qualite_bouge_ou_les_deux_ensemble_est_cause_qualite(self, dirs):
+        """Que seule la valeur technique implicite bouge, OU que les deux
+        bougent DANS LE MEME SENS (le mouvement de prix est alors explique
+        par la qualite, pas une decision de prix isolee) -- meme cause."""
+        assert _CAUSE_BY_DIRECTIONS[dirs] == CAUSE_QUALITE
+
+    @pytest.mark.parametrize("dirs", [("hausse", "baisse"), ("baisse", "hausse")])
+    def test_directions_opposees_est_prix_et_qualite(self, dirs):
+        assert _CAUSE_BY_DIRECTIONS[dirs] == CAUSE_PRIX_ET_QUALITE
+
+    def test_composition_change_label_mentionne_les_effectifs_et_la_cause(self):
+        label = _composition_change_label(7, 3)
+        assert "7" in label and "3" in label
+        assert CAUSE_EFFECTIF in label
 
 
 class TestBootstrapEcartResiduel:
@@ -248,6 +299,9 @@ class TestClusterGeometricMeans:
             assert set(df["approche"].unique()) <= {"N1_technique", "N2_marque_gamme"}
             assert (df["prix_geometrique_tnd"] > 0).all()
             assert (df["n_produits"] > 0).all()
+            n1 = df[df["approche"] == "N1_technique"]
+            if not n1.empty:
+                assert n1["cluster"].map(lambda value: not (isinstance(value, str) and value.startswith("c") and value[1:].isdigit())).all()
             return
         pytest.skip("aucun artefact disponible")
 
@@ -272,7 +326,8 @@ class TestMarqueGammeModelEstimates:
         """Verrouille le schema EXACT demande (decision utilisateur du
         2026-07-25) : categorie, marque, gamme, cluster, semaine,
         moyenne_geometrique, moyenne_estimee_ridge, moyenne_estimee_hedonic,
-        moyenne_estimee_rf (+ n_produits, ajout documente)."""
+        moyenne_estimee_rf, erreur_ridge_pct/_hedonic_pct/_rf_pct (ajout du
+        2026-07-29, page Telechargements) + n_produits."""
         for category in CATEGORY_ORDER:
             if not artifacts_available(category):
                 continue
@@ -280,7 +335,7 @@ class TestMarqueGammeModelEstimates:
             assert list(df.columns) == [
                 "categorie", "marque", "gamme", "cluster", "semaine",
                 "moyenne_geometrique", "moyenne_estimee_ridge", "moyenne_estimee_hedonic",
-                "moyenne_estimee_rf", "n_produits",
+                "moyenne_estimee_rf", "erreur_ridge_pct", "erreur_hedonic_pct", "erreur_rf_pct", "n_produits",
             ]
             assert (df["categorie"] == category).all()
             assert (df["moyenne_geometrique"] > 0).all()
@@ -331,7 +386,11 @@ class TestClusterTransitions:
         pytest.skip("aucun artefact disponible")
 
     @requires_artifacts
-    def test_classification_toujours_dans_la_grille_connue(self):
+    def test_classification_toujours_dans_la_grille_connue_ou_effectif(self):
+        """Une classification hors grille est attendue UNIQUEMENT quand
+        cause_principale == "effectif" (texte dynamique, cf.
+        _composition_change_label) -- toute transition a composition
+        stable doit retomber exactement sur un texte QUADRANT_LABELS."""
         for category in CATEGORY_ORDER:
             if not artifacts_available(category):
                 continue
@@ -339,8 +398,37 @@ class TestClusterTransitions:
             if df.empty:
                 continue
             labels_connus = set(QUADRANT_LABELS.values())
-            inconnus = set(df["classification"].unique()) - labels_connus
-            assert not inconnus, f"{category} : classification(s) hors grille : {inconnus}"
+            stables = df[df["cause_principale"] != CAUSE_EFFECTIF]
+            inconnus = set(stables["classification"].unique()) - labels_connus
+            assert not inconnus, f"{category} : classification(s) hors grille (composition stable) : {inconnus}"
+            effectif_rows = df[df["cause_principale"] == CAUSE_EFFECTIF]
+            assert (effectif_rows["classification"].str.startswith("Effectif du cluster modifié")).all()
+            return
+        pytest.skip("aucun artefact disponible")
+
+    def test_cause_principale_toujours_dans_les_5_valeurs_connues(self):
+        causes_connues = {CAUSE_EFFECTIF, CAUSE_AUCUNE, CAUSE_PRIX, CAUSE_QUALITE, CAUSE_PRIX_ET_QUALITE}
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            df = cluster_transitions(category)
+            if df.empty:
+                continue
+            assert set(df["cause_principale"].unique()) <= causes_connues
+            return
+        pytest.skip("aucun artefact disponible")
+
+    def test_cause_effectif_ssi_composition_instable(self):
+        """cause_principale == "effectif" doit coincider EXACTEMENT avec
+        composition_stable == False -- l'effectif est teste en premier et
+        prioritaire sur la grille prix/qualite (cf. docstring §3ter)."""
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            df = cluster_transitions(category)
+            if df.empty:
+                continue
+            assert ((df["cause_principale"] == CAUSE_EFFECTIF) == ~df["composition_stable"]).all()
             return
         pytest.skip("aucun artefact disponible")
 
@@ -443,6 +531,25 @@ class TestMarqueGammeProductLevel:
             return
         pytest.skip("aucun artefact disponible")
 
+    @requires_artifacts
+    def test_erreur_pct_formule_estime_moins_reel_sur_reel(self):
+        """erreur_<modele>_pct = (estime - reel) / reel * 100 -- positif =
+        le modele SURESTIME ce cluster cette semaine-la (page
+        Telechargements, ajout du 2026-07-29)."""
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            df = marque_gamme_model_estimates(category)
+            for model_col, erreur_col in [
+                ("moyenne_estimee_ridge", "erreur_ridge_pct"),
+                ("moyenne_estimee_hedonic", "erreur_hedonic_pct"),
+                ("moyenne_estimee_rf", "erreur_rf_pct"),
+            ]:
+                attendu = (df[model_col] - df["moyenne_geometrique"]) / df["moyenne_geometrique"] * 100
+                assert df[erreur_col].to_numpy() == pytest.approx(attendu.round(2).to_numpy(), abs=0.01)
+            return
+        pytest.skip("aucun artefact disponible")
+
 
 class TestHedonicPriceIndex:
     @requires_artifacts
@@ -474,5 +581,139 @@ class TestCatalogCompositionByWeek:
             df = catalog_composition_by_week(category)
             assert (df["prix_geometrique_tnd"] > 0).all()
             assert (df["n_produits"] > 0).all()
+            return
+        pytest.skip("aucun artefact disponible")
+
+
+class TestClusterStabilityN2:
+    """cluster_stability_n2 : rigor upgrade du 2026-07-26 -- le clustering
+    N2 lui-meme n'avait jusqu'ici aucune mesure de robustesse a
+    l'echantillonnage (contrairement a l'ecart residuel des transitions,
+    deja teste par bootstrap depuis le 2026-07-25). n_boot volontairement
+    petit ici (10) -- chaque replique REFIT un KMeans complet, ces tests
+    verifient le SCHEMA et les invariants, pas la precision statistique
+    (deja demontree sur des cas synthetiques dans TestBootstrapEcartResiduel
+    et empiriquement sur pc_portables, cf. notebook)."""
+
+    @requires_artifacts
+    def test_schema_et_outcomes_connus(self):
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            df = cluster_stability_n2(category, n_boot=10)
+            for col in ("categorie", "marque", "gamme", "n", "k", "outcome",
+                        "ari_moyen", "ari_ecart_type", "n_repliques_valides"):
+                assert col in df.columns
+            assert set(df["outcome"].unique()) <= {"too_small", "no_structure", "clustered"}
+            return
+        pytest.skip("aucun artefact disponible")
+
+    @requires_artifacts
+    def test_ari_seulement_pour_les_unites_reellement_clusterisees(self):
+        """ari_moyen doit etre renseigne SI ET SEULEMENT SI outcome ==
+        'clustered' -- jamais un score fantome pour une unite trop petite
+        ou sans structure retenue (k=1)."""
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            df = cluster_stability_n2(category, n_boot=10)
+            clustered = df[df["outcome"] == "clustered"]
+            non_clustered = df[df["outcome"] != "clustered"]
+            if not non_clustered.empty:
+                assert non_clustered["ari_moyen"].isna().all()
+            if not clustered.empty:
+                # ari_moyen peut etre None si TOUTES les repliques bootstrap
+                # d'une unite ont degenere (garde-fou nunique<2) -- rare
+                # avec n_boot=10 sur une petite unite, jamais un echec de test.
+                valeurs = clustered["ari_moyen"].dropna()
+                assert (valeurs.between(-1.0, 1.0)).all()  # plage theorique de l'ARI
+            return
+        pytest.skip("aucun artefact disponible")
+
+    @requires_artifacts
+    def test_ne_modifie_jamais_les_artefacts_persistes(self):
+        """Purement diagnostique -- pooled_labeled.csv (source des cluster_id
+        persistes par save_artifacts.py) ne doit pas changer apres l'appel."""
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            before = pd.read_csv(MODELS_DIR / category / "pooled_labeled.csv")
+            cluster_stability_n2(category, n_boot=5)
+            after = pd.read_csv(MODELS_DIR / category / "pooled_labeled.csv")
+            pd.testing.assert_frame_equal(before, after)
+            return
+        pytest.skip("aucun artefact disponible")
+
+
+class TestKSelectionJustification:
+    """k_selection_justification : rigor upgrade du 2026-07-27 -- _choose_k
+    ne retournait jusqu'ici QUE le k final, jamais la comparaison aux k
+    voisins qui l'ont ecarte. Couvre N1 (une justification par categorie)
+    ET N2 (une par unite marque x gamme clusterisee)."""
+
+    @requires_artifacts
+    def test_schema_et_approches_connues(self):
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            df = k_selection_justification(category)
+            for col in ("categorie", "approche", "marque", "gamme", "k",
+                        "n_clusters_effectif", "taille_min_cluster", "silhouette", "valide", "k_retenu"):
+                assert col in df.columns
+            assert set(df["approche"].unique()) <= {"N1_technique", "N2_marque_gamme"}
+            return
+        pytest.skip("aucun artefact disponible")
+
+    @requires_artifacts
+    def test_n1_une_seule_justification_par_categorie_marque_gamme_absentes(self):
+        """N1 est ajuste sur la categorie ENTIERE (jamais par marque/gamme,
+        cf. fit_n1_clustering) -- un seul groupe de lignes (un k_retenu),
+        marque/gamme toujours None."""
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            df = k_selection_justification(category)
+            n1 = df[df["approche"] == "N1_technique"]
+            assert not n1.empty
+            assert n1["marque"].isna().all()
+            assert n1["gamme"].isna().all()
+            assert n1["k_retenu"].sum() == 1
+            return
+        pytest.skip("aucun artefact disponible")
+
+    @requires_artifacts
+    def test_n2_un_k_retenu_par_unite_avec_structure_aucun_sinon(self):
+        """Une unite ayant au moins un k valide doit avoir EXACTEMENT un
+        k_retenu=True. Une unite SANS aucune structure retenue (k final=1,
+        outcome 'no_structure' cote cluster_stability_n2) n'a AUCUN
+        k_retenu=True -- la boucle de _choose_k ne teste jamais k=1
+        lui-meme (elle commence a k=2), donc rien ne peut y correspondre."""
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            df = k_selection_justification(category)
+            n2 = df[df["approche"] == "N2_marque_gamme"]
+            if n2.empty:
+                continue
+            par_unite = n2.groupby(["marque", "gamme"], observed=True)
+            retenus = par_unite["k_retenu"].sum()
+            a_une_structure = par_unite["valide"].any()
+            assert (retenus[a_une_structure] == 1).all()
+            assert (retenus[~a_une_structure] == 0).all()
+            return
+        pytest.skip("aucune unite N2 clusterisee disponible")
+
+    @requires_artifacts
+    def test_ne_modifie_jamais_les_artefacts_persistes(self):
+        """Purement diagnostique -- reconstruit la matrice mais ne reajuste
+        ni ne persiste aucun KMeans/scaler reellement utilise par le
+        dashboard."""
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            before = pd.read_csv(MODELS_DIR / category / "pooled_labeled.csv")
+            k_selection_justification(category)
+            after = pd.read_csv(MODELS_DIR / category / "pooled_labeled.csv")
+            pd.testing.assert_frame_equal(before, after)
             return
         pytest.skip("aucun artefact disponible")

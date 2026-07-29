@@ -132,7 +132,14 @@ VALIDITY_BOUNDS = {
         "screen": (5.0, 7.5),      # resserre (etait 3,8) -- bien calibre sur 254 produits (observe [5.5,7.0])
     },
     "telephones_portables": {
-        "price": (0.0, 120.0),     # fortement resserre (etait 1000) -- calibre sur 47 produits (max observe 85)
+        "price": (0.0, 300.0),     # releve (etait 120, calibre sur 47 produits d'une seule semaine, max observe
+                                    # 85) -- recalibration sur les 4 semaines groupees (2026-07-28, 295 produits) :
+                                    # NOKIA 2660 Flip observe a 249 TND (S1-S4), un feature phone reel et
+                                    # legitime (pas un bug de parsing, verifie produit par produit) -- l'ancienne
+                                    # borne le neutralisait (prix -> None) et le faisait ecarter des 3 semaines
+                                    # ou il apparait. 300 laisse une marge raisonnable au-dessus tout en restant
+                                    # discriminant pour cette categorie "feature phone" (jamais aussi cher qu'un
+                                    # smartphone, cf. bornes smartphones ci-dessus).
         "ram": (0.0, 24.0),        # releve (etait 2.0) -- des feature phones "connectes" ont jusqu'a 16 Go reels ;
                                     # borne basse VOLONTAIREMENT laissee a 0.0 (verifie 2026-07-25, contrairement a
                                     # pc_portables/smartphones) -- les feature phones basiques de cette categorie

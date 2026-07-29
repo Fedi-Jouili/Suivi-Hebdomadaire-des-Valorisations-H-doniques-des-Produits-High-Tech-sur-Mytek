@@ -6,7 +6,12 @@ __pycache__/
 .ipynb_checkpoints/
 .claude/
 *.log
-data/
 logs/
 checkpoint.json
-/models/
+
+# data/raw/ (scrape brut) reste exclu -- volumineux, jamais lu par le
+# dashboard. data/processed/ et /models/ sont desormais VERSIONNES
+# (2026-07-29) : necessaires au deploiement public (Render construit
+# l'image depuis ce depot, cf. Dockerfile/render.yaml) -- le dashboard ne
+# peut rien afficher sans eux.
+data/raw/

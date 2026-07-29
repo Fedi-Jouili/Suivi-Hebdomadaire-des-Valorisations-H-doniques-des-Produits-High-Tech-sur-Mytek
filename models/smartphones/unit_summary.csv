@@ -1,0 +1,28 @@
+﻿marque,gamme_prix,n,k,outcome
+HONOR,Milieu de gamme,28,2,clustered
+HONOR,Premium,36,3,clustered
+HONOR,Économique,54,5,clustered
+HUAWEI,Gamme unique,8,1,too_small
+INFINIX,Milieu de gamme,33,2,clustered
+INFINIX,Premium,20,2,clustered
+INFINIX,Économique,32,2,clustered
+LESIA,Milieu de gamme,12,1,no_structure
+LESIA,Premium,18,2,clustered
+LESIA,Économique,24,1,no_structure
+OPPO,Milieu de gamme,28,3,clustered
+OPPO,Premium,27,3,clustered
+OPPO,Économique,29,2,clustered
+OSCAL,Milieu de gamme,4,1,too_small
+OSCAL,Premium,8,1,too_small
+OSCAL,Économique,16,2,clustered
+SAMSUNG,Milieu de gamme,108,6,clustered
+SAMSUNG,Premium,96,3,clustered
+SAMSUNG,Économique,105,3,clustered
+TECNO,Milieu de gamme,5,1,too_small
+TECNO,Économique,13,1,no_structure
+VIVO,Milieu de gamme,32,3,clustered
+VIVO,Premium,24,2,clustered
+VIVO,Économique,35,3,clustered
+XIAOMI,Milieu de gamme,63,4,clustered
+XIAOMI,Premium,60,1,no_structure
+XIAOMI,Économique,90,6,clustered

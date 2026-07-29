@@ -1,0 +1,29 @@
+# Contexte de build Docker -- l'image ne doit contenir que ce que le
+# dashboard lit reellement a l'execution (cf. src/dashboard/data_loader.py) :
+# src/ (code), data/processed/, models/, reports/, img/. Tout le reste
+# (environnement de dev, donnees brutes, notebooks, tests) est exclu.
+
+.venv/
+**/__pycache__/
+*.pyc
+.git/
+.github/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.claude/
+logs/
+checkpoint.json
+*.log
+
+# Donnees brutes scrapees -- jamais lues par le dashboard (seul
+# data/processed/ l'est) ; volumineux, inutiles a l'image de production.
+data/raw/
+
+# Notebooks (sorties/images embarquees, souvent volumineux) et tests --
+# jamais executes dans ce conteneur (dashboard strictement lecture seule).
+notebooks/
+tests/
+
+# Documentation -- pas necessaire a l'execution du dashboard.
+*.md

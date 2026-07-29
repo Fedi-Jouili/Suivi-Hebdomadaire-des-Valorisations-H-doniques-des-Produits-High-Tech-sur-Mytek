@@ -60,3 +60,29 @@ class TestRandomForestModelGetImportances:
         importances = model.get_importances(feature_names=list(dummy_X.columns))
         valeurs = importances["importance"].tolist()
         assert valeurs == sorted(valeurs, reverse=True)
+
+
+class TestRandomForestModelGetPermutationImportance:
+    """get_permutation_importance -- ajoute le 2026-07-28 (audit
+    methodologique) : MDI (get_importances) est calculee sur le TRAIN et
+    biaisee vers les variables continues/forte cardinalite (Strobl et al.,
+    2007) ; la permutation, calculee sur le TEST, ne l'est pas."""
+
+    def test_colonnes_et_forme(self, dummy_X, dummy_y):
+        model = RandomForestModel(param_grid=GRILLE_RAPIDE).fit(dummy_X, dummy_y)
+        importances = model.get_permutation_importance(dummy_X, dummy_y, feature_names=list(dummy_X.columns))
+
+        assert list(importances.columns) == ["feature", "importance_mean", "importance_std"]
+        assert len(importances) == dummy_X.shape[1]
+        assert set(importances["feature"]) == set(dummy_X.columns)
+
+    def test_trie_par_importance_decroissante(self, dummy_X, dummy_y):
+        model = RandomForestModel(param_grid=GRILLE_RAPIDE).fit(dummy_X, dummy_y)
+        importances = model.get_permutation_importance(dummy_X, dummy_y, feature_names=list(dummy_X.columns))
+        valeurs = importances["importance_mean"].tolist()
+        assert valeurs == sorted(valeurs, reverse=True)
+
+    def test_avant_fit_leve_notfittederror(self, dummy_X, dummy_y):
+        model = RandomForestModel()
+        with pytest.raises(NotFittedError):
+            model.get_permutation_importance(dummy_X, dummy_y, feature_names=list(dummy_X.columns))

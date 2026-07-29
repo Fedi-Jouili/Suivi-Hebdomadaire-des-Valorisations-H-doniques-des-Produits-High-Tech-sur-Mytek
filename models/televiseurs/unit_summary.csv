@@ -1,0 +1,30 @@
+﻿marque,gamme_prix,n,k,outcome
+ALMATV,Gamme unique,8,1,too_small
+ECOSAT,Milieu de gamme,8,1,too_small
+ECOSAT,Premium,4,1,too_small
+ECOSAT,Économique,8,1,too_small
+HISENSE,Milieu de gamme,12,1,no_structure
+HISENSE,Premium,12,1,no_structure
+HISENSE,Économique,12,1,no_structure
+IFFALCON,Gamme unique,8,1,too_small
+LG,Milieu de gamme,11,1,no_structure
+LG,Premium,12,1,no_structure
+LG,Économique,17,1,no_structure
+MAXWELL,Milieu de gamme,11,1,no_structure
+MAXWELL,Premium,5,1,too_small
+MAXWELL,Économique,9,1,too_small
+SAMSUNG,Milieu de gamme,23,2,clustered
+SAMSUNG,Premium,28,2,clustered
+SAMSUNG,Économique,32,2,clustered
+TCL,Milieu de gamme,20,1,no_structure
+TCL,Premium,24,2,clustered
+TCL,Économique,27,2,clustered
+TELEFUNKEN,Milieu de gamme,25,2,clustered
+TELEFUNKEN,Premium,24,1,no_structure
+TELEFUNKEN,Économique,28,2,clustered
+THOMSON,Milieu de gamme,12,1,no_structure
+THOMSON,Premium,12,1,no_structure
+THOMSON,Économique,16,2,clustered
+VEGA,Milieu de gamme,8,1,too_small
+VEGA,Premium,8,1,too_small
+VEGA,Économique,8,1,too_small

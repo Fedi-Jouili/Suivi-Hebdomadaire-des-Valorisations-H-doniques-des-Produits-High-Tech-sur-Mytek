@@ -28,6 +28,7 @@ from src.models.hedonic_model import (
     CircularityError,
     HedonicOLS,
     _check_no_circularity,
+    _choose_k,
     build_design_matrix,
     compute_cluster_labels,
     compute_price_tiers,
@@ -168,6 +169,57 @@ class TestComputeClusterLabels:
             continuous_features=["ram_go", "stockage_go"], categorical_features=["cpu_serie", "os_platform"],
         )
         assert set(unit_summary["outcome"].unique()) <= {"clustered", "no_structure", "too_small"}
+
+
+class TestChooseKTrace:
+    """_choose_k(..., return_trace=True) : rigor upgrade du 2026-07-27 --
+    expose la silhouette de TOUS les k testes (pas seulement celui
+    retenu), pour auditer le choix au lieu de le laisser opaque. Le
+    comportement par defaut (return_trace=False) doit rester
+    STRICTEMENT identique a avant (aucun cout supplementaire sur le
+    chemin de production -- save_artifacts.py)."""
+
+    @pytest.fixture
+    def blobs(self):
+        """3 groupes bien separes de 15 points chacun -- k=3 doit
+        systematiquement l'emporter en silhouette sur k=2 ou k=4."""
+        rng = np.random.default_rng(0)
+        centers = np.array([[0.0, 0.0], [20.0, 0.0], [10.0, 20.0]])
+        return np.vstack([rng.normal(loc=c, scale=0.5, size=(15, 2)) for c in centers])
+
+    def test_return_trace_false_inchange(self, blobs):
+        k_sans_trace = _choose_k(blobs, min_size=5)
+        k_avec_trace, _ = _choose_k(blobs, min_size=5, return_trace=True)
+        assert k_sans_trace == k_avec_trace == 3
+
+    def test_trace_contient_tous_les_k_testes(self, blobs):
+        k, trace = _choose_k(blobs, min_size=5, return_trace=True)
+        for col in ("k", "n_clusters_effectif", "taille_min_cluster", "silhouette", "valide", "k_retenu"):
+            assert col in trace.columns
+        assert set(trace["k"]) == set(range(2, trace["k"].max() + 1))
+        # une seule ligne k_retenu=True, et elle correspond au k retourne
+        assert trace["k_retenu"].sum() == 1
+        assert trace.loc[trace["k_retenu"], "k"].iloc[0] == k == 3
+
+    def test_k_rejete_garde_sa_silhouette_pour_comparaison(self, blobs):
+        """Un k valide mais moins bon que le k retenu doit quand meme
+        apparaitre avec sa silhouette (pas juste 'rejete' sans chiffre) --
+        c'est precisement ce qui rend le choix auditable."""
+        _, trace = _choose_k(blobs, min_size=5, return_trace=True)
+        rejetes_valides = trace[(~trace["k_retenu"]) & (trace["valide"])]
+        if not rejetes_valides.empty:
+            assert rejetes_valides["silhouette"].notna().all()
+
+    def test_aucune_structure_retenue_zero_k_retenu(self):
+        """Si min_size est impossible a satisfaire (trop eleve), aucun k
+        n'est valide -- la trace doit le montrer explicitement (valide=False
+        partout, k_retenu=False partout), coherent avec le repli sur k=1."""
+        rng = np.random.default_rng(1)
+        X = rng.normal(size=(20, 2))
+        k, trace = _choose_k(X, min_size=1000, return_trace=True)
+        assert k == 1
+        assert not trace["valide"].any()
+        assert not trace["k_retenu"].any()
 
 
 class TestHedonicOLS:

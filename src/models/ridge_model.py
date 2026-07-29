@@ -25,6 +25,18 @@ ATTENTION -- INTERACTIONS SUR VARIABLES ONE-HOT :
     pas les colonnes one-hot -- ou accepter ce bruit en connaissance de
     cause si l'on passe la matrice X complete deja encodee.
 
+    CE QUI EST REELLEMENT DEPLOYE (save_artifacts.py) : `RidgeModel(degree=1)`,
+    precisement pour eviter le probleme ci-dessus (X_train contient les
+    colonnes one-hot). PolynomialFeatures(degree=1, interaction_only=True)
+    ne genere AUCUN terme d'interaction (verifie : get_feature_names_out()
+    retourne les colonnes d'origine inchangees) -- le Ridge de production
+    est donc un modele semi-log LINEAIRE, sans interactions, malgre le
+    "avec Pipeline(PolynomialFeatures...)" du paragraphe ROLE ci-dessus qui
+    decrit la CAPACITE generale de la classe, pas ce qui est effectivement
+    utilise. degree=2 (interactions) reste utilisable directement (cf.
+    UTILISATION) mais n'a jamais ete compare empiriquement a degree=1 sur
+    les donnees reelles du projet (audit methodologique, 2026-07-28).
+
 UTILISATION :
     from src.models.ridge_model import RidgeModel
     model = RidgeModel(degree=2, alphas=[0.01, 0.1, 1, 10, 100])
@@ -39,7 +51,7 @@ import pandas as pd
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import PolynomialFeatures, StandardScaler
 from sklearn.linear_model import Ridge
-from sklearn.model_selection import GridSearchCV
+from sklearn.model_selection import GridSearchCV, GroupKFold
 from sklearn.exceptions import NotFittedError
 
 
@@ -55,21 +67,56 @@ class RidgeModel:
         Args:
             degree: degre polynomial maximal des interactions.
             alphas: grille de regularisation Ridge testee par GridSearchCV.
-                Par defaut [0.01, 0.1, 1, 10, 100] (grille log-echelonnee
-                classique couvrant une tres faible a une forte regularisation).
+                Par defaut [0.001, 0.01, 0.1, 1, 10, 100, 500] (grille
+                log-echelonnee elargie le 2026-07-28 -- l'ancienne grille
+                [0.01, 0.1, 1, 10, 100] plafonnait exactement a sa borne
+                pour au moins une categorie (pc_portables, alpha=100) une
+                fois la CV correctement groupee par produit (cf. fit) ;
+                verifie empiriquement qu'une grille plus large [0.001..5000]
+                ne deplace PAS ce choix (100 reste l'optimum, pas juste la
+                limite testee) mais en deplace un autre (telephones_
+                portables, alpha=0.01 -> 0.001) -- une grille qui plafonne
+                exactement a son propre optimum est un signal a verifier,
+                jamais a ignorer.
+
+                LIMITE RESIDUELLE CONNUE (telephones_portables) : cette
+                categorie (la plus petite, n_train~233) choisit alpha=0.001,
+                la borne BASSE de la grille ci-dessus -- ET CONTINUE DE
+                DESCENDRE des que la borne basse est abaissee (verifie
+                jusqu'a 0.0001, qui est aussi choisi) : ce n'est donc pas un
+                optimum interieur cache juste sous 0.001, mais une
+                preference asymptotique pour AUCUNE regularisation (la CV
+                n'y trouve, sur cette petite categorie, aucun benefice au
+                shrinkage Ridge -- un Ridge quasi-nul se comporte comme un
+                OLS ordinaire). Non corrige : descendre encore la borne ne
+                ferait que deplacer le meme phenomene plus bas, jamais le
+                resoudre. A lire comme un signal legitime (le Ridge n'aide
+                pas sur cette categorie, contrairement aux autres) plutot
+                qu'un defaut de grille.
         """
         self.degree = degree
-        self.alphas = list(alphas) if alphas is not None else [0.01, 0.1, 1, 10, 100]
+        self.alphas = list(alphas) if alphas is not None else [0.001, 0.01, 0.1, 1, 10, 100, 500]
         self.best_estimator_ = None
         self.grid_search_ = None
 
-    def fit(self, X, y):
+    def fit(self, X, y, groups=None):
         """
         Ajuste le Pipeline complet (Poly -> Scaler -> Ridge) avec
-        selection d'alpha par validation croisee (cv=5, scoring R² par
+        selection d'alpha par validation croisee (5 plis, scoring R² par
         defaut). Le Pipeline empeche toute fuite de donnees : Poly et
         Scaler sont reajustes sur chaque fold d'entrainement, jamais sur
         l'ensemble du jeu de donnees.
+
+        groups : identifiant de regroupement (typiquement l'url du produit)
+            -- si fourni, utilise GroupKFold au lieu d'un KFold ordinaire.
+            X peut contenir plusieurs lignes quasi-identiques pour un meme
+            produit (une par semaine ou il a ete vu, cf. save_artifacts.py::
+            load_pooled_category) ; un KFold ordinaire peut alors placer
+            deux lignes du MEME produit de part et d'autre d'un pli
+            (entrainement/validation), une fuite qui biaise la selection
+            d'alpha vers moins de regularisation (le modele "valide" en
+            partie sur une ligne quasi-identique a une ligne d'entrainement).
+            None (par defaut) : KFold ordinaire, comportement inchange.
         """
         pipeline = Pipeline([
             ("poly", PolynomialFeatures(degree=self.degree, include_bias=False, interaction_only=True)),
@@ -78,8 +125,9 @@ class RidgeModel:
         ])
 
         param_grid = {"ridge__alpha": self.alphas}
-        grid_search = GridSearchCV(pipeline, param_grid, cv=5, n_jobs=-1)
-        grid_search.fit(X, y)
+        cv = GroupKFold(n_splits=5) if groups is not None else 5
+        grid_search = GridSearchCV(pipeline, param_grid, cv=cv, n_jobs=-1)
+        grid_search.fit(X, y, groups=groups)
 
         self.grid_search_ = grid_search
         self.best_estimator_ = grid_search.best_estimator_

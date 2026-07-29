@@ -1,0 +1,23 @@
+{
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "os_platform",
+    "has_bluetooth"
+  ],
+  "design_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "os_platform_Autres",
+    "os_platform_Inconnu",
+    "os_platform_S30+",
+    "os_platform_Sans Système",
+    "has_bluetooth_0",
+    "has_bluetooth_1"
+  ],
+  "k": 6
+}

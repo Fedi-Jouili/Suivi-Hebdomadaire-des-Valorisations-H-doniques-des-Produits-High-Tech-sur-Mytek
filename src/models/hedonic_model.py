@@ -140,6 +140,7 @@ from sklearn.metrics import silhouette_score
 from sklearn.exceptions import NotFittedError
 
 from src.preprocessing.split import discover_weeks
+from src.utils.config import RANDOM_STATE
 
 # ─────────────────────────────────────────────────────────────────────────────
 # CONSTANTES
@@ -151,7 +152,10 @@ DEFAULT_PROCESSED_DIR = Path(__file__).resolve().parents[2] / "data" / "processe
 # suppose des observations independantes ; le panel compterait chaque
 # produit vu aux 2 semaines comme 2 lignes, biaisant les erreurs-types.
 
-RANDOM_STATE = 42
+# RANDOM_STATE importe de src.utils.config (source UNIQUE, cf. son docstring)
+# -- auparavant redefini ici independamment (meme valeur 42, mais sans lien :
+# changer l'un n'aurait jamais propage a l'autre, audit methodologique
+# reviewer 4).
 MIN_BRAND_COUNT = 5     # seuil de marque negligeable, identique aux notebooks
 CLUSTERING_MIN_N = 10   # seuil sous lequel le clustering n'est pas tente
 
@@ -331,7 +335,7 @@ def _build_feature_matrix(df_unit: pd.DataFrame, continuous_features, categorica
     return StandardScaler().fit_transform(X_raw)
 
 
-def _choose_k(X, min_size: int) -> int:
+def _choose_k(X, min_size: int, return_trace: bool = False):
     """k a silhouette maximale PARMI ceux dont tous les clusters comptent
     au moins min_size produits. Si aucun k teste ne satisfait cette
     contrainte, retourne 1 (AUCUNE structure retenue) plutot qu'un k>=2
@@ -346,19 +350,41 @@ def _choose_k(X, min_size: int) -> int:
     than n_clusters"). Si l'effondrement est total (1 seul label malgre
     k>=2 demande), silhouette_score() leve ValueError ("Number of labels
     is 1") -- ce k est alors ignore (comme s'il ne passait pas le
-    garde-fou min_size), jamais un plantage."""
+    garde-fou min_size), jamais un plantage.
+
+    return_trace : si True, retourne (k, trace) au lieu de k seul -- trace
+    est un DataFrame listant CHAQUE k teste (retenu ou non) avec sa
+    silhouette et la raison de rejet, pour AUDITER le choix au lieu de le
+    laisser opaque (rigor upgrade, 2026-07-27). N'affecte jamais la
+    decision elle-meme : a return_trace=False, le calcul est strictement
+    identique a avant (aucun cout supplementaire sur le chemin de
+    production -- save_artifacts.py, compute_cluster_labels)."""
     n = X.shape[0]
     best_k, best_sil = None, -1.0
+    trace_rows = [] if return_trace else None
     for k in range(2, _max_k_for(n) + 1):
         km = KMeans(n_clusters=k, random_state=RANDOM_STATE, n_init=10)
         labels = km.fit_predict(X)
-        if pd.Series(labels).nunique() < 2:
+        n_effectif = int(pd.Series(labels).nunique())
+        if n_effectif < 2:
+            if return_trace:
+                trace_rows.append({"k": k, "n_clusters_effectif": n_effectif,
+                                    "taille_min_cluster": 0, "silhouette": None, "valide": False})
             continue
-        if pd.Series(labels).value_counts().min() >= min_size:
-            sil = silhouette_score(X, labels)
-            if sil > best_sil:
-                best_sil, best_k = sil, k
-    return best_k if best_k is not None else 1
+        taille_min = int(pd.Series(labels).value_counts().min())
+        valide = taille_min >= min_size
+        sil = silhouette_score(X, labels) if (valide or return_trace) else None
+        if return_trace:
+            trace_rows.append({"k": k, "n_clusters_effectif": n_effectif,
+                                "taille_min_cluster": taille_min, "silhouette": sil, "valide": bool(valide)})
+        if valide and sil > best_sil:
+            best_sil, best_k = sil, k
+    k_final = best_k if best_k is not None else 1
+    if return_trace:
+        trace = pd.DataFrame(trace_rows)
+        trace["k_retenu"] = trace["k"] == k_final
+        return k_final, trace
+    return k_final
 
 
 def compute_cluster_labels(

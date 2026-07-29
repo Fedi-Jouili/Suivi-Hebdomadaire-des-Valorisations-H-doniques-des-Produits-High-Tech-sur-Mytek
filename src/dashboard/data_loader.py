@@ -176,6 +176,21 @@ def load_rf_importances(category: str) -> pd.DataFrame:
 
 
 @functools.lru_cache(maxsize=None)
+def load_rf_permutation_importances(category: str) -> pd.DataFrame:
+    """Importance par permutation (test set, non biaisee par cardinalite,
+    contrairement a MDI/load_rf_importances) -- cf. rf_model.py::
+    get_permutation_importance."""
+    return pd.read_csv(_artifact_path(category, "rf_permutation_importance.csv"))
+
+
+@functools.lru_cache(maxsize=None)
+def load_model_agreement(category: str) -> pd.DataFrame:
+    """Accord de signe OLS/Ridge + correlation de rang RF/OLS, par feature
+    -- cf. save_artifacts.py::compute_model_agreement."""
+    return pd.read_csv(_artifact_path(category, "model_agreement.csv"))
+
+
+@functools.lru_cache(maxsize=None)
 def load_pooled_labeled(category: str) -> pd.DataFrame:
     """Donnees poolees + gamme_prix + cluster_id (N2) + cluster_direct (N1)
     -- sert de table "produits reels" (page Prediction) et de source pour
@@ -311,6 +326,30 @@ def load_cluster_transitions(category: str) -> pd.DataFrame:
     return df[df["categorie"] == category].reset_index(drop=True)
 
 
+@functools.lru_cache(maxsize=1)
+def _load_cluster_stability_n2_full() -> pd.DataFrame:
+    return pd.read_csv(_report_path("stabilite_clustering_n2.csv"))
+
+
+def load_cluster_stability_n2(category: str) -> pd.DataFrame:
+    """Stabilite bootstrap (ARI) du clustering N2 par unite marque x gamme --
+    cf. src.models.weekly_report.cluster_stability_n2."""
+    df = _load_cluster_stability_n2_full()
+    return df[df["categorie"] == category].reset_index(drop=True)
+
+
+@functools.lru_cache(maxsize=1)
+def _load_k_selection_justification_full() -> pd.DataFrame:
+    return pd.read_csv(_report_path("justification_k_clustering.csv"))
+
+
+def load_k_selection_justification(category: str) -> pd.DataFrame:
+    """Silhouette de TOUS les k testes (N1 et N2), retenus ou non -- cf.
+    src.models.weekly_report.k_selection_justification."""
+    df = _load_k_selection_justification_full()
+    return df[df["categorie"] == category].reset_index(drop=True)
+
+
 @functools.lru_cache(maxsize=None)
 def weekly_reports_available() -> bool:
     return (REPORTS_DIR / "couverture_clustering_hebdo.csv").exists()
@@ -423,10 +462,12 @@ __all__ = [
     "raw_vs_clean_counts",
     "ArtifactsMissingError", "artifacts_available",
     "load_metrics", "load_coefficients", "load_ridge_coefficients", "load_rf_importances",
+    "load_rf_permutation_importances", "load_model_agreement",
     "load_pooled_labeled", "load_brand_plan", "load_unit_summary", "load_n1_feature_schema",
     "load_model_artifact", "get_feature_ranges", "DISCRETE_OPTION_FEATURES", "category_label",
     "load_clustering_coverage", "load_cluster_geometric_means", "load_weekly_estimates",
     "load_hedonic_price_index", "load_catalog_composition",
     "load_marque_gamme_estimates", "load_cluster_transitions", "weekly_reports_available",
+    "load_cluster_stability_n2", "load_k_selection_justification",
     "CATEGORY_ORDER", "CATEGORY_LABELS",
 ]

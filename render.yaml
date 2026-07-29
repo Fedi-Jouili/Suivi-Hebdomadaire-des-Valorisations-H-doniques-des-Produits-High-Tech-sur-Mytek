@@ -1,0 +1,19 @@
+# Blueprint Render.com -- https://render.com/docs/blueprint-spec
+# Connecter ce depot GitHub sur Render (New -> Blueprint) : detecte ce
+# fichier automatiquement, construit Dockerfile a chaque push sur la
+# branche suivie, et redeploie. Aucune commande de build/start a fournir
+# manuellement -- entierement definie par le Dockerfile.
+
+services:
+  - type: web
+    name: hedonique-mytek-dashboard
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /
+    envVars:
+      - key: DASH_DEBUG
+        value: "false"
+      # PORT n'est pas defini ici : Render l'injecte automatiquement
+      # (defaut 10000) et src/dashboard/app.py le lit deja dynamiquement.

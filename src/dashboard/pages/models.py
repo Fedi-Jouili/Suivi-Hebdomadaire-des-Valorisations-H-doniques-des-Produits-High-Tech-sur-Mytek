@@ -20,15 +20,20 @@ from src.dashboard.data_loader import (
     artifacts_available,
     available_weeks,
     category_label,
+    load_cluster_stability_n2,
     load_coefficients,
+    load_k_selection_justification,
     load_metrics,
+    load_model_agreement,
     load_pooled_labeled,
     load_rf_importances,
+    load_rf_permutation_importances,
     load_ridge_coefficients,
     load_unit_summary,
 )
 from src.dashboard.format_utils import fmt_number, fmt_pct_effect, fmt_price
 from src.dashboard.theme import CATEGORY_COLORS, GRAPH_CONFIG, TEXT_MUT
+from src.utils.cluster_names import n1_cluster_name
 
 dash.register_page(__name__, path="/modeles", name="Modèles & clustering")
 
@@ -150,6 +155,60 @@ def _rf_importance_chart(imp: pd.DataFrame, color: str, top_n: int = 15):
     return fig
 
 
+def _rf_permutation_importance_chart(imp: pd.DataFrame, color: str, top_n: int = 15):
+    """Meme lecture que _rf_importance_chart, mais calculee sur le TEST par
+    permutation (Breiman 2001) -- non biaisee par cardinalite (cf.
+    rf_model.py::get_permutation_importance), barre d'erreur = ecart-type
+    sur les repliques de permutation (importance_std)."""
+    df = imp.head(top_n).sort_values("importance_mean")
+    fig = px.bar(
+        df, x="importance_mean", y="feature", orientation="h", error_x="importance_std",
+        color_discrete_sequence=[color],
+    )
+    fig.update_layout(
+        title=f"Importance par permutation (Random Forest, test), top {top_n}",
+        xaxis_title="Baisse du R² test quand la variable est permutée", yaxis_title="",
+        height=max(340, 28 * len(df)), yaxis=dict(automargin=True), margin=dict(l=10),
+    )
+    fig.add_vline(x=0, line_color=TEXT_MUT, line_width=1)
+    return fig
+
+
+def _model_agreement_alert(agreement_resume: dict):
+    """Resume textuel de compute_model_agreement (save_artifacts.py) --
+    ajoute le 2026-07-28 : jusqu'ici rien ne verifiait que les 3 modeles
+    racontent une histoire coherente."""
+    pct_signs = agreement_resume.get("pct_signes_ols_ridge_accordent")
+    rho = agreement_resume.get("rf_ols_spearman_rho")
+    p_value = agreement_resume.get("rf_ols_spearman_p_value")
+    n = agreement_resume.get("n_features_comparees")
+
+    if pct_signs is None or rho is None:
+        return dmc.Alert(
+            "Accord entre modèles non disponible -- exécuter `python -m src.models.save_artifacts`.",
+            color="gray", variant="light", icon=DashIconify(icon="tabler:info-circle"), mb="sm",
+        )
+
+    signs_color = "green" if pct_signs >= 90 else ("orange" if pct_signs >= 70 else "red")
+    rho_significant = p_value is not None and p_value < 0.05
+    rho_color = "green" if (rho_significant and rho > 0) else ("red" if (rho_significant and rho < 0) else "gray")
+
+    return dmc.Alert(
+        dmc.Text([
+            f"OLS et Ridge s'accordent sur le SIGNE du coefficient pour ",
+            dmc.Text(f"{pct_signs:.0f} %", span=True, fw=700, c=signs_color),
+            f" des {n} caractéristiques communes. Corrélation de rang (Spearman) entre l'importance Random "
+            f"Forest et |coefficient| OLS : ",
+            dmc.Text(f"ρ = {rho:.2f}", span=True, fw=700, c=rho_color),
+            f" ({'significatif' if rho_significant else 'non significatif'}, p = {p_value:.3f})" if p_value is not None else "",
+            ". Une corrélation faible ou négative signifie que Random Forest et les modèles linéaires ne "
+            "classent PAS les mêmes variables comme importantes -- à lire avant de citer un classement "
+            "Random Forest comme confirmé par les autres modèles.",
+        ], size="sm"),
+        color="blue", variant="light", icon=DashIconify(icon="tabler:git-compare"), mb="sm",
+    )
+
+
 def _n1_cluster_profile(category: str) -> pd.DataFrame:
     df = load_pooled_labeled(category)
     metrics = load_metrics(category)
@@ -157,11 +216,50 @@ def _n1_cluster_profile(category: str) -> pd.DataFrame:
     profile = df.groupby("cluster_direct").agg(
         n=("prix_tnd", "count"), prix_median=("prix_tnd", "median"), **{c: (c, "mean") for c in numeric_cols}
     ).reset_index()
+    profile["cluster_name"] = profile["cluster_direct"].map(lambda v: n1_cluster_name(category, v))
     profile = profile.sort_values("n", ascending=False)
     for c in numeric_cols:
         profile[c] = profile[c].round(1)
     profile["prix_median"] = profile["prix_median"].round(0)
     return profile
+
+
+def _n2_summary_with_diagnostics(n2_summary: pd.DataFrame, stability: pd.DataFrame,
+                                  k_justification: pd.DataFrame) -> pd.DataFrame:
+    """Enrichit le tableau des unites N2 (marque x gamme) avec 2 diagnostics
+    de rigueur ajoutes le 2026-07-27, jamais disponibles auparavant :
+      - ari_moyen/ari_ecart_type (stabilite bootstrap du clustering, cf.
+        cluster_stability_n2) -- un k "optimal" au sens silhouette peut
+        neanmoins etre instable si l'unite est petite ;
+      - silhouette_retenue (cf. k_selection_justification) -- la silhouette
+        du k EFFECTIVEMENT choisi, pour juger sa qualite dans l'absolu (pas
+        seulement relative aux autres k, deja arbitree en amont).
+    LEFT JOIN : une unite sans structure retenue (k=1) n'a simplement aucune
+    valeur a merger (NaN), jamais une erreur."""
+    merged = n2_summary.merge(
+        stability[["marque", "gamme", "ari_moyen", "ari_ecart_type"]],
+        left_on=["marque", "gamme_prix"], right_on=["marque", "gamme"], how="left",
+    ).drop(columns=["gamme"], errors="ignore")
+
+    retenus = k_justification[
+        (k_justification.get("approche") == "N2_marque_gamme") & (k_justification.get("k_retenu") == True)  # noqa: E712
+    ] if not k_justification.empty else k_justification
+    if not retenus.empty:
+        merged = merged.merge(
+            retenus[["marque", "gamme", "silhouette"]].rename(columns={"silhouette": "silhouette_retenue"}),
+            left_on=["marque", "gamme_prix"], right_on=["marque", "gamme"], how="left",
+        ).drop(columns=["gamme"], errors="ignore")
+    else:
+        merged["silhouette_retenue"] = np.nan
+
+    # Formate en chaine ("—" si absent) AVANT le passage en dict pour la
+    # grille -- un NaN brut serialise en JSON invalide (litteral `NaN`,
+    # que JSON.parse cote navigateur rejette), meme convention deja
+    # utilisee pour ecart_residuel_ic_bas (cf. evolution.py::_notable_cases_grid).
+    merged["ari_moyen_num"] = merged["ari_moyen"]
+    merged["ari_moyen"] = merged["ari_moyen"].map(lambda v: f"{v:.2f}" if pd.notna(v) else "—")
+    merged["silhouette_retenue"] = merged["silhouette_retenue"].map(lambda v: f"{v:.2f}" if pd.notna(v) else "—")
+    return merged
 
 
 @callback(
@@ -182,6 +280,32 @@ def render_models(category):
         unit_summary = load_unit_summary(category)
     except ArtifactsMissingError:
         return _missing_artifacts_alert(category), False
+
+    # Rapports de rigueur ajoutes le 2026-07-27 (stabilite bootstrap + choix
+    # de k) -- optionnels : absents tant que `python -m src.models.
+    # weekly_report` n'a pas ete rejoue apres cette mise a jour, jamais un
+    # blocage de la page (meme logique de resilience que les autres pages).
+    try:
+        stability = load_cluster_stability_n2(category)
+    except ArtifactsMissingError:
+        stability = pd.DataFrame(columns=["marque", "gamme", "ari_moyen", "ari_ecart_type"])
+    try:
+        k_justification = load_k_selection_justification(category)
+    except ArtifactsMissingError:
+        k_justification = pd.DataFrame(columns=["approche", "marque", "gamme", "silhouette", "k_retenu"])
+
+    # Accord entre modeles + importance par permutation, ajoutes le
+    # 2026-07-28 (audit methodologique) -- meme logique de resilience :
+    # optionnels tant que save_artifacts.py n'a pas ete rejoue.
+    try:
+        rf_perm_imp = load_rf_permutation_importances(category)
+    except ArtifactsMissingError:
+        rf_perm_imp = pd.DataFrame(columns=["feature", "importance_mean", "importance_std"])
+    try:
+        agreement = load_model_agreement(category)
+    except ArtifactsMissingError:
+        agreement = pd.DataFrame(columns=["feature", "ols_coefficient", "ridge_coefficient",
+                                           "ols_ridge_signes_accordent", "rf_importance"])
 
     color = CATEGORY_COLORS.get(category, "#2a78d6")
 
@@ -243,6 +367,15 @@ def render_models(category):
             metrics["random_forest"]["importance_note"], color="orange", variant="light",
             icon=DashIconify(icon="tabler:alert-triangle"), mt="sm",
         ),
+        section_header("Accord entre modèles", order=5,
+                        subtitle="OLS et Ridge s'accordent-ils sur le sens de l'effet ? Random Forest confirme-t-il, en "
+                                  "rang, les mêmes variables que les modèles linéaires ?"),
+        _model_agreement_alert(metrics.get("model_agreement", {})),
+        dcc.Graph(figure=_rf_permutation_importance_chart(rf_perm_imp, color), config=GRAPH_CONFIG)
+        if not rf_perm_imp.empty else dmc.Alert(
+            "Importance par permutation non disponible -- exécuter `python -m src.models.save_artifacts`.",
+            color="gray", variant="light", icon=DashIconify(icon="tabler:info-circle"),
+        ),
         section_header("Coefficients Ridge (échelle d'origine)", order=5,
                         subtitle="Semi-élasticités re-exprimées sur l'échelle des variables, sans inférence (p-values non disponibles pour Ridge)."),
         dag.AgGrid(
@@ -263,11 +396,36 @@ def render_models(category):
     n2_summary["outcome"] = n2_summary["outcome"].map({
         "clustered": "Clusterisé", "no_structure": "Sans structure", "too_small": "Trop petit",
     })
+    n2_summary = _n2_summary_with_diagnostics(n2_summary, stability, k_justification)
+    ari_valides = n2_summary["ari_moyen_num"].dropna()
+
+    stability_note = dmc.Alert(
+        dmc.Text([
+            dmc.Text("ARI stabilité", span=True, fw=600),
+            " (Adjusted Rand Index, 100 réplications bootstrap, cf. cluster_stability_n2) : le clustering "
+            "N2 tiendrait-il avec un échantillon légèrement différent de produits ? Proche de 1 = partition "
+            "robuste ; proche de 0 = frontières largement dues au hasard de l'échantillon, à lire avec prudence. "
+            "« Silhouette (k retenu) » indique la cohésion du k effectivement choisi — le détail complet de "
+            "tous les k comparés (retenus ou non) est dans reports/justification_k_clustering.csv.",
+        ], size="xs"),
+        color="blue", variant="light", icon=DashIconify(icon="tabler:info-circle"), mb="sm",
+    )
+    mixed_distance_note = dmc.Alert(
+        dmc.Text(
+            "Limite connue du K-Means (N1 et N2) : la distance euclidienne mélange variables continues "
+            "standardisées et variables catégorielles one-hot — le poids relatif de chaque groupe dans la "
+            "distance dépend en partie du nombre de modalités encodées (artefact du one-hot encoding, pas "
+            "une pondération délibérée). Alternative plus rigoureuse non implémentée ici : K-Prototypes / "
+            "distance de Gower.",
+            size="xs",
+        ),
+        color="orange", variant="light", icon=DashIconify(icon="tabler:alert-triangle"), mb="md",
+    )
 
     clustering_tab = dmc.Stack([
         kpi_row([
             kpi_card(
-                "Clusters techniques (N1)", fmt_number(n1_profile["cluster_direct"].nunique()), "tabler:chart-dots",
+                "Segments techniques (N1)", fmt_number(n1_profile["cluster_direct"].nunique()), "tabler:chart-dots",
                 color=color, raw_value=int(n1_profile["cluster_direct"].nunique()),
             ),
             kpi_card(
@@ -280,23 +438,32 @@ def render_models(category):
                 "tabler:circle-check", color=color,
                 raw_value=int((n2_summary["outcome"] == "Clusterisé").sum()),
             ),
+            kpi_card(
+                "ARI moyen (stabilité N2)",
+                f"{ari_valides.mean():.2f}" if not ari_valides.empty else "n/d",
+                "tabler:shield-check", color=color,
+                note="100 réplications bootstrap — proche de 1 = robuste" if not ari_valides.empty else "rapport non disponible",
+                raw_value=float(ari_valides.mean()) if not ari_valides.empty else None, decimals=2,
+            ),
         ]),
         section_header("Clustering technique (N1) — profil par cluster", order=5,
                         subtitle="Construit sans prix ni marque ; prix médian affiché a posteriori, pour validation."),
         dag.AgGrid(
             className="ag-theme-quartz-dark",
             rowData=n1_profile.to_dict("records"),
-            columnDefs=[{"field": "cluster_direct", "headerName": "Cluster", "flex": 1}] +
+            columnDefs=[{"field": "cluster_name", "headerName": "Segment technique", "flex": 1}] +
                        [{"field": "n", "headerName": "n produits", "type": "rightAligned", "flex": 1}] +
                        [{"field": "prix_median", "headerName": "Prix médian (TND)", "type": "rightAligned", "flex": 1}] +
                        [{"field": c, "headerName": c.replace("_", " "), "type": "rightAligned", "flex": 1}
-                        for c in n1_profile.columns if c not in ("cluster_direct", "n", "prix_median")],
+                        for c in n1_profile.columns if c not in ("cluster_direct", "cluster_name", "n", "prix_median")],
             defaultColDef={"sortable": True, "resizable": True},
             style={"height": "260px"}, columnSize="sizeToFit",
             dashGridOptions={"theme": "legacy"},
         ),
         section_header("Segmentation marque × gamme (N2) — unités", order=5,
                         subtitle="Une unité en dessous de l'effectif minimal reste un profil descriptif (jamais un clustering forcé)."),
+        stability_note,
+        mixed_distance_note,
         dag.AgGrid(
             className="ag-theme-quartz-dark",
             rowData=n2_summary.to_dict("records"),
@@ -308,6 +475,13 @@ def render_models(category):
                 {
                     "field": "outcome", "headerName": "Résultat", "flex": 2,
                     "cellClassRules": {"ag-status-positive": "value == 'Clusterisé'"},
+                },
+                {
+                    "field": "silhouette_retenue", "headerName": "Silhouette (k retenu)", "type": "rightAligned", "flex": 2,
+                },
+                {
+                    "field": "ari_moyen", "headerName": "ARI stabilité (bootstrap)", "type": "rightAligned", "flex": 2,
+                    "cellClassRules": {"ag-status-negative": "Number(value) < 0.5"},
                 },
             ],
             defaultColDef={"sortable": True, "resizable": True, "filter": True},

@@ -1,0 +1,86 @@
+{
+  "category": "pc_bureau",
+  "n_pooled": 873,
+  "n_train": 693,
+  "n_test": 180,
+  "weeks": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "continuous_features": [
+    "ram_go",
+    "stockage_go"
+  ],
+  "categorical_features": [
+    "cpu_serie",
+    "os_platform",
+    "has_5g",
+    "has_wifi",
+    "marque"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "has_5g",
+    "has_wifi",
+    "cpu_serie_3.0",
+    "cpu_serie_5.0",
+    "cpu_serie_7.0",
+    "cpu_serie_9.0",
+    "os_platform_Windows 11",
+    "os_platform_Windows 11 Famille",
+    "os_platform_Windows 11 Pro",
+    "marque_BMAX",
+    "marque_CHUWI",
+    "marque_DELL",
+    "marque_HP",
+    "marque_LENOVO",
+    "marque_MSI",
+    "marque_MYTEK"
+  ],
+  "hedonic_ols": {
+    "r2_log": 0.5451455984650104,
+    "rmse_log": 0.30017942353510974,
+    "mae_log": 0.22048529247952323,
+    "rmse_tnd": 989.2623431786112,
+    "mae_tnd": 675.7108746974394,
+    "retransformation_bias_correction": null,
+    "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
+    "adj_r2_train": 0.7968284452191192,
+    "aic": -119.77957035190616,
+    "bic": -38.0410303664879
+  },
+  "ridge": {
+    "r2_log": 0.5413697883347295,
+    "rmse_log": 0.30142276431222365,
+    "mae_log": 0.21937623452887575,
+    "rmse_tnd": 993.2362412903042,
+    "mae_tnd": 672.7379416437503,
+    "retransformation_bias_correction": null,
+    "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
+    "best_alpha": 10.0
+  },
+  "random_forest": {
+    "r2_log": 0.4057372362348749,
+    "rmse_log": 0.3431104754496581,
+    "mae_log": 0.23325887089854816,
+    "rmse_tnd": 943.7853213328447,
+    "mae_tnd": 675.3436348510187,
+    "retransformation_bias_correction": null,
+    "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
+    "best_params": {
+      "max_depth": 10,
+      "min_samples_split": 2,
+      "n_estimators": 100
+    },
+    "importance_note": "Importance MDI (reduction moyenne d'impurete), biaisee en faveur des variables continues/a forte cardinalite par rapport aux indicatrices categorielles (Strobl et al., 2007) -- cf. reports/audit_code.md §3.2. A interpreter avec prudence, pas comme un ordre causal. cf. rf_permutation_importance.csv (calculee sur le test, non biaisee par cardinalite) et model_agreement.csv (accord avec OLS/Ridge) pour une lecture moins susceptible a ce biais."
+  },
+  "model_agreement": {
+    "n_features_comparees": 18,
+    "pct_signes_ols_ridge_accordent": 100.0,
+    "rf_ols_spearman_rho": -0.174,
+    "rf_ols_spearman_p_value": 0.4888
+  }
+}

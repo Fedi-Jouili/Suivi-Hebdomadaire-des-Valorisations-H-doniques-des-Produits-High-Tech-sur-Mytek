@@ -1,0 +1,23 @@
+﻿marque,gamme_prix,n,k,outcome
+ASUS,Milieu de gamme,185,5,clustered
+ASUS,Premium,176,7,clustered
+ASUS,Économique,183,7,clustered
+BMAX,Gamme unique,9,1,too_small
+CHUWI,Milieu de gamme,8,1,too_small
+CHUWI,Premium,8,1,too_small
+CHUWI,Économique,8,1,too_small
+DELL,Milieu de gamme,98,8,clustered
+DELL,Premium,101,4,clustered
+DELL,Économique,105,8,clustered
+GIGABYTE,Milieu de gamme,28,2,clustered
+GIGABYTE,Premium,28,2,clustered
+GIGABYTE,Économique,30,1,no_structure
+HP,Milieu de gamme,135,4,clustered
+HP,Premium,134,8,clustered
+HP,Économique,135,8,clustered
+LENOVO,Milieu de gamme,173,4,clustered
+LENOVO,Premium,175,8,clustered
+LENOVO,Économique,177,8,clustered
+MSI,Milieu de gamme,87,8,clustered
+MSI,Premium,84,1,no_structure
+MSI,Économique,88,8,clustered

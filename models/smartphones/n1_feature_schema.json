@@ -1,0 +1,38 @@
+{
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_brand",
+    "os_platform",
+    "has_4g",
+    "has_5g",
+    "has_wifi6",
+    "has_wifi",
+    "has_bluetooth"
+  ],
+  "design_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "cpu_brand_Autre",
+    "cpu_brand_MediaTek",
+    "cpu_brand_Qualcomm",
+    "cpu_brand_Samsung Exynos",
+    "os_platform_Android",
+    "os_platform_Autre",
+    "has_4g_0",
+    "has_4g_1",
+    "has_5g_0",
+    "has_5g_1",
+    "has_wifi6_0",
+    "has_wifi6_1",
+    "has_wifi_0",
+    "has_wifi_1",
+    "has_bluetooth_0",
+    "has_bluetooth_1"
+  ],
+  "k": 4
+}

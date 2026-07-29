@@ -18,7 +18,6 @@ UTILISATION :
     from src.scraper import CATEGORIES, BASE_URL
 =============================================================================
 """
-import os
 import logging
 import sys
 from pathlib import Path
@@ -59,13 +58,6 @@ CATEGORIES = {
 # Respecte le serveur et réduit le risque de blocage
 DELAY_MIN = 2.0
 DELAY_MAX = 5.0
-
-# Chemin vers l'exécutable Brave (utilisé par StealthyFetcher si nécessaire)
-# Adapter ce chemin si Brave est installé ailleurs sur votre machine
-BRAVE_PATH = os.environ.get(
-    "BRAVE_PATH",
-    r"C:\Program Files\BraveSoftware\Brave-Browser\Application\brave.exe"
-)
 
 # Répertoire racine pour les données brutes
 DATA_RAW_DIR = Path(__file__).resolve().parent.parent.parent / "data" / "raw"
@@ -136,7 +128,6 @@ __all__ = [
     "CATEGORIES",
     "BASE_URL",
     "DATA_RAW_DIR",
-    "BRAVE_PATH",
     "DELAY_MIN",
     "DELAY_MAX",
     "MAX_RETRIES",

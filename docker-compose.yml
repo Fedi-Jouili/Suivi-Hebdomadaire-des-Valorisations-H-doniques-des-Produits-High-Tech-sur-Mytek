@@ -1,0 +1,19 @@
+# Lancement local / self-hosting du dashboard (cf. Dockerfile).
+#
+# Usage :
+#   docker compose up --build     -> http://localhost:8050
+#   docker compose up -d          (arriere-plan)
+#   docker compose down
+
+services:
+  dashboard:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: hedonique-mytek-dashboard:local
+    ports:
+      - "8050:8050"
+    environment:
+      - PORT=8050
+      - DASH_DEBUG=false
+    restart: unless-stopped

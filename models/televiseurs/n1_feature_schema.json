@@ -1,0 +1,52 @@
+{
+  "continuous_features": [
+    "taille_ecran",
+    "taux_rafraichissement"
+  ],
+  "categorical_features": [
+    "resolution_affichage",
+    "technologie_dalle",
+    "hdr",
+    "smart_tv",
+    "os_platform",
+    "has_4g",
+    "has_wifi6",
+    "has_wifi",
+    "has_bluetooth",
+    "has_ethernet"
+  ],
+  "design_columns": [
+    "taille_ecran",
+    "taux_rafraichissement",
+    "resolution_affichage_4K",
+    "resolution_affichage_Full HD",
+    "resolution_affichage_HD Ready",
+    "technologie_dalle_LED",
+    "technologie_dalle_Mini-LED",
+    "technologie_dalle_OLED",
+    "technologie_dalle_QLED",
+    "technologie_dalle_QNED",
+    "hdr_False",
+    "hdr_True",
+    "smart_tv_False",
+    "smart_tv_True",
+    "os_platform_Android TV",
+    "os_platform_Autre",
+    "os_platform_Google TV",
+    "os_platform_Inconnu",
+    "os_platform_Tizen",
+    "os_platform_VIDAA",
+    "os_platform_webOS",
+    "has_4g_0",
+    "has_4g_1",
+    "has_wifi6_0",
+    "has_wifi6_1",
+    "has_wifi_0",
+    "has_wifi_1",
+    "has_bluetooth_0",
+    "has_bluetooth_1",
+    "has_ethernet_0",
+    "has_ethernet_1"
+  ],
+  "k": 2
+}

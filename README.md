@@ -50,4 +50,4 @@ tests/             # Tests unitaires et d'intégration (miroir de src/)
 pytest
 ```
 
-Les tests suivent la même arborescence que `src/` (`tests/test_preprocessing`, `tests/test_models`, `tests/test_scraper`).
+Organisés en sous-dossiers miroir de `src/` (`tests/test_preprocessing`, `tests/test_models`, `tests/test_scraper`, `tests/test_dashboard`), mais **pas encore une couverture fichier-pour-fichier** : `src/scraper/spider.py`, `utils.py` et `scheduler.py` (pagination, retry, checkpoint/reprise) n'ont pas de test dédié, seul `parser.py` en a un. `python -m src.preprocessing.pipeline` (le point d'entrée réel de production) est couvert par `tests/test_preprocessing/test_pipeline.py` ; `bounds.py`/`impute.py`/`select_features.py` n'ont pas encore de tests unitaires dédiés. Aucune CI n'exécute `pytest` automatiquement pour l'instant — à lancer manuellement avant de committer.

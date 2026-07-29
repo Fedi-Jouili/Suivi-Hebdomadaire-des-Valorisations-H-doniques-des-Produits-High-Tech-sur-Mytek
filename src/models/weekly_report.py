@@ -72,8 +72,12 @@ ROLE :
        technique), pas de la categorie entiere -- decision utilisateur du
        2026-07-25. Colonnes : categorie, marque, gamme, cluster, semaine,
        moyenne_geometrique (prix reel), moyenne_estimee_ridge/_hedonic/_rf,
-       n_produits. Base de l'etude de transitions (point 7) et du notebook
-       notebooks/Etude_Transitions_Clusters_Marque_Gamme.ipynb.
+       erreur_ridge_pct/_hedonic_pct/_rf_pct (ajoutees le 2026-07-29, page
+       Telechargements -- ecart relatif estime vs reel, positif = le
+       modele surestime), n_produits. Base de l'etude de transitions
+       (point 7), du notebook notebooks/Etude_Transitions_Clusters_
+       Marque_Gamme.ipynb, et des exports CSV par categorie de la page
+       Telechargements du dashboard.
 
     7. transitions_cluster_hebdo.csv : pour chaque cluster et chaque paire
        de semaines consecutives, classe la transition dans une grille 3x3
@@ -95,7 +99,57 @@ ROLE :
        (`bootstrap_possible`, n >= 2 des deux cotes de la transition).
        `ecart_residuel_significatif` (IC excluant 0) est le signal le plus
        fiable de ce tableau pour distinguer un vrai ecart d'un artefact
-       d'echantillonnage.
+       d'echantillonnage. Colonne `cause_principale` ajoutee le 2026-07-26
+       (decision utilisateur : la question du projet est "prix, qualite,
+       OU nombre de produits ?", pas seulement "prix ou qualite ?") --
+       {"effectif","aucune","prix","qualite","prix_et_qualite"} : si
+       l'effectif du cluster a change (composition_stable=False), la cause
+       est TOUJOURS "effectif" en priorite (la grille prix/qualite serait
+       trompeuse sur un catalogue qui a change de composition, cf. section
+       3ter) ; sinon, la cause est deduite de la grille QUADRANT_LABELS
+       (_CAUSE_BY_DIRECTIONS). C'est cette colonne, pas `classification`
+       (texte detaille), qu'il faut grouper/filtrer pour une conclusion
+       agregee du type "X% des transitions sont dues a un effet de
+       composition, Y% a un vrai changement de prix, Z% a la qualite".
+
+    8. stabilite_clustering_n2.csv (ajoute le 2026-07-26, rigor upgrade) :
+       pour chaque unite marque x gamme clusterisee, un score de stabilite
+       bootstrap (ARI moyen + ecart-type sur 100 repliques, cf.
+       cluster_stability_n2) -- le clustering N2 lui-meme, utilise ensuite
+       par TOUS les rapports ci-dessus (2 a 7), n'avait jusqu'ici aucune
+       mesure de robustesse a l'echantillonnage. Un ARI moyen bas (< 0.5)
+       signale une segmentation dont les frontieres dependent fortement de
+       quels produits precis sont observes -- a lire avec la meme prudence
+       qu'un `ecart_residuel` non confirme par bootstrap (point 7).
+
+    9. justification_k_clustering.csv (ajoute le 2026-07-27, rigor
+       upgrade) : pour CHAQUE clustering K-Means du projet (N1 technique --
+       une ligne par k teste, categorie entiere -- et N2 marque x gamme --
+       une ligne par k teste, PAR unite), la silhouette de TOUS les k
+       essayes (`k_retenu`=False inclus), avec la raison de rejet explicite
+       quand applicable (n_clusters_effectif<2 : effondrement KMeans sur
+       points dupliques ; taille_min_cluster sous le seuil). _choose_k
+       (hedonic_model.py) ne retournait jusqu'ici QUE le k final -- ce
+       choix restait invisible, jamais compare aux k voisins qu'il a
+       ecartes. cf. cluster_stability_n2 pour la question complementaire
+       ("ce k tiendrait-il avec un echantillon different ?") ; ce rapport-
+       ci repond a une question distincte ("pourquoi CE k plutot qu'un
+       autre, sur les donnees telles qu'observees ?").
+
+       LIMITE CONNUE, documentee mais non corrigee (hors perimetre de ce
+       rapport) : le K-Means sous-jacent (N1 et N2) est ajuste sur une
+       matrice standardisee melangeant variables CONTINUES (RAM, stockage,
+       apres StandardScaler -- distance euclidienne pleinement adaptee) et
+       variables CATEGORIELLES one-hot (processeur, marque -- distance
+       euclidienne entre indicatrices 0/1, moins directement interpretable
+       qu'une vraie distance categorielle type Gower ou K-Prototypes). Le
+       poids relatif de chaque groupe de variables dans la distance totale
+       depend donc partiellement du NOMBRE de modalites categorielles
+       encodees (plus une variable a de modalites, plus elle pese de
+       "colonnes" dans l'espace euclidien) -- un artefact du one-hot
+       encoding, pas un choix delibere de ponderation. Cf. RAPPORT_
+       SYNTHESE.md pour la discussion complete et les pistes d'amelioration
+       (K-Prototypes, poids explicites par groupe de variables).
 
 UTILISATION :
     python -m src.models.weekly_report
@@ -111,13 +165,24 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
+from sklearn.cluster import KMeans
+from sklearn.metrics import adjusted_rand_score
+from sklearn.preprocessing import StandardScaler
 
 from src.models.hedonic_model import (
+    CLUSTERING_MIN_N,
     POOLED_TIME_EXCLUDED_CATEGORIES,
+    _ID_COLUMNS,
+    _build_feature_matrix,
+    _choose_k,
+    _classify_features,
+    _min_cluster_size_for,
     build_design_matrix,
+    compute_price_tiers,
     fit_strategy_c_pooled_time,
 )
 from src.models.save_artifacts import MODELS_DIR, load_pooled_category
+from src.utils.cluster_names import n1_cluster_name
 from src.utils.config import CATEGORY_ORDER, PROJECT_ROOT, RANDOM_STATE
 
 logger = logging.getLogger("models.weekly_report")
@@ -180,7 +245,7 @@ def cluster_geometric_means(category: str) -> pd.DataFrame:
 
     for (cluster, week), g in df.groupby(["cluster_direct", "semaine"]):
         rows.append({
-            "categorie": category, "approche": "N1_technique", "cluster": f"c{int(cluster)}",
+            "categorie": category, "approche": "N1_technique", "cluster": n1_cluster_name(category, int(cluster)),
             "marque": None, "gamme_prix": None, "semaine": int(week),
             "n_produits": len(g), "prix_geometrique_tnd": round(_geo_mean(g["prix_tnd"]), 2),
         })
@@ -305,6 +370,12 @@ def marque_gamme_model_estimates(category: str, product_level: pd.DataFrame | No
     ESTIMEE par chacun des 3 modeles, + n_produits (taille de l'echantillon
     derriere chaque moyenne -- indispensable pour juger la fiabilite d'une
     moyenne calculee sur parfois tres peu de produits).
+
+    Colonnes erreur_<modele>_pct ajoutees le 2026-07-29 (page Telechargements
+    du dashboard) : ecart relatif entre la moyenne ESTIMEE et la moyenne
+    REELLE -- (estime - reel) / reel * 100, meme formule/convention que
+    erreur_pct dans weekly_model_estimates (positif = le modele SURESTIME
+    ce cluster cette semaine-la, negatif = il le SOUS-ESTIME).
     """
     work = product_level if product_level is not None else _marque_gamme_product_level(category)
 
@@ -321,9 +392,18 @@ def marque_gamme_model_estimates(category: str, product_level: pd.DataFrame | No
         grouped[c] = grouped[c].round(2)
     grouped["semaine"] = grouped["semaine"].astype(int)
 
+    for model_col, erreur_col in [
+        ("moyenne_estimee_ridge", "erreur_ridge_pct"),
+        ("moyenne_estimee_hedonic", "erreur_hedonic_pct"),
+        ("moyenne_estimee_rf", "erreur_rf_pct"),
+    ]:
+        grouped[erreur_col] = (
+            (grouped[model_col] - grouped["moyenne_geometrique"]) / grouped["moyenne_geometrique"] * 100
+        ).round(2)
+
     col_order = ["categorie", "marque", "gamme", "cluster", "semaine",
                  "moyenne_geometrique", "moyenne_estimee_ridge", "moyenne_estimee_hedonic", "moyenne_estimee_rf",
-                 "n_produits"]
+                 "erreur_ridge_pct", "erreur_hedonic_pct", "erreur_rf_pct", "n_produits"]
     return grouped[col_order].sort_values(["marque", "gamme", "cluster", "semaine"]).reset_index(drop=True)
 
 
@@ -389,6 +469,57 @@ QUADRANT_LABELS = {
     ("baisse", "hausse"): "Baisse de prix malgré une montée en gamme technique — remise maximale pour l'acheteur",
     ("baisse", "baisse"): "Baisse de prix cohérente avec une baisse de gamme technique",
 }
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CAUSE PRINCIPALE -- decision utilisateur du 2026-07-26 : la question
+# posee par le projet n'est pas seulement "prix ou qualite ?" (grille
+# ci-dessus) mais bien "prix, qualite, OU nombre de produits ?" -- une
+# 3e cause structurelle qui doit etre isolee AVANT toute lecture prix/
+# qualite, pas apres. Si l'effectif du cluster change d'une semaine a
+# l'autre (composition_stable=False), la grille QUADRANT_LABELS devient
+# TROMPEUSE : un "prix en hausse cohérent avec une montée en gamme
+# technique" peut n'etre qu'un cluster qui a perdu ses produits d'entree
+# de gamme et gagne des produits premium -- ce n'est PAS le meme produit
+# qui est monte en gamme, c'est le CATALOGUE qui a change de composition.
+# cause_principale rend cette priorite explicite et REQUETABLE (pas
+# seulement lisible dans le texte de `classification`) :
+#   "effectif" -- le nombre de produits du cluster a change (cause
+#                 prioritaire, cf. ci-dessus -- la grille prix/qualite
+#                 n'est calculee/affichee QUE si cette cause est ecartee).
+#   "aucune"   -- ni le prix ni la valeur technique implicite ne bougent.
+#   "prix"     -- le prix reel bouge, la valeur technique implicite non :
+#                 changement de politique commerciale (cout, marge, promo).
+#   "qualite"  -- la valeur technique implicite bouge (les DEUX bougent
+#                 ensemble ou seule elle bouge) : le mouvement de prix,
+#                 s'il y en a un, est explique par un changement de
+#                 caracteristiques du mix, pas par une decision de prix.
+#   "prix_et_qualite" -- prix et valeur technique implicite bougent en
+#                 SENS CONTRAIRES : aucune cause unique ne domine, ecart
+#                 maximal (cf. QUADRANT_LABELS).
+CAUSE_EFFECTIF = "effectif"
+CAUSE_AUCUNE = "aucune"
+CAUSE_PRIX = "prix"
+CAUSE_QUALITE = "qualite"
+CAUSE_PRIX_ET_QUALITE = "prix_et_qualite"
+
+_CAUSE_BY_DIRECTIONS = {
+    ("stable", "stable"): CAUSE_AUCUNE,
+    ("stable", "hausse"): CAUSE_QUALITE,
+    ("stable", "baisse"): CAUSE_QUALITE,
+    ("hausse", "stable"): CAUSE_PRIX,
+    ("baisse", "stable"): CAUSE_PRIX,
+    ("hausse", "hausse"): CAUSE_QUALITE,
+    ("baisse", "baisse"): CAUSE_QUALITE,
+    ("hausse", "baisse"): CAUSE_PRIX_ET_QUALITE,
+    ("baisse", "hausse"): CAUSE_PRIX_ET_QUALITE,
+}
+
+
+def _composition_change_label(n_t: int, n_t1: int) -> str:
+    return (
+        f"Effectif du cluster modifié ({n_t} → {n_t1} produits) — lecture prix/qualité non isolable "
+        f"(cf. cause_principale='{CAUSE_EFFECTIF}')"
+    )
 
 
 def _pct_change(v0, v1) -> float:
@@ -505,13 +636,22 @@ def cluster_transitions(category: str, estimates: pd.DataFrame | None = None,
             delta_rf = _pct_change(row_t["moyenne_estimee_rf"], row_t1["moyenne_estimee_rf"])
 
             dir_raw, dir_hed = _direction(delta_raw), _direction(delta_hed)
-            label = QUADRANT_LABELS.get((dir_raw, dir_hed), f"Cas non classé ({dir_raw} / {dir_hed})")
+            n_t, n_t1 = int(row_t["n_produits"]), int(row_t1["n_produits"])
+            composition_stable = n_t == n_t1
+
+            # cause_principale/classification : l'effectif est teste EN
+            # PREMIER (cf. note de section) -- la grille prix/qualite n'est
+            # appliquee que si la composition du cluster n'a pas change.
+            if not composition_stable:
+                cause_principale = CAUSE_EFFECTIF
+                label = _composition_change_label(n_t, n_t1)
+            else:
+                cause_principale = _CAUSE_BY_DIRECTIONS.get((dir_raw, dir_hed), CAUSE_AUCUNE)
+                label = QUADRANT_LABELS.get((dir_raw, dir_hed), f"Cas non classé ({dir_raw} / {dir_hed})")
 
             est_signs = {np.sign(round(d, 6)) for d in (delta_hed, delta_ridge, delta_rf)
                          if pd.notna(d) and abs(d) > 0.5}
             accord_modeles = len(est_signs) <= 1
-
-            n_t, n_t1 = int(row_t["n_produits"]), int(row_t1["n_produits"])
             ic_bas = ic_haut = p_value = None
             bootstrap_possible = False
             if n_boot > 0 and n_t >= 2 and n_t1 >= 2:
@@ -535,6 +675,13 @@ def cluster_transitions(category: str, estimates: pd.DataFrame | None = None,
                 "delta_estime_rf_pct": round(delta_rf, 2) if pd.notna(delta_rf) else None,
                 "ecart_residuel_pct": round(delta_raw - delta_hed, 2) if pd.notna(delta_raw) and pd.notna(delta_hed) else None,
                 "classification": label,
+                # cause_principale : reponse COMPACTE et REQUETABLE a la
+                # question "prix, qualite, ou nombre de produits ?" (cf.
+                # note de section) -- {"effectif","aucune","prix","qualite",
+                # "prix_et_qualite"}. `classification` reste le texte
+                # detaille pour la lecture humaine ; cause_principale est
+                # ce qu'on groupe/filtre pour une conclusion agregee.
+                "cause_principale": cause_principale,
                 "accord_modeles": accord_modeles,
                 "fiabilite_limitee": bool(row_t["n_produits"] < MIN_RELIABLE_N or row_t1["n_produits"] < MIN_RELIABLE_N),
                 # n_produits_t == n_produits_t1 est une condition NECESSAIRE
@@ -544,11 +691,9 @@ def cluster_transitions(category: str, estimates: pd.DataFrame | None = None,
                 # effectif de cluster qui a change (entree/sortie de
                 # catalogue) -- un effectif differe => la composition a
                 # CERTAINEMENT change, jamais une lecture "meme produits"
-                # possible. Sert a hierarchiser les cas etudies en detail
-                # (notebook) : composition_stable=True est un prealable pour
-                # lire un ecart residuel comme un signal de repricing/qualite
-                # plutot que comme un effet de melange produit.
-                "composition_stable": bool(row_t["n_produits"] == row_t1["n_produits"]),
+                # possible. Desormais la cause PRIORITAIRE (cause_principale
+                # == "effectif"), pas seulement un indice de fiabilite.
+                "composition_stable": composition_stable,
                 # Inference bootstrap sur l'ecart residuel (cf.
                 # _bootstrap_ecart_residuel) -- remplace le seuil de
                 # materialite FIXE (MATERIALITY_THRESHOLD_PCT, utilise pour
@@ -625,7 +770,178 @@ def catalog_composition_by_week(category: str) -> pd.DataFrame:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 7. ORCHESTRATEUR
+# 6. STABILITE DU CLUSTERING N2 (bootstrap sur l'ARI) -- rigor upgrade
+#    demande par l'utilisateur (2026-07-26) : le clustering lui-meme,
+#    utilise ensuite par cluster_transitions, n'avait jusqu'ici aucune
+#    mesure de robustesse -- seul l'ECART RESIDUEL qui en derive en avait
+#    une (cf. _bootstrap_ecart_residuel). Meme logique appliquee ici en
+#    amont : cette segmentation tiendrait-elle avec un echantillon
+#    legerement different de produits ?
+# ─────────────────────────────────────────────────────────────────────────────
+
+DEFAULT_N_BOOT_STABILITE = 100
+# Plus petit que DEFAULT_N_BOOT (transitions) : chaque replique ici REFIT
+# un KMeans complet (cout non-vectorisable, contrairement au bootstrap sur
+# des moyennes geometriques) -- 100 repliques par unite marque x gamme
+# clusterisee reste suffisant pour un ARI moyen stable (l'ecart-type
+# inter-repliques est rapporte explicitement pour en juger).
+_N_INIT_BOOT = 3
+# n_init reduit (vs 10 pour le clustering persiste/"officiel", cf.
+# labels_original ci-dessous, qui DOIT rester fidele a ce que
+# save_artifacts.py produit reellement) -- une replique bootstrap sert a
+# mesurer une TENDANCE de stabilite sur ~100 tirages, pas a retrouver le
+# minimum global a chaque fois ; n_init=3 est le compromis standard des
+# methodes de stabilite par bootstrap (cf. clusterboot, Hennig 2007) entre
+# fidelite et cout -- sans cette reduction, 100 x n_init=10 KMeans par
+# unite rend le rapport hebdomadaire complet impraticable (mesure : ~200
+# repliques x n_init=10 prend 40-60s PAR UNITE clusterisee).
+
+
+def cluster_stability_n2(category: str, n_boot: int = DEFAULT_N_BOOT_STABILITE,
+                          random_state: int = RANDOM_STATE) -> pd.DataFrame:
+    """
+    Pour chaque unite marque x gamme atteignant CLUSTERING_MIN_N (cf.
+    hedonic_model.py), mesure la STABILITE du K-Means N2 par bootstrap :
+    reechantillonne les produits de l'unite (avec remise, meme effectif),
+    reajuste un K-Means (meme k) sur l'echantillon, et compare par ARI
+    (Adjusted Rand Index, Hubert & Arabie 1985) les labels obtenus sur les
+    donnees ORIGINALES (via .predict(), jamais reajuste sur les donnees
+    originales elles-memes) a ceux du clustering persiste par
+    save_artifacts.py. ARI proche de 1 = partition robuste au bruit
+    d'echantillonnage (quels produits precis sont observes) ; proche de 0
+    = structure fragile, largement due au hasard de l'echantillon plutot
+    qu'a une vraie segmentation.
+
+    Repond a une question laissee ouverte par le choix de k
+    (_choose_k : silhouette maximale sous contrainte de taille minimale,
+    jamais valide par ailleurs) -- une segmentation avec un k "optimal"
+    au sens silhouette peut neanmoins etre instable si l'unite est petite.
+
+    N'affecte JAMAIS le clustering persiste (aucun re-fit des artefacts de
+    save_artifacts.py) -- purement diagnostique, cf. reports/
+    stabilite_clustering_n2.csv.
+    """
+    df_pooled = load_pooled_category(category)
+    df_tiers, _ = compute_price_tiers(df_pooled)
+    continuous_features, categorical_features = _classify_features(df_tiers, exclude=_ID_COLUMNS | {"semaine"})
+    rng = np.random.default_rng(random_state)
+
+    rows = []
+    for (marque, gamme), df_unit in df_tiers.groupby(["marque", "gamme_prix"], observed=True):
+        n = len(df_unit)
+        row = {"categorie": category, "marque": marque, "gamme": gamme, "n": n}
+
+        if n < CLUSTERING_MIN_N:
+            rows.append({**row, "k": 1, "outcome": "too_small",
+                         "ari_moyen": None, "ari_ecart_type": None, "n_repliques_valides": 0})
+            continue
+
+        X = _build_feature_matrix(df_unit, continuous_features, categorical_features)
+        k = _choose_k(X, _min_cluster_size_for(n))
+        if k <= 1:
+            rows.append({**row, "k": k, "outcome": "no_structure",
+                         "ari_moyen": None, "ari_ecart_type": None, "n_repliques_valides": 0})
+            continue
+
+        labels_original = KMeans(n_clusters=k, random_state=random_state, n_init=10).fit_predict(X)
+
+        aris = []
+        for _ in range(n_boot):
+            idx = rng.integers(0, n, size=n)
+            # Meme garde-fou anti-effondrement que _choose_k (cf. son
+            # docstring) : un echantillon bootstrap peut par hasard ne
+            # couvrir qu'un sous-ensemble degenere des clusters d'origine.
+            if pd.Series(labels_original[idx]).nunique() < 2:
+                continue
+            try:
+                km_boot = KMeans(n_clusters=k, random_state=int(rng.integers(0, 2**31 - 1)), n_init=_N_INIT_BOOT)
+                km_boot.fit(X[idx])
+                labels_predicted = km_boot.predict(X)
+            except ValueError:
+                continue
+            aris.append(adjusted_rand_score(labels_original, labels_predicted))
+
+        rows.append({
+            **row, "k": k, "outcome": "clustered",
+            "ari_moyen": round(float(np.mean(aris)), 3) if aris else None,
+            "ari_ecart_type": round(float(np.std(aris)), 3) if aris else None,
+            "n_repliques_valides": len(aris),
+        })
+
+    return pd.DataFrame(rows)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 7. JUSTIFICATION DU CHOIX DE k (silhouette de TOUS les k testes) -- rigor
+#    upgrade demande par l'utilisateur (2026-07-26) : _choose_k ne
+#    retournait jusqu'ici QUE le k final, un choix invisible/non audite.
+#    Couvre les DEUX clustering K-Means du projet (N1 technique, N2
+#    marque x gamme).
+# ─────────────────────────────────────────────────────────────────────────────
+
+def k_selection_justification(category: str) -> pd.DataFrame:
+    """
+    Reconstruit (jamais reajuste ni persiste -- lecture seule) la MEME
+    matrice standardisee que chaque clustering K-Means du projet et
+    appelle _choose_k(..., return_trace=True) pour EXPOSER la silhouette
+    de chaque k teste (retenu ou non), avec la raison de rejet quand
+    applicable (n_clusters_effectif < 2 : effondrement KMeans sur points
+    dupliques, cf. _choose_k ; taille_min_cluster < seuil : cluster trop
+    petit). Sans cela, le k final n'etait justifie par rien d'observable --
+    seul son resultat apparaissait dans les artefacts
+    (n1_feature_schema.json / pooled_labeled.csv), jamais la comparaison
+    aux k voisins qui l'ont ecarte.
+
+    Deux "approches" dans le tableau retourne (colonne `approche`, meme
+    convention que cluster_geometric_means) :
+      - N1_technique : UN SEUL choix de k par categorie (marque/gamme =
+        None) -- reproduit fit_n1_clustering (save_artifacts.py) a
+        l'identique.
+      - N2_marque_gamme : un choix de k PAR unite marque x gamme
+        atteignant CLUSTERING_MIN_N -- reproduit la boucle de
+        cluster_stability_n2.
+
+    N'affecte JAMAIS les artefacts persistes (aucun impact sur
+    save_artifacts.py) -- purement diagnostique, cf. reports/
+    justification_k_clustering.csv.
+    """
+    df_pooled = load_pooled_category(category)
+
+    # ── N1 : un seul k, categorie entiere (reproduit fit_n1_clustering) ──
+    n1_continuous, n1_categorical = _classify_features(df_pooled, exclude=_ID_COLUMNS | {"semaine"})
+    X_numeric = df_pooled[n1_continuous].astype(float) if n1_continuous else pd.DataFrame(index=df_pooled.index)
+    X_categorical = (
+        pd.get_dummies(df_pooled[n1_categorical].astype(str), columns=n1_categorical)
+        if n1_categorical else pd.DataFrame(index=df_pooled.index)
+    )
+    X_n1 = StandardScaler().fit_transform(pd.concat([X_numeric, X_categorical], axis=1))
+    _, trace_n1 = _choose_k(X_n1, _min_cluster_size_for(X_n1.shape[0]), return_trace=True)
+    trace_n1.insert(0, "categorie", category)
+    trace_n1.insert(1, "approche", "N1_technique")
+    trace_n1.insert(2, "marque", None)
+    trace_n1.insert(3, "gamme", None)
+
+    # ── N2 : un k par unite marque x gamme (reproduit cluster_stability_n2) ──
+    df_tiers, _ = compute_price_tiers(df_pooled)
+    n2_continuous, n2_categorical = _classify_features(df_tiers, exclude=_ID_COLUMNS | {"semaine"})
+    n2_frames = []
+    for (marque, gamme), df_unit in df_tiers.groupby(["marque", "gamme_prix"], observed=True):
+        n = len(df_unit)
+        if n < CLUSTERING_MIN_N:
+            continue
+        X_unit = _build_feature_matrix(df_unit, n2_continuous, n2_categorical)
+        _, trace_unit = _choose_k(X_unit, _min_cluster_size_for(n), return_trace=True)
+        trace_unit.insert(0, "categorie", category)
+        trace_unit.insert(1, "approche", "N2_marque_gamme")
+        trace_unit.insert(2, "marque", marque)
+        trace_unit.insert(3, "gamme", gamme)
+        n2_frames.append(trace_unit)
+
+    return pd.concat([trace_n1, *n2_frames], ignore_index=True)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 8. ORCHESTRATEUR
 # ─────────────────────────────────────────────────────────────────────────────
 
 def main():
@@ -642,7 +958,7 @@ def main():
     REPORTS_DIR.mkdir(parents=True, exist_ok=True)
 
     coverage_frames, cluster_frames, estimates_frames, composition_frames, index_frames = [], [], [], [], []
-    mg_estimates_frames, transitions_frames = [], []
+    mg_estimates_frames, transitions_frames, stability_frames, k_justification_frames = [], [], [], []
 
     for category in categories:
         logger.info(f"{'=' * 70}\nCategorie : {category}")
@@ -660,6 +976,8 @@ def main():
         transitions_frames.append(
             cluster_transitions(category, estimates=mg_estimates, product_level=product_level)
         )
+        stability_frames.append(cluster_stability_n2(category))
+        k_justification_frames.append(k_selection_justification(category))
         logger.info(f"  [{category}] OK")
 
     pd.concat(coverage_frames, ignore_index=True).to_csv(
@@ -674,6 +992,10 @@ def main():
         REPORTS_DIR / "marque_gamme_estimations_hebdo.csv", index=False, encoding="utf-8-sig")
     pd.concat(transitions_frames, ignore_index=True).to_csv(
         REPORTS_DIR / "transitions_cluster_hebdo.csv", index=False, encoding="utf-8-sig")
+    pd.concat(stability_frames, ignore_index=True).to_csv(
+        REPORTS_DIR / "stabilite_clustering_n2.csv", index=False, encoding="utf-8-sig")
+    pd.concat(k_justification_frames, ignore_index=True).to_csv(
+        REPORTS_DIR / "justification_k_clustering.csv", index=False, encoding="utf-8-sig")
     if index_frames:
         pd.concat(index_frames, ignore_index=True).to_csv(
             REPORTS_DIR / "indice_prix_hedonique_hebdo.csv", index=False, encoding="utf-8-sig")

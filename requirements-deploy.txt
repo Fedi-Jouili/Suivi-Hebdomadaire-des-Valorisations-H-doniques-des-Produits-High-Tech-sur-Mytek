@@ -1,0 +1,35 @@
+# Dependances minimales pour EXECUTER le dashboard en production
+# (Docker/Render, cf. Dockerfile) -- sous-ensemble de requirements.txt
+# (racine, pip freeze complet du .venv de developpement) : exclut le
+# scraper (scrapling/playwright, lourd, jamais importe par src/dashboard/),
+# les notebooks (jupyter/nbconvert) et matplotlib/seaborn (EDA seulement --
+# le dashboard n'utilise que Plotly, cf. src/dashboard/theme.py). Aucun
+# entrainement/scraping ne tourne dans ce conteneur, seulement de la
+# lecture d'artefacts deja generes (joblib.load/pd.read_csv).
+#
+# Versions EXACTES copiees de requirements.txt pour les dependances
+# directement importees. Les dependances transitives de Flask/Dash
+# (Werkzeug, Jinja2, click...) sont laissees a la resolution de pip
+# plutot que figees ici individuellement -- un compromis deliberement
+# moins strict que le pip freeze complet de requirements.txt, adapte a
+# une image de deploiement plutot qu'a l'environnement de developpement.
+
+numpy==2.5.1
+pandas==3.0.3
+scipy==1.18.0
+scikit-learn==1.9.0
+statsmodels==0.14.6
+patsy==1.0.2
+joblib==1.5.3
+threadpoolctl==3.6.0
+plotly==6.9.0
+
+dash==4.4.0
+dash-mantine-components==2.8.0
+dash-ag-grid==35.3.0
+dash-iconify==0.1.2
+
+# Serveur WSGI de production -- app.run() (Flask dev server) n'est adapte
+# qu'au developpement local, jamais a une exposition publique (cf.
+# src/dashboard/app.py, bas de fichier).
+gunicorn==23.0.0

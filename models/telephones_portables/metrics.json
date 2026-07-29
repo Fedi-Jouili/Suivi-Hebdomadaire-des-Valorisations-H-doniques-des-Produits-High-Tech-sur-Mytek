@@ -1,0 +1,84 @@
+{
+  "category": "telephones_portables",
+  "n_pooled": 294,
+  "n_train": 233,
+  "n_test": 61,
+  "weeks": [
+    1,
+    2,
+    3,
+    4
+  ],
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "os_platform",
+    "has_bluetooth",
+    "marque"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "has_bluetooth",
+    "os_platform_Inconnu",
+    "os_platform_S30+",
+    "os_platform_Sans Système",
+    "marque_CLEVER",
+    "marque_EVERTEK",
+    "marque_ITEL",
+    "marque_JOYTEL",
+    "marque_MAXFONE",
+    "marque_NOKIA",
+    "marque_PHILIPS",
+    "marque_SMARTEC",
+    "marque_UNIWA",
+    "marque_X-TIGI"
+  ],
+  "hedonic_ols": {
+    "r2_log": 0.923792791436707,
+    "rmse_log": 0.13041125939019563,
+    "mae_log": 0.1085483925865431,
+    "rmse_tnd": 8.928450460351735,
+    "mae_tnd": 7.0103337084030874,
+    "retransformation_bias_correction": null,
+    "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
+    "adj_r2_train": 0.8445004126202394,
+    "aic": -190.4110928566132,
+    "bic": -128.2924006924306
+  },
+  "ridge": {
+    "r2_log": 0.9237923520178263,
+    "rmse_log": 0.13041163537225892,
+    "mae_log": 0.10854959346847787,
+    "rmse_tnd": 8.928736415258962,
+    "mae_tnd": 7.010506841255447,
+    "retransformation_bias_correction": null,
+    "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
+    "best_alpha": 0.001
+  },
+  "random_forest": {
+    "r2_log": 0.7875934578367354,
+    "rmse_log": 0.2177213439553194,
+    "mae_log": 0.07310327968834872,
+    "rmse_tnd": 32.845040474044126,
+    "mae_tnd": 8.882352047599495,
+    "retransformation_bias_correction": null,
+    "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
+    "best_params": {
+      "max_depth": 20,
+      "min_samples_split": 5,
+      "n_estimators": 400
+    },
+    "importance_note": "Importance MDI (reduction moyenne d'impurete), biaisee en faveur des variables continues/a forte cardinalite par rapport aux indicatrices categorielles (Strobl et al., 2007) -- cf. reports/audit_code.md §3.2. A interpreter avec prudence, pas comme un ordre causal. cf. rf_permutation_importance.csv (calculee sur le test, non biaisee par cardinalite) et model_agreement.csv (accord avec OLS/Ridge) pour une lecture moins susceptible a ce biais."
+  },
+  "model_agreement": {
+    "n_features_comparees": 17,
+    "pct_signes_ols_ridge_accordent": 100.0,
+    "rf_ols_spearman_rho": 0.515,
+    "rf_ols_spearman_p_value": 0.0345
+  }
+}

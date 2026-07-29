@@ -74,6 +74,7 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
+from scipy.stats import spearmanr
 from sklearn.cluster import KMeans
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.model_selection import GroupShuffleSplit
@@ -306,6 +307,72 @@ def fit_n1_clustering(df_pooled: pd.DataFrame, continuous_features: list, catego
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# 3bis. ACCORD ENTRE MODELES (OLS / Ridge / RF) -- rigor upgrade
+#    (2026-07-28, audit methodologique reviewer 1) : rien ne verifiait
+#    jusqu'ici que les 3 modeles racontent une histoire coherente -- un
+#    lecteur voyait "RF dit que la RAM compte le plus" sans aucun moyen de
+#    savoir si OLS/Ridge le confirment ou le contredisent.
+# ─────────────────────────────────────────────────────────────────────────────
+
+def compute_model_agreement(
+    ols_coefficients: pd.DataFrame, ridge_coefficients: pd.DataFrame, rf_importances: pd.DataFrame,
+) -> tuple:
+    """
+    Compare les 3 modeles sur les MEMES colonnes (OLS, Ridge en degree=1 et
+    RF sont tous ajustes sur exactement la meme matrice one-hot, cf.
+    process_category -- aucun realignement de noms necessaire).
+
+    - OLS et Ridge ont chacun un coefficient SIGNE, directement comparables :
+      `ols_ridge_signes_accordent` = le signe est-il le meme ?
+    - RF n'a pas de signe (importance toujours positive) -- comparee par
+      CORRELATION DE RANG (Spearman) entre son importance et |coefficient|
+      OLS : RF et OLS s'accordent-ils sur QUELLES variables comptent, meme
+      si RF ne dit rien du sens de l'effet ?
+
+    Returns: (comparison_df, resume: dict) -- comparison_df =
+        ["feature", "ols_coefficient", "ridge_coefficient",
+        "ols_ridge_signes_accordent", "rf_importance"], triee par
+        rf_importance decroissante.
+    """
+    ols = ols_coefficients[ols_coefficients["feature"] != "const"].set_index("feature")
+    ridge = ridge_coefficients.set_index("feature")
+    rf = rf_importances.set_index("feature")
+
+    common = sorted(set(ols.index) & set(ridge.index) & set(rf.index))
+    rows = []
+    for feat in common:
+        ols_coef = float(ols.loc[feat, "coefficient"])
+        ridge_coef = float(ridge.loc[feat, "coefficient"])
+        rows.append({
+            "feature": feat,
+            "ols_coefficient": ols_coef,
+            "ridge_coefficient": ridge_coef,
+            "ols_ridge_signes_accordent": (ols_coef > 0) == (ridge_coef > 0),
+            "rf_importance": float(rf.loc[feat, "importance"]),
+        })
+    columns = ["feature", "ols_coefficient", "ridge_coefficient", "ols_ridge_signes_accordent", "rf_importance"]
+    comparison_df = (
+        pd.DataFrame(rows, columns=columns).sort_values("rf_importance", ascending=False).reset_index(drop=True)
+        if rows else pd.DataFrame(columns=columns)
+    )
+
+    if comparison_df.empty:
+        resume = {
+            "n_features_comparees": 0, "pct_signes_ols_ridge_accordent": None,
+            "rf_ols_spearman_rho": None, "rf_ols_spearman_p_value": None,
+        }
+    else:
+        rho, p_value = spearmanr(comparison_df["rf_importance"], comparison_df["ols_coefficient"].abs())
+        resume = {
+            "n_features_comparees": len(comparison_df),
+            "pct_signes_ols_ridge_accordent": round(float(comparison_df["ols_ridge_signes_accordent"].mean() * 100), 1),
+            "rf_ols_spearman_rho": round(float(rho), 3) if pd.notna(rho) else None,
+            "rf_ols_spearman_p_value": round(float(p_value), 4) if pd.notna(p_value) else None,
+        }
+    return comparison_df, resume
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # 4. ORCHESTRATEUR PAR CATEGORIE
 # ─────────────────────────────────────────────────────────────────────────────
 
@@ -327,7 +394,16 @@ def process_category(category: str) -> dict:
     assert not (set(X_train.columns) & FORBIDDEN_REGRESSORS), "garde-fou de circularite viole -- ne devrait jamais arriver"
 
     # ── HedonicOLS (inference : coefficients, p-values) ─────────────────────
-    ols = HedonicOLS().fit(X_train, y_train, continuous_cols=continuous_features)
+    # cov_type="cluster" (groupe par url) : df_train poole plusieurs semaines
+    # (cf. group_split_by_product) -- un meme produit y apparait donc
+    # plusieurs fois, ce ne sont PAS des observations independantes. HC3 seul
+    # suppose l'independance (corrige seulement l'heteroscedasticite) et
+    # sous-estimerait les erreurs-types -- meme convention deja utilisee par
+    # fit_strategy_c_pooled_time (hedonic_model.py) pour la meme raison.
+    ols_cov_kwds = {"groups": df_train["url"]}
+    ols = HedonicOLS(cov_type="cluster").fit(
+        X_train, y_train, continuous_cols=continuous_features, cov_kwds=ols_cov_kwds
+    )
     ols_pred_test = ols.predict(X_test)
     ols_metrics = evaluate_predictions(y_test.to_numpy(), ols_pred_test.to_numpy())
     ols_metrics.update({"adj_r2_train": float(ols.rsquared_adj), "aic": float(ols.aic), "bic": float(ols.bic)})
@@ -335,7 +411,12 @@ def process_category(category: str) -> dict:
     ols.get_coefficients().to_csv(out_dir / "coefficients.csv", index=False, encoding="utf-8-sig")
 
     # ── Ridge (degree=1 -- one-hot present, cf. avertissement ridge_model.py) ─
-    ridge = RidgeModel(degree=1).fit(X_train, y_train)
+    # groups=url : X_train poole plusieurs semaines (meme raison que le
+    # cluster-robuste ci-dessus) -- sans grouper la CV interne de
+    # GridSearchCV par produit, un meme produit vu a 2+ semaines pourrait
+    # se retrouver a la fois dans le pli d'entrainement ET le pli de
+    # validation d'une meme iteration, biaisant la selection d'alpha.
+    ridge = RidgeModel(degree=1).fit(X_train, y_train, groups=df_train["url"])
     ridge_pred_test = ridge.predict(X_test)
     ridge_metrics = evaluate_predictions(y_test.to_numpy(), np.asarray(ridge_pred_test))
     ridge_metrics["best_alpha"] = float(ridge.get_best_alpha())
@@ -345,19 +426,33 @@ def process_category(category: str) -> dict:
     )
 
     # ── Random Forest ────────────────────────────────────────────────────────
-    rf = RandomForestModel().fit(X_train, y_train)
+    # groups=url : meme raison que pour Ridge ci-dessus.
+    rf = RandomForestModel().fit(X_train, y_train, groups=df_train["url"])
     rf_pred_test = rf.predict(X_test)
     rf_metrics = evaluate_predictions(y_test.to_numpy(), np.asarray(rf_pred_test))
     rf_metrics["best_params"] = rf.grid_search_.best_params_
     rf_metrics["importance_note"] = (
         "Importance MDI (reduction moyenne d'impurete), biaisee en faveur des variables continues/a forte "
         "cardinalite par rapport aux indicatrices categorielles (Strobl et al., 2007) -- cf. "
-        "reports/audit_code.md §3.2. A interpreter avec prudence, pas comme un ordre causal."
+        "reports/audit_code.md §3.2. A interpreter avec prudence, pas comme un ordre causal. "
+        "cf. rf_permutation_importance.csv (calculee sur le test, non biaisee par cardinalite) et "
+        "model_agreement.csv (accord avec OLS/Ridge) pour une lecture moins susceptible a ce biais."
     )
     joblib.dump(rf, out_dir / "rf.joblib")
-    rf.get_importances(feature_names=list(X_train.columns)).to_csv(
-        out_dir / "rf_importances.csv", index=False, encoding="utf-8-sig"
+    rf_importances_df = rf.get_importances(feature_names=list(X_train.columns))
+    rf_importances_df.to_csv(out_dir / "rf_importances.csv", index=False, encoding="utf-8-sig")
+
+    # Importance par permutation (sur le TEST, jamais biaisee vers les
+    # variables continues/forte cardinalite comme MDI ci-dessus) -- cf.
+    # rf_model.py::get_permutation_importance.
+    rf_perm_importance_df = rf.get_permutation_importance(X_test, y_test, feature_names=list(X_train.columns))
+    rf_perm_importance_df.to_csv(out_dir / "rf_permutation_importance.csv", index=False, encoding="utf-8-sig")
+
+    # Accord entre les 3 modeles -- cf. compute_model_agreement ci-dessus.
+    agreement_df, agreement_resume = compute_model_agreement(
+        ols.get_coefficients(), ridge.get_coefficients(feature_names=list(X_train.columns)), rf_importances_df,
     )
+    agreement_df.to_csv(out_dir / "model_agreement.csv", index=False, encoding="utf-8-sig")
 
     metrics = {
         "category": category, "n_pooled": len(df_pooled), "n_train": len(df_train), "n_test": len(df_test),
@@ -365,6 +460,7 @@ def process_category(category: str) -> dict:
         "continuous_features": continuous_features, "categorical_features": categorical_features,
         "design_matrix_columns": list(X_train.columns),
         "hedonic_ols": ols_metrics, "ridge": ridge_metrics, "random_forest": rf_metrics,
+        "model_agreement": agreement_resume,
     }
     with open(out_dir / "metrics.json", "w", encoding="utf-8") as fh:
         json.dump(metrics, fh, ensure_ascii=False, indent=2, default=str)

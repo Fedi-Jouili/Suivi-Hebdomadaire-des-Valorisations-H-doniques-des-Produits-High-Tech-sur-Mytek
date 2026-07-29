@@ -112,6 +112,26 @@ body {
      des graphiques/tableaux). */
   background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
   background-size: 28px 28px;
+  position: relative;
+}
+
+/* "Aurora" : 3 taches de la triade, tres floues et tres discretes, qui
+   derivent lentement derriere tout le contenu (demande explicite d'un fond
+   anime, 2026-07-28). Animee par transform (jamais background-position,
+   moins couteux pour le compositeur) ; z-index negatif + pointer-events
+   none, jamais au-dessus ni au contact du contenu ou des graphiques. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: -20%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 25%, var(--blue-soft) 0%, transparent 45%),
+    radial-gradient(circle at 80% 70%, var(--red-soft) 0%, transparent 45%),
+    radial-gradient(circle at 50% 95%, var(--green-soft) 0%, transparent 40%);
+  filter: blur(60px);
+  animation: auroraDrift 24s var(--ease) infinite alternate;
 }
 
 :focus-visible {
@@ -209,7 +229,10 @@ body {
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
-   7. ANIMATIONS -- motion sur changement d'etat, quasi nulle au repos
+   7. ANIMATIONS -- motion sur changement d'etat + un fond legerement vivant
+   (aurora, cercles flottants) ; le CONTENU (texte, graphiques, tableaux)
+   reste discret : fondu/glissement au montage, jamais de boucle infinie
+   sur les donnees elles-memes.
    ───────────────────────────────────────────────────────────────────────── */
 
 @keyframes fadeSlideIn {
@@ -217,9 +240,56 @@ body {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
 @keyframes popIn {
   from { opacity: 0; transform: scale(0.9); }
   to   { opacity: 1; transform: scale(1); }
+}
+
+@keyframes auroraDrift {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(3%, -2%) scale(1.06); }
+  100% { transform: translate(-2%, 3%) scale(1); }
+}
+
+@keyframes floatSlow {
+  from { transform: translate(0, 0) rotate(0deg); }
+  to   { transform: translate(-10px, 14px) rotate(8deg); }
+}
+
+/* Les deux cercles decoratifs (§6) derivent doucement au lieu de rester
+   figes -- fond legerement vivant plutot qu'un ornement statique. */
+.page-fade::before {
+  animation: floatSlow 9s var(--ease) infinite alternate;
+}
+.page-fade::after {
+  animation: floatSlow 11s var(--ease) infinite alternate-reverse;
+}
+
+/* Titres (page + section_header) : fondu-glissement au montage -- rejoue a
+   chaque callback (changement de categorie/page) puisque Dash remonte ces
+   noeuds a chaque rendu. */
+.mantine-Title-root {
+  animation: fadeSlideIn var(--dur-slow) var(--ease) both;
+}
+
+/* Texte courant : fondu seul, plus discret que les titres (jamais de
+   glissement -- garde une hierarchie de mouvement, le titre "arrive" plus
+   que le corps de texte). */
+.mantine-Text-root {
+  animation: fadeIn var(--dur) var(--ease) both;
+}
+
+/* Graphiques Plotly : fondu-glissement du CONTENEUR au montage seulement --
+   jamais de scale() ici (fausserait la mesure de largeur/hauteur de
+   Plotly.js pendant l'animation) ; la structure/couleur du graphique lui-
+   meme ne change jamais (cf. §0, direction visuelle). */
+.js-plotly-plot {
+  animation: fadeSlideIn var(--dur-slow) var(--ease) both;
 }
 
 @keyframes shimmer {

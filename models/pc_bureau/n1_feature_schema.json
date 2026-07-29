@@ -1,0 +1,30 @@
+{
+  "continuous_features": [
+    "ram_go",
+    "stockage_go"
+  ],
+  "categorical_features": [
+    "cpu_serie",
+    "os_platform",
+    "has_5g",
+    "has_wifi"
+  ],
+  "design_columns": [
+    "ram_go",
+    "stockage_go",
+    "cpu_serie_0.0",
+    "cpu_serie_3.0",
+    "cpu_serie_5.0",
+    "cpu_serie_7.0",
+    "cpu_serie_9.0",
+    "os_platform_FreeDos",
+    "os_platform_Windows 11",
+    "os_platform_Windows 11 Famille",
+    "os_platform_Windows 11 Pro",
+    "has_5g_0",
+    "has_5g_1",
+    "has_wifi_0",
+    "has_wifi_1"
+  ],
+  "k": 5
+}

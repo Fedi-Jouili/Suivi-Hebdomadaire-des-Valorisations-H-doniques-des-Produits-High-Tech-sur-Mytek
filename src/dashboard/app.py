@@ -15,7 +15,9 @@ ROLE :
 
 UTILISATION :
     python -m src.dashboard.app
-    -> http://127.0.0.1:8050
+    -> http://127.0.0.1:8050 (ou http://0.0.0.0:$PORT en conteneur, cf.
+    Dockerfile/render.yaml -- DASH_DEBUG=true pour le rechargement a chaud
+    en developpement local, jamais en public, cf. bas de fichier)
 
 PREREQUIS :
     python -m src.models.save_artifacts   (produit models/, requis par les
@@ -24,11 +26,15 @@ PREREQUIS :
 =============================================================================
 """
 
+import os
+
 import dash
 import dash_ag_grid as dag
 import dash_mantine_components as dmc
 from dash import ALL, Dash, Input, Output, State, callback, ctx, dcc, no_update
 from dash_iconify import DashIconify
+
+import pandas as pd
 
 from src.dashboard import theme as _theme  # noqa: F401 -- applique le template Plotly par defaut a l'import
 from src.dashboard.components.footer import app_footer
@@ -36,7 +42,11 @@ from src.dashboard.components.nav import sidebar_links
 from src.dashboard.data_loader import available_weeks, last_data_update
 from src.dashboard.theme import DMC_THEME
 from src.models.save_artifacts import MODELS_DIR
+from src.models.weekly_report import REPORTS_DIR
 from src.utils.config import CATEGORY_LABELS, CATEGORY_ORDER
+from flask import send_from_directory, abort, Response
+from pathlib import Path
+from urllib.parse import unquote
 
 # ─────────────────────────────────────────────────────────────────────────────
 # <head> : polices Google Fonts + scripts client purs (pas de round-trip Dash)
@@ -137,6 +147,81 @@ app = Dash(
 )
 app.index_string = _INDEX_STRING
 server = app.server  # pour un futur deploiement WSGI (gunicorn/waitress)
+
+# Serve images from the workspace-level `img/` directory so the dashboard
+# can reference project images without duplicating them into the Dash
+# `assets/` folder. URL path: `/stage_img/<filename>`
+IMG_DIR = Path(__file__).resolve().parents[2] / "img"
+
+
+@server.route('/stage_img/<path:filename>')
+def _serve_stage_img(filename):
+    # Support filenames with spaces and URL-encoded characters
+    filename = unquote(filename)
+    full = IMG_DIR / filename
+    if not full.exists() or not full.is_file():
+        abort(404)
+    return send_from_directory(str(IMG_DIR), filename)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# PAGE TELECHARGEMENTS (src/dashboard/pages/downloads.py) -- 3 routes Flask
+# directes (liens <a href>, jamais un callback Dash) : plus simple et plus
+# robuste qu'un pattern-matching callback pour du simple envoi de fichier/
+# CSV filtre, cf. docstring de downloads.py.
+# ─────────────────────────────────────────────────────────────────────────────
+
+NOTEBOOKS_PDF_DIR = REPORTS_DIR / "notebooks_pdf"
+
+
+@server.route('/download/notebook-pdf/<path:filename>')
+def _serve_notebook_pdf(filename):
+    """PDF pre-generes hors-ligne (cf. scripts/generate_notebook_pdfs.py) --
+    jamais convertis a la volee (jupyter/nbconvert/playwright ne sont pas
+    installes dans l'image de production, cf. requirements-deploy.txt)."""
+    filename = unquote(filename)
+    full = NOTEBOOKS_PDF_DIR / filename
+    if not full.exists() or not full.is_file():
+        abort(404)
+    return send_from_directory(str(NOTEBOOKS_PDF_DIR), filename, as_attachment=True)
+
+
+@server.route('/download/produits/<category>.csv')
+def _download_produits(category):
+    """Donnees produit (une ligne par produit, toutes semaines poolees,
+    caracteristiques techniques + segment) -- meme fichier que le bouton
+    "Donnees (CSV)" de la modale d'export de l'en-tete, servi ici par un
+    lien direct plutot qu'un clic dans la modale."""
+    if category not in CATEGORY_ORDER:
+        abort(404)
+    path = MODELS_DIR / category / "pooled_labeled.csv"
+    if not path.exists():
+        abort(404)
+    return send_from_directory(str(path.parent), path.name, as_attachment=True,
+                                download_name=f"produits_{category}.csv")
+
+
+@server.route('/download/estimations-cluster/<category>.csv')
+def _download_estimations_cluster(category):
+    """Estimations par cluster x semaine (moyenne geometrique reelle + les
+    3 modeles + erreur d'estimation, cf. src.models.weekly_report.
+    marque_gamme_model_estimates) FILTREES sur une seule categorie --
+    filtrage a la volee, jamais un fichier CSV supplementaire persiste par
+    categorie (reports/marque_gamme_estimations_hebdo.csv, deja ecrit par
+    weekly_report.py, reste la SEULE source -- eviter la proliferation de
+    CSV redondants deja identifiee comme un probleme sur ce depot)."""
+    if category not in CATEGORY_ORDER:
+        abort(404)
+    path = REPORTS_DIR / "marque_gamme_estimations_hebdo.csv"
+    if not path.exists():
+        abort(404)
+    df = pd.read_csv(path)
+    df = df[df["categorie"] == category]
+    return Response(
+        df.to_csv(index=False, encoding="utf-8-sig"),
+        mimetype="text/csv",
+        headers={"Content-Disposition": f"attachment; filename=estimations_cluster_{category}.csv"},
+    )
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -276,4 +361,24 @@ def _export_file(_n_clicks_list):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # host="0.0.0.0" -- indispensable en conteneur (Docker/Render) : le
+    # 127.0.0.1 par defaut de Dash n'est joignable que depuis l'interieur
+    # du conteneur, jamais depuis l'exterieur meme avec un port mappe.
+    # PORT (defaut 8050 en local) : Render assigne son propre port via
+    # cette variable d'environnement (cf. render.yaml/Dockerfile) -- ne
+    # jamais coder un port en dur si le dashboard doit rester deployable.
+    # DASH_DEBUG (defaut false) : le debugger Werkzeug expose une console
+    # Python interactive dans le navigateur sur toute exception non geree --
+    # une execution a distance de code si jamais laisse actif en public.
+    # Desactive par defaut ; n'activer que pour du developpement local
+    # explicite (`DASH_DEBUG=true python -m src.dashboard.app`).
+    debug = os.environ.get("DASH_DEBUG", "false").lower() == "true"
+    port = int(os.environ.get("PORT", 8050))
+    # threaded=True -- le serveur de developpement Werkzeug est mono-thread
+    # par defaut : chaque JS/CSS/callback est alors servi UN A LA FOIS,
+    # invisible en loopback (127.0.0.1) mais tres lent des qu'on accede
+    # par IP reseau (LAN, latence reelle par requete) -- exactement le
+    # symptome observe (page bloquee sur "Loading..."). Sans effet en
+    # production (Docker/Render utilisent gunicorn --threads, jamais ce
+    # serveur de developpement, cf. Dockerfile).
+    app.run(host="0.0.0.0", port=port, debug=debug, threaded=True)

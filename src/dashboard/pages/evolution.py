@@ -36,7 +36,17 @@ from src.dashboard.data_loader import (
 from src.dashboard.format_utils import fmt_number, fmt_pct_effect, fmt_price
 from src.dashboard.theme import CATEGORY_COLORS, GRAPH_CONFIG, RED, GREEN, TEXT_MUT
 from src.models.hedonic_model import POOLED_TIME_EXCLUDED_CATEGORIES
-from src.models.weekly_report import MATERIALITY_THRESHOLD_PCT, MIN_RELIABLE_N, QUADRANT_LABELS
+from src.utils.cluster_names import n1_cluster_name
+from src.models.weekly_report import (
+    CAUSE_AUCUNE,
+    CAUSE_EFFECTIF,
+    CAUSE_PRIX,
+    CAUSE_PRIX_ET_QUALITE,
+    CAUSE_QUALITE,
+    MATERIALITY_THRESHOLD_PCT,
+    MIN_RELIABLE_N,
+    QUADRANT_LABELS,
+)
 
 dash.register_page(__name__, path="/evolution", name="Évolution hebdomadaire")
 
@@ -129,6 +139,19 @@ def _pivot_cluster_table(cluster_means: pd.DataFrame, approach: str) -> pd.DataF
     weeks = sorted(df["semaine"].unique())
     id_cols = ["cluster"] + (["marque", "gamme_prix"] if approach == "N2_marque_gamme" else [])
 
+    if approach == "N1_technique":
+        category = df["categorie"].iloc[0] if not df.empty else None
+        if category is not None:
+            def _n1_label(value):
+                if pd.isna(value):
+                    return value
+                text = str(value)
+                if text.startswith("c") and text[1:].isdigit():
+                    return n1_cluster_name(category, int(text[1:]))
+                return text
+
+            df["cluster"] = df["cluster"].map(_n1_label)
+
     pivot = df.pivot_table(index=id_cols, columns="semaine", values="prix_geometrique_tnd", aggfunc="first")
     pivot.columns = [f"S{w}" for w in pivot.columns]
     n_latest = df[df["semaine"] == weeks[-1]].set_index(id_cols)["n_produits"]
@@ -144,7 +167,7 @@ def _cluster_table_grid(cluster_means: pd.DataFrame, approach: str, grid_id: str
     pivot, weeks = _pivot_cluster_table(cluster_means, approach)
     price_cols = [f"S{w}" for w in weeks]
 
-    col_defs = [{"field": "cluster", "headerName": "Cluster", "flex": 2}]
+    col_defs = [{"field": "cluster", "headerName": "Segment technique" if approach == "N1_technique" else "Cluster", "flex": 2}]
     if approach == "N2_marque_gamme":
         col_defs += [
             {"field": "marque", "headerName": "Marque", "flex": 1},
@@ -314,25 +337,96 @@ def _spec_change_sentence(spec_changes: dict) -> str:
     return "Sur la même période, la composition technique du catalogue : " + ", ".join(parts) + "."
 
 
+def _headline_summary(category: str, price_index: pd.DataFrame | None, raw_change_pct: float,
+                       first_week: int, last_week: int):
+    """
+    Bloc d'ouverture (2-3 phrases), affiché juste apres les KPI et AVANT la
+    section 1 -- un lecteur presse doit pouvoir repartir avec le verdict
+    prix-vs-qualite sans faire defiler les 5 sections detaillees en
+    dessous. Reutilise EXACTEMENT le meme calcul que _interpretation_
+    section (section 4, cf. plus haut) -- jamais une seconde logique de
+    verdict qui pourrait diverger de celle deja affichee plus bas sur la
+    meme page.
+    """
+    if category in POOLED_TIME_EXCLUDED_CATEGORIES or price_index is None:
+        return dmc.Alert(
+            dmc.Text([
+                f"Résumé S{first_week} → S{last_week} : le prix affiché a varié de ",
+                dmc.Text(fmt_pct_effect(raw_change_pct), span=True, fw=700),
+                ". Aucun indice hédonique fiable pour cette catégorie (coefficients instables entre semaines) — "
+                "impossible de trancher ici entre prix réel et composition du catalogue ; lecture qualitative "
+                "complète en section 4.",
+            ], size="sm"),
+            color="gray", variant="light", icon=DashIconify(icon="tabler:info-circle"), mb="md",
+        )
+
+    row_last = price_index[price_index["semaine"] == last_week]
+    quality_adj_pct = float(row_last["indice_prix_ajuste_qualite_pct"].iloc[0]) if not row_last.empty else None
+    p_value = float(row_last["p_value"].iloc[0]) if not row_last.empty else None
+    significant = quality_adj_pct is not None and p_value is not None and p_value < 0.05
+
+    if quality_adj_pct is None:
+        return dmc.Alert(
+            dmc.Text("Indice hédonique indisponible pour la dernière semaine — voir la section 4.", size="sm"),
+            color="gray", variant="light", icon=DashIconify(icon="tabler:info-circle"), mb="md",
+        )
+
+    if significant:
+        texte = [
+            f"Résumé S{first_week} → S{last_week} : le prix affiché a varié de ",
+            dmc.Text(fmt_pct_effect(raw_change_pct), span=True, fw=700),
+            ". L'indice hédonique confirme un ",
+            dmc.Text("changement de PRIX réel", span=True, fw=700, c=RED if quality_adj_pct > 0 else GREEN),
+            f" de {fmt_pct_effect(quality_adj_pct)} toutes choses égales (p = {p_value:.3f}) — pas seulement un "
+            "effet de catalogue. Détail en section 4.",
+        ]
+        color_alert = "red" if quality_adj_pct > 0 else "green"
+    else:
+        texte = [
+            f"Résumé S{first_week} → S{last_week} : le prix affiché a varié de ",
+            dmc.Text(fmt_pct_effect(raw_change_pct), span=True, fw=700),
+            f", mais l'indice hédonique n'est PAS significatif ({fmt_pct_effect(quality_adj_pct)}, "
+            f"p = {p_value:.3f}) — la variation s'explique surtout par un ",
+            dmc.Text("changement de composition/qualité du catalogue", span=True, fw=700, c=GREEN),
+            ", pas par une politique de prix. Détail en section 4.",
+        ]
+        color_alert = "blue"
+
+    return dmc.Alert(
+        dmc.Text(texte, size="sm"), color=color_alert, variant="light",
+        icon=DashIconify(icon="tabler:bulb"), mb="md",
+    )
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # 5. TRANSITIONS PAR CLUSTER -- prix reel vs valeur technique implicite
 # ─────────────────────────────────────────────────────────────────────────────
 #
-# Grille de lecture : QUADRANT_LABELS (importe de src.models.weekly_report,
-# source UNIQUE du texte de classification -- jamais duplique ici) mappe
-# (direction du prix reel, direction du prix estime) -> phrase academique.
-# _severity() regroupe ces 9 cas en 4 niveaux visuels (neutre / explique /
-# ecart partiel / ecart maximal), coherents avec la semantique rouge=alerte
-# / vert=positif deja etablie dans theme.py -- jamais une palette ad hoc.
-
-_LABEL_TO_DIRS = {v: k for k, v in QUADRANT_LABELS.items()}
-_SEVERITY_ORDER = ["neutre", "explique", "ecart_partiel", "ecart_maximal"]
-_SEVERITY_COLORS = {"neutre": TEXT_MUT, "explique": GREEN, "ecart_partiel": "#ef9fa4", "ecart_maximal": RED}
+# Grille de lecture 3x3 : QUADRANT_LABELS (importe de src.models.
+# weekly_report, source UNIQUE du texte -- jamais duplique ici) mappe
+# (direction du prix reel, direction du prix estime) -> phrase academique,
+# mais NE S'APPLIQUE QUE si l'effectif du cluster est reste stable (sinon
+# cause_principale == "effectif", cf. weekly_report.py §3ter -- decision
+# utilisateur du 2026-07-26 : la question du projet est "prix, qualite, OU
+# nombre de produits ?", pas seulement "prix ou qualite ?"). _severity()
+# groupe donc directement sur cause_principale (5 valeurs, deja calculees
+# par cluster_transitions), jamais retype ici -- coherent avec la
+# semantique rouge=alerte / bleu=structurel / vert=positif deja etablie
+# dans theme.py (cf. §"DIRECTION VISUELLE").
+_SEVERITY_ORDER = [CAUSE_AUCUNE, CAUSE_EFFECTIF, CAUSE_QUALITE, CAUSE_PRIX, CAUSE_PRIX_ET_QUALITE]
+_SEVERITY_COLORS = {
+    CAUSE_AUCUNE: TEXT_MUT,
+    CAUSE_EFFECTIF: "#96b3f1",  # bleu clair (teinte du colorway theme.py) -- cause STRUCTURELLE, jamais une alerte prix
+    CAUSE_QUALITE: GREEN,
+    CAUSE_PRIX: "#ef9fa4",
+    CAUSE_PRIX_ET_QUALITE: RED,
+}
 _SEVERITY_LABELS = {
-    "neutre": "Neutre (rien ne bouge)",
-    "explique": "Expliqué par les caractéristiques",
-    "ecart_partiel": "Écart partiel",
-    "ecart_maximal": "Écart maximal (signal fort)",
+    CAUSE_AUCUNE: "Aucun changement notable",
+    CAUSE_EFFECTIF: "Nombre de produits modifié",
+    CAUSE_QUALITE: "Expliqué par la qualité / caractéristiques",
+    CAUSE_PRIX: "Changement de prix non expliqué",
+    CAUSE_PRIX_ET_QUALITE: "Écart maximal (prix et qualité en sens opposés)",
 }
 _SHORT_CLASSIFICATION_LABELS = {
     "Stabilité réelle (prix et caractéristiques inchangés)": "Stabilité réelle",
@@ -347,32 +441,23 @@ _SHORT_CLASSIFICATION_LABELS = {
 }
 
 
-def _severity(classification: str) -> str:
-    dirs = _LABEL_TO_DIRS.get(classification)
-    if dirs is None:
-        return "neutre"
-    dir_raw, dir_hed = dirs
-    if dir_raw == "stable" and dir_hed == "stable":
-        return "neutre"
-    if dir_raw == dir_hed:
-        return "explique"
-    if "stable" in (dir_raw, dir_hed):
-        return "ecart_partiel"
-    return "ecart_maximal"
+def _severity(cause_principale: str) -> str:
+    """cause_principale est deja calculee par cluster_transitions -- ici on
+    se contente de retomber sur CAUSE_AUCUNE pour une valeur inattendue,
+    jamais un KeyError cote page."""
+    return cause_principale if cause_principale in _SEVERITY_COLORS else CAUSE_AUCUNE
 
 
 def _severity_shares(transitions: pd.DataFrame) -> dict:
     if transitions.empty:
         return {k: 0.0 for k in _SEVERITY_ORDER}
-    sev = transitions["classification"].map(_severity)
-    share = (sev.value_counts(normalize=True) * 100)
+    share = (transitions["cause_principale"].map(_severity).value_counts(normalize=True) * 100)
     return {k: float(share.get(k, 0.0)) for k in _SEVERITY_ORDER}
 
 
 def _transition_kpis(transitions: pd.DataFrame, color: str):
     shares = _severity_shares(transitions)
-    pct_ok = shares["neutre"] + shares["explique"]
-    pct_gap = shares["ecart_partiel"] + shares["ecart_maximal"]
+    pct_prix_qualite_en_jeu = shares[CAUSE_PRIX] + shares[CAUSE_QUALITE] + shares[CAUSE_PRIX_ET_QUALITE]
     pct_accord = float(transitions["accord_modeles"].mean() * 100) if not transitions.empty else 0.0
     n_bootstrap = int(transitions["bootstrap_possible"].sum())
     pct_confirme = (
@@ -384,12 +469,14 @@ def _transition_kpis(transitions: pd.DataFrame, color: str):
             raw_value=len(transitions), note="3 périodes × clusters marque × gamme",
         ),
         kpi_card(
-            "Sans écart (stable ou expliqué)", f"{pct_ok:.0f} %", "tabler:circle-check", color=color,
-            raw_value=pct_ok, suffix=" %",
+            "Nombre de produits modifié", f"{shares[CAUSE_EFFECTIF]:.0f} %", "tabler:git-branch", color=color,
+            raw_value=shares[CAUSE_EFFECTIF], suffix=" %",
+            note="composition du cluster changée — cause prioritaire, cf. §3ter",
         ),
         kpi_card(
-            "Écart notable (seuil fixe ±3 %)", f"{pct_gap:.0f} %", "tabler:alert-triangle", color=color,
-            raw_value=pct_gap, suffix=" %", note="lecture brute, cf. carte suivante",
+            "Prix ou qualité en jeu", f"{pct_prix_qualite_en_jeu:.0f} %", "tabler:scale", color=color,
+            raw_value=pct_prix_qualite_en_jeu, suffix=" %",
+            note="effectif stable — grille prix/qualité applicable",
         ),
         kpi_card(
             "Confirmé par bootstrap", f"{pct_confirme:.0f} %", "tabler:flask", color=color,
@@ -404,19 +491,21 @@ def _transition_kpis(transitions: pd.DataFrame, color: str):
 
 
 def _transition_summary_chart(transitions: pd.DataFrame):
-    counts = transitions["classification"].value_counts().reset_index()
-    counts.columns = ["classification", "n"]
-    counts["severity"] = counts["classification"].map(_severity)
-    counts["label_court"] = counts["classification"].map(lambda c: _SHORT_CLASSIFICATION_LABELS.get(c, c))
+    counts = (
+        transitions["cause_principale"].map(_severity).value_counts()
+        .reindex(_SEVERITY_ORDER, fill_value=0).reset_index()
+    )
+    counts.columns = ["cause_principale", "n"]
+    counts["label"] = counts["cause_principale"].map(_SEVERITY_LABELS)
     counts = counts.sort_values("n")
     fig = px.bar(
-        counts, x="n", y="label_court", orientation="h", color="severity",
+        counts, x="n", y="label", orientation="h", color="cause_principale",
         color_discrete_map=_SEVERITY_COLORS,
     )
     fig.update_layout(
-        title="Répartition des transitions par type (3 périodes cumulées)",
+        title="Transitions par cause principale — prix, qualité, ou nombre de produits ? (3 périodes cumulées)",
         xaxis_title="Nombre de transitions (cluster × période)", yaxis_title="",
-        height=max(320, 34 * len(counts)), showlegend=False, margin=dict(l=10),
+        height=max(320, 50 * len(counts)), showlegend=False, margin=dict(l=10),
         yaxis=dict(automargin=True),
     )
     return fig
@@ -424,7 +513,7 @@ def _transition_summary_chart(transitions: pd.DataFrame):
 
 def _quadrant_scatter(transitions: pd.DataFrame):
     df = transitions.copy()
-    df["Lecture"] = df["classification"].map(_severity).map(_SEVERITY_LABELS)
+    df["Lecture"] = df["cause_principale"].map(_severity).map(_SEVERITY_LABELS)
     df["periode"] = "S" + df["semaine_t"].astype(str) + "→S" + df["semaine_t1"].astype(str)
     df["produit"] = df["marque"] + " · " + df["gamme"] + " · " + df["cluster"]
 
@@ -493,15 +582,23 @@ def _notable_cases_grid(transitions: pd.DataFrame, grid_id: str, top_n: int = 15
     # avant un ecart de 4% confirme sur un grand effectif.
     df = df.sort_values(["ecart_residuel_significatif", "abs_ecart"], ascending=[False, False]).head(top_n)
     df["periode"] = "S" + df["semaine_t"].astype(str) + "→S" + df["semaine_t1"].astype(str)
-    df["classification_courte"] = df["classification"].map(lambda c: _SHORT_CLASSIFICATION_LABELS.get(c, c))
+    df["cause_courte"] = df["cause_principale"].map(_SEVERITY_LABELS)
+    # classification_courte : le texte QUADRANT (fixe) est raccourci via
+    # _SHORT_CLASSIFICATION_LABELS ; le texte "effectif" (dynamique, cf.
+    # _composition_change_label) est deja concis -- juste retire le detail
+    # technique final (cf. cause_principale=... deja visible colonne
+    # "cause_courte" a cote), jamais duplique deux fois dans la grille.
+    df["classification_courte"] = df["classification"].map(
+        lambda c: _SHORT_CLASSIFICATION_LABELS.get(c, c.split(" (cf. cause_principale")[0])
+    )
     df["ic_95pct"] = df.apply(
         lambda r: f"[{r['ecart_residuel_ic_bas']:.1f}, {r['ecart_residuel_ic_haut']:.1f}]"
         if pd.notna(r["ecart_residuel_ic_bas"]) else "—", axis=1,
     )
 
-    cols = ["marque", "gamme", "cluster", "periode", "delta_prix_reel_pct", "delta_estime_hedonic_pct",
-            "ecart_residuel_pct", "ic_95pct", "ecart_residuel_significatif", "classification_courte",
-            "n_produits_t", "n_produits_t1", "composition_stable", "fiabilite_limitee"]
+    cols = ["marque", "gamme", "cluster", "periode", "cause_courte", "delta_prix_reel_pct",
+            "delta_estime_hedonic_pct", "ecart_residuel_pct", "ic_95pct", "ecart_residuel_significatif",
+            "classification_courte", "n_produits_t", "n_produits_t1", "composition_stable", "fiabilite_limitee"]
     return dag.AgGrid(
         id=grid_id,
         className="ag-theme-quartz-dark",
@@ -511,6 +608,7 @@ def _notable_cases_grid(transitions: pd.DataFrame, grid_id: str, top_n: int = 15
             {"field": "gamme", "headerName": "Gamme", "flex": 1},
             {"field": "cluster", "headerName": "Cluster", "flex": 1},
             {"field": "periode", "headerName": "Période", "flex": 1},
+            {"field": "cause_courte", "headerName": "Cause principale", "flex": 2},
             {"field": "delta_prix_reel_pct", "headerName": "Δ prix réel (%)", "type": "rightAligned", "flex": 1},
             {"field": "delta_estime_hedonic_pct", "headerName": "Δ estimé (%)", "type": "rightAligned", "flex": 1},
             {"field": "ecart_residuel_pct", "headerName": "Écart résiduel (%)", "type": "rightAligned", "flex": 1,
@@ -518,7 +616,7 @@ def _notable_cases_grid(transitions: pd.DataFrame, grid_id: str, top_n: int = 15
             {"field": "ic_95pct", "headerName": "IC bootstrap 95 %", "flex": 1},
             {"field": "ecart_residuel_significatif", "headerName": "Confirmé", "flex": 1,
              "cellClassRules": {"ag-status-positive": "value == true"}},
-            {"field": "classification_courte", "headerName": "Classification", "flex": 2},
+            {"field": "classification_courte", "headerName": "Détail", "flex": 2},
             {"field": "n_produits_t", "headerName": "n (t)", "type": "rightAligned", "flex": 1},
             {"field": "n_produits_t1", "headerName": "n (t+1)", "type": "rightAligned", "flex": 1},
             {"field": "composition_stable", "headerName": "Même effectif", "flex": 1},
@@ -536,81 +634,122 @@ def _transitions_narrative(category: str, transitions: pd.DataFrame):
         return dmc.Text("Pas assez de semaines consécutives pour étudier des transitions.", size="sm", c="dimmed")
 
     shares = _severity_shares(transitions)
-    pct_ok = shares["neutre"] + shares["explique"]
-    pct_gap = shares["ecart_partiel"] + shares["ecart_maximal"]
     n_bootstrap = int(transitions["bootstrap_possible"].sum())
     pct_confirme = float(transitions["ecart_residuel_significatif"].sum() / n_bootstrap * 100) if n_bootstrap else 0.0
+    pct_prix_qualite = shares[CAUSE_PRIX] + shares[CAUSE_PRIX_ET_QUALITE]
 
+    # Paragraphe principal : reponse DIRECTE a la question du projet --
+    # prix, qualite, ou nombre de produits ? (decision utilisateur du
+    # 2026-07-26) -- chaque pourcentage vient de cause_principale
+    # (cluster_transitions), jamais retype ni recalcule ici.
     overview = dmc.Text([
         f"Sur {len(transitions)} transitions semaine-à-semaine observées pour « {category_label(category)} » "
-        f"(tous clusters marque × gamme, 3 périodes cumulées), ",
-        dmc.Text(f"{pct_ok:.0f} %", span=True, fw=700, c=GREEN),
-        " ne montrent AUCUN écart entre prix réel et valeur technique implicite (stabilité ou variation de prix "
-        "pleinement expliquée par les caractéristiques du mix vendu), tandis que ",
-        dmc.Text(f"{pct_gap:.0f} %", span=True, fw=700, c=TEXT_MUT),
-        " dépassent le seuil de matérialité fixe (±3 %, une convention, pas un test) — mais parmi les transitions "
-        "où un test est possible (effectif ≥ 2 des deux côtés), seules ",
+        f"(tous clusters marque × gamme, 3 périodes cumulées) : ",
+        dmc.Text(f"{shares[CAUSE_AUCUNE]:.0f} %", span=True, fw=700, c=TEXT_MUT), " sans changement notable, ",
+        dmc.Text(f"{shares[CAUSE_EFFECTIF]:.0f} %", span=True, fw=700, c="#96b3f1"),
+        " dues à un changement du NOMBRE de produits dans le cluster (composition du catalogue — la lecture "
+        "prix/qualité n'y est pas isolable), ",
+        dmc.Text(f"{shares[CAUSE_QUALITE]:.0f} %", span=True, fw=700, c=GREEN),
+        " expliquées par un changement de QUALITÉ/caractéristiques à effectif constant, et ",
+        dmc.Text(f"{pct_prix_qualite:.0f} %", span=True, fw=700, c=(RED if pct_prix_qualite > 15 else TEXT_MUT)),
+        " par un changement de PRIX non expliqué par les caractéristiques. Parmi les transitions testables "
+        "statistiquement (effectif ≥ 2 des deux côtés), ",
         dmc.Text(f"{pct_confirme:.0f} %", span=True, fw=700, c=(RED if pct_confirme > 15 else GREEN)),
-        " résistent à un test bootstrap (intervalle de confiance à 95 % excluant 0, cf. §7 du notebook) — c'est ce "
-        "chiffre-là, pas le premier, qui mesure un écart résiduel avec une base statistique plutôt qu'un seuil "
-        "arbitraire.",
+        " résistent à un test bootstrap (IC 95 % excluant 0) — c'est ce chiffre, pas un simple seuil, qui mesure "
+        "un écart avec une base statistique.",
     ], size="sm")
 
-    candidates = transitions[transitions["ecart_residuel_significatif"] & transitions["ecart_residuel_pct"].notna()]
+    # Cas illustratif PRIX/QUALITE : exclut explicitement cause_principale
+    # == "effectif" -- un tel cas a deja sa propre explication (ci-dessous),
+    # le melanger ici fausserait la lecture "le prix a-t-il vraiment bougé
+    # pour une raison de tarification ou de qualité ?".
+    price_quality_pool = transitions[transitions["cause_principale"] != CAUSE_EFFECTIF]
+    candidates = price_quality_pool[
+        price_quality_pool["ecart_residuel_significatif"] & price_quality_pool["ecart_residuel_pct"].notna()
+    ]
     fallback_non_confirme = candidates.empty
     if candidates.empty:
-        candidates = transitions[
-            transitions["composition_stable"] & ~transitions["fiabilite_limitee"]
-            & transitions["ecart_residuel_pct"].notna() & (transitions["ecart_residuel_pct"].abs() > 0.5)
+        candidates = price_quality_pool[
+            ~price_quality_pool["fiabilite_limitee"] & price_quality_pool["ecart_residuel_pct"].notna()
+            & (price_quality_pool["ecart_residuel_pct"].abs() > 0.5)
         ]
     if candidates.empty:
         case_block = dmc.Text(
-            f"Aucune transition suffisamment fiable (même effectif de produits des deux côtés de la transition, "
-            f"échantillon ≥ {MIN_RELIABLE_N}) ne montre d'écart résiduel notable pour cette catégorie — cohérent "
-            f"avec une tarification alignée sur les caractéristiques observées, dans la limite de ce que 4 "
-            f"semaines de collecte permettent de conclure.",
+            f"Aucune transition à effectif stable et suffisamment fiable (échantillon ≥ {MIN_RELIABLE_N}) ne "
+            "montre d'écart prix/qualité notable pour cette catégorie — cohérent avec une tarification alignée "
+            "sur les caractéristiques observées, dans la limite de ce que 4 semaines de collecte permettent de "
+            "conclure.",
             size="sm", c="dimmed",
         )
     else:
         case = candidates.loc[candidates["ecart_residuel_pct"].abs().idxmax()]
-        case_severity = _severity(case["classification"])
+        case_severity = _severity(case["cause_principale"])
         ic_txt = (
             f" (IC 95 % : [{case['ecart_residuel_ic_bas']:.1f}, {case['ecart_residuel_ic_haut']:.1f}])"
             if pd.notna(case.get("ecart_residuel_ic_bas")) else ""
         )
         titre = (
-            "Cas le plus marquant — confirmé par bootstrap :" if not fallback_non_confirme else
-            "Cas le plus marquant (point estimé seul, non confirmé par bootstrap — à lire avec prudence) :"
+            "Cas prix/qualité le plus marquant — confirmé par bootstrap :" if not fallback_non_confirme else
+            "Cas prix/qualité le plus marquant (point estimé seul, non confirmé par bootstrap — à lire avec prudence) :"
         )
         case_block = dmc.Stack([
             dmc.Text(titre, size="sm", fw=600),
             dmc.Text([
                 f"{case['marque']} · {case['gamme']} · cluster {case['cluster']}, S{int(case['semaine_t'])} → "
-                f"S{int(case['semaine_t1'])} ({int(case['n_produits_t'])} produit(s)) — prix réel : ",
+                f"S{int(case['semaine_t1'])} ({int(case['n_produits_t'])} produit(s), effectif inchangé) — prix "
+                "réel : ",
                 dmc.Text(fmt_pct_effect(case["delta_prix_reel_pct"]), span=True, fw=700),
                 ", prix estimé (valeur technique implicite) : ",
                 dmc.Text(fmt_pct_effect(case["delta_estime_hedonic_pct"]), span=True, fw=700),
                 f" — écart résiduel de {fmt_pct_effect(case['ecart_residuel_pct'])}{ic_txt}. Lecture : ",
                 dmc.Text(case["classification"], span=True, fw=700,
-                          c=(RED if case_severity == "ecart_maximal" else TEXT_MUT)),
+                          c=(RED if case_severity == CAUSE_PRIX_ET_QUALITE else TEXT_MUT)),
                 ".",
             ], size="sm"),
         ], gap=4)
 
+    # Cas illustratif EFFECTIF, seulement si cette cause pese reellement --
+    # sinon un exemple isole donnerait une impression fausse d'importance.
+    effectif_block = None
+    if shares[CAUSE_EFFECTIF] >= 10:
+        effectif_cases = transitions[
+            (transitions["cause_principale"] == CAUSE_EFFECTIF) & transitions["delta_prix_reel_pct"].notna()
+        ]
+        if not effectif_cases.empty:
+            ecase = effectif_cases.loc[effectif_cases["delta_prix_reel_pct"].abs().idxmax()]
+            effectif_block = dmc.Stack([
+                dmc.Text(f"Effet de composition fréquent ({shares[CAUSE_EFFECTIF]:.0f} % des transitions) — exemple :",
+                          size="sm", fw=600),
+                dmc.Text([
+                    f"{ecase['marque']} · {ecase['gamme']} · cluster {ecase['cluster']}, S{int(ecase['semaine_t'])} "
+                    f"→ S{int(ecase['semaine_t1'])} : ",
+                    dmc.Text(f"{int(ecase['n_produits_t'])} → {int(ecase['n_produits_t1'])} produits",
+                              span=True, fw=700, c="#96b3f1"),
+                    f" (prix réel {fmt_pct_effect(ecase['delta_prix_reel_pct'])}, estimé "
+                    f"{fmt_pct_effect(ecase['delta_estime_hedonic_pct'])}). Le prix réel et la valeur technique "
+                    "implicite bougent mécaniquement avec l'entrée/sortie de produits — aucune lecture prix ou "
+                    "qualité fiable n'est possible ici sans suivre l'identité précise des produits (cf. limites, "
+                    "notebook §1.5).",
+                ], size="sm"),
+            ], gap=4)
+
     example_note = dmc.Alert(
         dmc.Text(
-            "Grille de lecture : une moyenne géométrique IDENTIQUE entre deux semaines mais une moyenne ESTIMÉE "
-            "en baisse signifie que le prix affiché n'a pas bougé alors que la valeur technique implicite du mix "
-            "vendu a diminué — l'écart entre ce que le marché facture et ce que les caractéristiques justifient "
-            "s'est donc CREUSÉ, même si aucun des deux prix pris isolément n'a « bougé » de façon spectaculaire. "
-            "Étude de cas détaillée, produit par produit : "
+            "Grille de lecture (à effectif constant) : une moyenne géométrique IDENTIQUE entre deux semaines mais "
+            "une moyenne ESTIMÉE en baisse signifie que le prix affiché n'a pas bougé alors que la valeur "
+            "technique implicite du mix vendu a diminué — l'écart entre ce que le marché facture et ce que les "
+            "caractéristiques justifient s'est donc CREUSÉ. Étude de cas détaillée, produit par produit : "
             "notebooks/Etude_Transitions_Clusters_Marque_Gamme.ipynb.",
             size="xs",
         ),
         color="gray", variant="light", icon=DashIconify(icon="tabler:bulb"), mt="xs",
     )
 
-    return dmc.Stack([overview, case_block, example_note])
+    blocks = [overview, case_block]
+    if effectif_block is not None:
+        blocks.append(effectif_block)
+    blocks.append(example_note)
+    return dmc.Stack(blocks, gap="sm")
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -640,97 +779,123 @@ def render_evolution(category):
     except ArtifactsMissingError:
         return _missing_reports_alert(), False
 
-    last_week = int(coverage["semaine"].max())
-    n1_pct = float(coverage.loc[coverage["semaine"] == last_week, "n1_pct_couverture"].iloc[0])
-    n2_pct = float(coverage.loc[coverage["semaine"] == last_week, "n2_pct_couverture"].iloc[0])
-    price_first = float(composition.sort_values("semaine")["prix_geometrique_tnd"].iloc[0])
-    price_last = float(composition.sort_values("semaine")["prix_geometrique_tnd"].iloc[-1])
-    raw_change_pct = (price_last / price_first - 1) * 100 if price_first else float("nan")
-    best_model_mape = estimates[estimates["semaine"] == last_week].sort_values("mape_pct").iloc[0]
+    # Un rapport regenere partiellement (ex. --category sur une seule
+    # categorie) peut laisser une categorie absente d'un CSV sans que le
+    # fichier lui-meme soit absent (ArtifactsMissingError ne se declenche
+    # pas) -- un DataFrame filtre vide degraderait sinon en IndexError des
+    # le premier .iloc[0] ci-dessous plutot qu'un message clair.
+    if coverage.empty or estimates.empty or composition.empty:
+        return _missing_reports_alert(), False
 
-    kpis = kpi_row([
-        kpi_card(
-            "Couverture N1 (S" + str(last_week) + ")", f"{n1_pct:.0f} %", "tabler:chart-dots", color=color,
-            raw_value=n1_pct, suffix=" %",
-        ),
-        kpi_card(
-            "Couverture N2 (S" + str(last_week) + ")", f"{n2_pct:.0f} %", "tabler:layout-grid", color=color,
-            raw_value=n2_pct, suffix=" %",
-        ),
-        kpi_card(
-            f"Prix géo. S{last_week}", fmt_price(price_last), "tabler:coin", color=color,
-            raw_value=price_last, suffix=" TND",
-            note=f"{fmt_pct_effect(raw_change_pct)} vs S{int(composition['semaine'].min())}",
-        ),
-        kpi_card(
-            "Meilleur modèle (MAPE, dernière semaine)",
-            f"{_MODEL_LABELS[best_model_mape['modele']]} — {best_model_mape['mape_pct']:.1f} %",
-            "tabler:target", color=color,
-        ),
-    ])
+    # L'INTEGRALITE de la construction du contenu est enveloppee (pas
+    # seulement les KPI) : _pivot_cluster_table/_transition_kpis/
+    # _quadrant_scatter etc. indexent aussi des DataFrames (transitions,
+    # cluster_means, mg_estimates) qui peuvent etre partiels sans avoir ete
+    # vides au sens strict verifie ci-dessus (ex. une seule semaine
+    # presente) -- un seul filet de securite en sortie, jamais une trace
+    # Python cote utilisateur quel que soit l'endroit precis ou ca casse.
+    try:
+        last_week = int(coverage["semaine"].max())
+        first_week = int(composition["semaine"].min())
+        n1_pct = float(coverage.loc[coverage["semaine"] == last_week, "n1_pct_couverture"].iloc[0])
+        n2_pct = float(coverage.loc[coverage["semaine"] == last_week, "n2_pct_couverture"].iloc[0])
+        price_first = float(composition.sort_values("semaine")["prix_geometrique_tnd"].iloc[0])
+        price_last = float(composition.sort_values("semaine")["prix_geometrique_tnd"].iloc[-1])
+        raw_change_pct = (price_last / price_first - 1) * 100 if price_first else float("nan")
+        best_model_mape = estimates[estimates["semaine"] == last_week].sort_values("mape_pct").iloc[0]
 
-    content = dmc.Stack([
-        provenance_strip(weeks, extra=f"catégorie : {category_label(category)} · rapports : python -m src.models.weekly_report"),
-        kpis,
-        section_header("1. Couverture du clustering — les deux approches", order=4,
-                        subtitle="N1 (technique, tout le catalogue) et N2 (marque × gamme) — vérifié semaine par semaine, jamais supposé."),
-        _coverage_section(coverage, color),
-        section_header("2. Prix géométrique par cluster", order=4,
-                        subtitle="Moyenne géométrique du prix — cohérente avec le modèle log-linéaire, par cluster et par semaine."),
-        dmc.Tabs(
-            [
-                dmc.TabsList([
-                    dmc.TabsTab("N1 — technique", value="n1", leftSection=DashIconify(icon="tabler:chart-dots")),
-                    dmc.TabsTab("N2 — marque × gamme", value="n2", leftSection=DashIconify(icon="tabler:layout-grid")),
-                ]),
-                dmc.TabsPanel(_cluster_table_grid(cluster_means, "N1_technique", "evolution-n1-grid"), value="n1", pt="sm"),
-                dmc.TabsPanel(_cluster_table_grid(cluster_means, "N2_marque_gamme", "evolution-n2-grid"), value="n2", pt="sm"),
-            ],
-            value="n1", mt="xs",
-        ),
-        section_header("3. Prix estimé par modèle et erreur", order=4,
-                        subtitle="Hedonic OLS / Ridge / Random Forest, sur les données poolées (in-sample, cf. note ci-dessous)."),
-        dmc.Alert(
-            dmc.Text(
-                "Prédictions calculées sur l'ensemble des données poolées (train + test), pas seulement le jeu de "
-                "test — un choix descriptif (photographie du marché par semaine), pas une ré-évaluation de la "
-                "généralisation hors-échantillon (déjà mesurée dans la page « Modèles & clustering »). "
-                "erreur_pct = écart entre moyennes géométriques (biais agrégé) ; mape_pct = erreur absolue moyenne "
-                "par produit (erreur typique).",
-                size="xs",
+        kpis = kpi_row([
+            kpi_card(
+                "Couverture N1 (S" + str(last_week) + ")", f"{n1_pct:.0f} %", "tabler:chart-dots", color=color,
+                raw_value=n1_pct, suffix=" %",
             ),
-            color="blue", variant="light", icon=DashIconify(icon="tabler:info-circle"), mb="sm",
-        ),
-        dmc.Grid([
-            dmc.GridCol(dcc.Graph(figure=_estimates_chart(estimates, color), config=GRAPH_CONFIG), span={"base": 12, "lg": 7}),
-            dmc.GridCol(dcc.Graph(figure=_error_chart(estimates), config=GRAPH_CONFIG), span={"base": 12, "lg": 5}),
-        ]),
-        section_header("4. Interprétation — prix ou qualité ?", order=4,
-                        subtitle="Décomposition entre changement de prix « toutes choses égales » et changement de composition/qualité du catalogue."),
-        dmc.Paper(_interpretation_section(category, composition, price_index), p="md", withBorder=True),
-        section_header("5. Étude des transitions par cluster (marque × gamme)", order=4,
-                        subtitle="Pour chaque cluster et chaque semaine consécutive : le prix réel a-t-il bougé pour une raison que les "
-                                  "caractéristiques du mix vendu expliquent, ou pas ? Étude complète : notebooks/Etude_Transitions_Clusters_Marque_Gamme.ipynb."),
-        _transition_kpis(transitions, color),
-        dcc.Graph(figure=_quadrant_scatter(transitions), config=GRAPH_CONFIG),
-        dmc.Grid([
-            dmc.GridCol(dcc.Graph(figure=_transition_summary_chart(transitions), config=GRAPH_CONFIG), span={"base": 12, "lg": 6}),
-            dmc.GridCol(
-                dmc.Stack([
-                    dmc.Text("Observations et interprétation", size="sm", fw=700, tt="uppercase", c="dimmed"),
-                    _transitions_narrative(category, transitions),
-                ]),
-                span={"base": 12, "lg": 6},
+            kpi_card(
+                "Couverture N2 (S" + str(last_week) + ")", f"{n2_pct:.0f} %", "tabler:layout-grid", color=color,
+                raw_value=n2_pct, suffix=" %",
             ),
-        ], mt="sm"),
-        section_header("Cas notables (plus grand écart résiduel)", order=5,
-                        subtitle="Triés par |écart résiduel| décroissant — vérifier « Même effectif » et « Fiabilité limitée » avant toute lecture économique."),
-        _notable_cases_grid(transitions, "evolution-notable-cases-grid"),
-        dmc.Accordion([
-            dmc.AccordionItem([
-                dmc.AccordionControl("Voir les données source (marque × gamme × cluster × semaine)"),
-                dmc.AccordionPanel(_raw_estimates_grid(mg_estimates, "evolution-mg-estimates-grid")),
-            ], value="raw-data"),
-        ], mt="sm"),
-    ])
+            kpi_card(
+                f"Prix géo. S{last_week}", fmt_price(price_last), "tabler:coin", color=color,
+                raw_value=price_last, suffix=" TND",
+                note=f"{fmt_pct_effect(raw_change_pct)} vs S{first_week}",
+            ),
+            kpi_card(
+                "Meilleur modèle (MAPE, dernière semaine)",
+                f"{_MODEL_LABELS[best_model_mape['modele']]} — {best_model_mape['mape_pct']:.1f} %",
+                "tabler:target", color=color,
+            ),
+        ])
+
+        content = dmc.Stack([
+            provenance_strip(weeks, extra=f"catégorie : {category_label(category)} · rapports : python -m src.models.weekly_report"),
+            kpis,
+            _headline_summary(category, price_index, raw_change_pct, first_week, last_week),
+            section_header("1. Couverture du clustering — les deux approches", order=4,
+                            subtitle="N1 (technique, tout le catalogue) et N2 (marque × gamme) — vérifié semaine par semaine, jamais supposé."),
+            _coverage_section(coverage, color),
+            section_header("2. Prix géométrique par cluster", order=4,
+                            subtitle="Moyenne géométrique du prix — cohérente avec le modèle log-linéaire, par cluster et par semaine."),
+            dmc.Tabs(
+                [
+                    dmc.TabsList([
+                        dmc.TabsTab("N1 — technique", value="n1", leftSection=DashIconify(icon="tabler:chart-dots")),
+                        dmc.TabsTab("N2 — marque × gamme", value="n2", leftSection=DashIconify(icon="tabler:layout-grid")),
+                    ]),
+                    dmc.TabsPanel(_cluster_table_grid(cluster_means, "N1_technique", "evolution-n1-grid"), value="n1", pt="sm"),
+                    dmc.TabsPanel(_cluster_table_grid(cluster_means, "N2_marque_gamme", "evolution-n2-grid"), value="n2", pt="sm"),
+                ],
+                value="n1", mt="xs",
+            ),
+            section_header("3. Prix estimé par modèle et erreur", order=4,
+                            subtitle="Hedonic OLS / Ridge / Random Forest, sur les données poolées (in-sample, cf. note ci-dessous)."),
+            dmc.Alert(
+                dmc.Text(
+                    "Prédictions calculées sur l'ensemble des données poolées (train + test), pas seulement le jeu de "
+                    "test — un choix descriptif (photographie du marché par semaine), pas une ré-évaluation de la "
+                    "généralisation hors-échantillon (déjà mesurée dans la page « Modèles & clustering »). "
+                    "erreur_pct = écart entre moyennes géométriques (biais agrégé) ; mape_pct = erreur absolue moyenne "
+                    "par produit (erreur typique).",
+                    size="xs",
+                ),
+                color="blue", variant="light", icon=DashIconify(icon="tabler:info-circle"), mb="sm",
+            ),
+            dmc.Grid([
+                dmc.GridCol(dcc.Graph(figure=_estimates_chart(estimates, color), config=GRAPH_CONFIG), span={"base": 12, "lg": 7}),
+                dmc.GridCol(dcc.Graph(figure=_error_chart(estimates), config=GRAPH_CONFIG), span={"base": 12, "lg": 5}),
+            ]),
+            section_header("4. Interprétation — prix ou qualité ?", order=4,
+                            subtitle="Décomposition entre changement de prix « toutes choses égales » et changement de composition/qualité du catalogue."),
+            dmc.Paper(_interpretation_section(category, composition, price_index), p="md", withBorder=True),
+            section_header("5. Étude des transitions par cluster (marque × gamme)", order=4,
+                            subtitle="Pour chaque cluster et chaque semaine consécutive : le prix réel a-t-il bougé pour une raison que les "
+                                      "caractéristiques du mix vendu expliquent, ou pas ? Étude complète : notebooks/Etude_Transitions_Clusters_Marque_Gamme.ipynb."),
+            _transition_kpis(transitions, color),
+            dcc.Graph(figure=_quadrant_scatter(transitions), config=GRAPH_CONFIG),
+            dmc.Grid([
+                dmc.GridCol(dcc.Graph(figure=_transition_summary_chart(transitions), config=GRAPH_CONFIG), span={"base": 12, "lg": 6}),
+                dmc.GridCol(
+                    dmc.Stack([
+                        dmc.Text("Observations et interprétation", size="sm", fw=700, tt="uppercase", c="dimmed"),
+                        _transitions_narrative(category, transitions),
+                    ]),
+                    span={"base": 12, "lg": 6},
+                ),
+            ], mt="sm"),
+            section_header("Cas notables (plus grand écart résiduel)", order=5,
+                            subtitle="Triés par |écart résiduel| décroissant — vérifier « Même effectif » et « Fiabilité limitée » avant toute lecture économique."),
+            _notable_cases_grid(transitions, "evolution-notable-cases-grid"),
+            dmc.Accordion([
+                dmc.AccordionItem([
+                    dmc.AccordionControl("Voir les données source (marque × gamme × cluster × semaine)"),
+                    dmc.AccordionPanel(_raw_estimates_grid(mg_estimates, "evolution-mg-estimates-grid")),
+                ], value="raw-data"),
+            ], mt="sm"),
+        ])
+    except (ValueError, IndexError):
+        # Filet de securite : toute combinaison de donnees partielles non
+        # anticipee par les gardes .empty ci-dessus (ex. semaine la plus
+        # recente absente d'un seul des rapports, cluster_means/transitions/
+        # mg_estimates partiels) degrade sur le meme message clair, jamais
+        # une page blanche/trace Python cote utilisateur.
+        return _missing_reports_alert(), False
+
     return content, False
