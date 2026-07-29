@@ -148,6 +148,20 @@ app = Dash(
 app.index_string = _INDEX_STRING
 server = app.server  # pour un futur deploiement WSGI (gunicorn/waitress)
 
+
+@server.route('/healthz')
+def _healthz():
+    """Health check DEDIE, instantane, sans aucune lecture de donnees --
+    utilise par render.yaml (healthCheckPath) et le Dockerfile (HEALTHCHECK).
+    N'utilise PAS "/" (page d'accueil) : celle-ci agrege les 5 categories a
+    chaque appel (load_pooled_category_full), assez lent pour qu'un
+    verificateur de sante strict le confonde parfois avec une instance en
+    difficulte et la fasse cycler -- symptome constate en production
+    (2026-07-29) : 404 intermittents, differents a chaque appel, sans
+    aucune erreur/redemarrage dans les logs gunicorn eux-memes."""
+    return "OK", 200
+
+
 # Serve images from the workspace-level `img/` directory so the dashboard
 # can reference project images without duplicating them into the Dash
 # `assets/` folder. URL path: `/stage_img/<filename>`

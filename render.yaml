@@ -11,7 +11,12 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile
     dockerContext: .
-    healthCheckPath: /
+    # /healthz (pas "/") : la page d'accueil agrege les 5 categories a
+    # chaque appel -- assez lent pour qu'un verificateur de sante strict
+    # confonde parfois l'instance avec une instance en difficulte et la
+    # fasse cycler (404 intermittents constates en production, 2026-07-29,
+    # sans aucune erreur dans les logs gunicorn eux-memes).
+    healthCheckPath: /healthz
     envVars:
       - key: DASH_DEBUG
         value: "false"

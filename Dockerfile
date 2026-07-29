@@ -35,8 +35,9 @@ ENV PORT=8050
 
 EXPOSE 8050
 
+# /healthz (pas "/") : instantane, sans lecture de donnees -- cf. app.py.
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD python -c "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:' + os.environ.get('PORT', '8050') + '/', timeout=3)" || exit 1
+  CMD python -c "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:' + os.environ.get('PORT', '8050') + '/healthz', timeout=3)" || exit 1
 
 # Forme shell (pas exec) -- necessaire pour que $PORT soit developpe par
 # le shell avant d'etre passe a gunicorn. 1 worker/4 threads : profil
