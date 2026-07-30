@@ -112,6 +112,11 @@ class TestCleanCategoryData:
         assert counts["n_clean"] <= counts["n_raw"] or counts["n_raw"] == 0
         assert counts["n_excluded"] == max(counts["n_raw"] - counts["n_clean"], 0)
 
+    @requires_processed_data
+    def test_raw_vs_clean_counts_reference_week(self):
+        counts = raw_vs_clean_counts("pc_bureau", 1)
+        assert counts == {"n_raw": 221, "n_clean": 217, "n_excluded": 4}
+
 
 class TestArtifacts:
     @requires_artifacts

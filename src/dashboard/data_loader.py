@@ -105,6 +105,14 @@ def load_pooled_category_full(category: str) -> pd.DataFrame:
     return load_pooled_category(category)
 
 
+@functools.lru_cache(maxsize=1)
+def _load_raw_vs_clean_counts_full() -> pd.DataFrame:
+    path = REPORTS_DIR / "raw_vs_clean_counts_hebdo.csv"
+    if not path.exists():
+        return pd.DataFrame()
+    return pd.read_csv(path)
+
+
 @functools.lru_cache(maxsize=None)
 def raw_vs_clean_counts(category: str, week: int) -> dict:
     """Compare le nombre de produits SCRAPES (JSON brut) au nombre RETENU
@@ -112,6 +120,17 @@ def raw_vs_clean_counts(category: str, week: int) -> dict:
     (produits sans prix fiable ou caracteristiques hors bornes ecartes en
     amont par le pipeline, cf. src/preprocessing/pipeline.py), jamais
     silencieux (principe du projet, cf. README)."""
+    df_counts = _load_raw_vs_clean_counts_full()
+    if not df_counts.empty:
+        mask = (df_counts["categorie"] == category) & (df_counts["semaine"] == week)
+        match = df_counts.loc[mask]
+        if not match.empty:
+            row = match.iloc[0]
+            n_raw = int(row["n_raw"])
+            n_clean = int(row["n_clean"])
+            n_excluded = int(row["n_excluded"])
+            return {"n_raw": n_raw, "n_clean": n_clean, "n_excluded": n_excluded}
+
     raw_dir = DATA_RAW_DIR / f"week_{week}"
     n_raw = 0
     if raw_dir.exists():
