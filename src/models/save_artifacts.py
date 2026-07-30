@@ -432,11 +432,10 @@ def process_category(category: str) -> dict:
     rf_metrics = evaluate_predictions(y_test.to_numpy(), np.asarray(rf_pred_test))
     rf_metrics["best_params"] = rf.grid_search_.best_params_
     rf_metrics["importance_note"] = (
-        "Importance MDI (reduction moyenne d'impurete), biaisee en faveur des variables continues/a forte "
-        "cardinalite par rapport aux indicatrices categorielles (Strobl et al., 2007) -- cf. "
-        "reports/audit_code.md §3.2. A interpreter avec prudence, pas comme un ordre causal. "
-        "cf. rf_permutation_importance.csv (calculee sur le test, non biaisee par cardinalite) et "
-        "model_agreement.csv (accord avec OLS/Ridge) pour une lecture moins susceptible a ce biais."
+        "Le graphique d'importance des variables de la Random Forest donne un indice utile, mais il peut "
+        "favoriser certaines variables plus que d'autres. Il faut donc le lire comme un repère, pas comme "
+        "une preuve de cause à effet. Pour une lecture plus robuste, consulter aussi l'importance par "
+        "permutation et la comparaison avec OLS/Ridge."
     )
     joblib.dump(rf, out_dir / "rf.joblib")
     rf_importances_df = rf.get_importances(feature_names=list(X_train.columns))

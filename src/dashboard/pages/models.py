@@ -54,9 +54,8 @@ _METHOD_TEXT = dmc.List(
             dmc.Text([
                 dmc.Text("Random Forest.", span=True, fw=600),
                 " Alternative non linéaire, capture des effets de seuil/interactions qu'une régression "
-                "log-linéaire ne peut représenter que via des termes explicites. Les importances de variables "
-                "sont basées sur la réduction moyenne d'impureté (MDI) — biaisées en faveur des variables "
-                "continues, cf. l'avertissement affiché plus bas.",
+                "log-linéaire ne peut représenter que via des termes explicites. Le graphique d'importance "
+                "aide à voir quelles variables pèsent le plus, mais il doit être lu avec prudence.",
             ], size="sm"),
         ),
         dmc.ListItem(
@@ -148,8 +147,8 @@ def _rf_importance_chart(imp: pd.DataFrame, color: str, top_n: int = 15):
     df = imp.head(top_n).sort_values("importance")
     fig = px.bar(df, x="importance", y="feature", orientation="h", color_discrete_sequence=[color])
     fig.update_layout(
-        title=f"Importance des variables (Random Forest, MDI), top {top_n}",
-        xaxis_title="Importance (réduction moyenne d'impureté)", yaxis_title="", height=max(340, 28 * len(df)),
+        title=f"Variables les plus utiles selon la Random Forest, top {top_n}",
+        xaxis_title="Importance relative", yaxis_title="", height=max(340, 28 * len(df)),
         yaxis=dict(automargin=True), margin=dict(l=10),
     )
     return fig
@@ -157,17 +156,17 @@ def _rf_importance_chart(imp: pd.DataFrame, color: str, top_n: int = 15):
 
 def _rf_permutation_importance_chart(imp: pd.DataFrame, color: str, top_n: int = 15):
     """Meme lecture que _rf_importance_chart, mais calculee sur le TEST par
-    permutation (Breiman 2001) -- non biaisee par cardinalite (cf.
-    rf_model.py::get_permutation_importance), barre d'erreur = ecart-type
-    sur les repliques de permutation (importance_std)."""
+    permutation -- utile pour vérifier si une variable apporte vraiment
+    quelque chose au modèle, barre d'erreur = ecart-type sur les répliques
+    de permutation (importance_std)."""
     df = imp.head(top_n).sort_values("importance_mean")
     fig = px.bar(
         df, x="importance_mean", y="feature", orientation="h", error_x="importance_std",
         color_discrete_sequence=[color],
     )
     fig.update_layout(
-        title=f"Importance par permutation (Random Forest, test), top {top_n}",
-        xaxis_title="Baisse du R² test quand la variable est permutée", yaxis_title="",
+        title=f"Vérification des variables par permutation, top {top_n}",
+        xaxis_title="Impact sur la qualité du modèle", yaxis_title="",
         height=max(340, 28 * len(df)), yaxis=dict(automargin=True), margin=dict(l=10),
     )
     fig.add_vline(x=0, line_color=TEXT_MUT, line_width=1)
@@ -185,7 +184,7 @@ def _model_agreement_alert(agreement_resume: dict):
 
     if pct_signs is None or rho is None:
         return dmc.Alert(
-            "Accord entre modèles non disponible -- exécuter `python -m src.models.save_artifacts`.",
+            "Comparaison entre modèles non disponible. Relancer la génération des résultats.",
             color="gray", variant="light", icon=DashIconify(icon="tabler:info-circle"), mb="sm",
         )
 
@@ -195,15 +194,14 @@ def _model_agreement_alert(agreement_resume: dict):
 
     return dmc.Alert(
         dmc.Text([
-            f"OLS et Ridge s'accordent sur le SIGNE du coefficient pour ",
+            f"OLS et Ridge donnent souvent le même sens pour ",
             dmc.Text(f"{pct_signs:.0f} %", span=True, fw=700, c=signs_color),
-            f" des {n} caractéristiques communes. Corrélation de rang (Spearman) entre l'importance Random "
-            f"Forest et |coefficient| OLS : ",
+            f" des {n} caractéristiques communes. Comparaison entre l'importance de la Random Forest et la taille "
+            f"des coefficients OLS : ",
             dmc.Text(f"ρ = {rho:.2f}", span=True, fw=700, c=rho_color),
             f" ({'significatif' if rho_significant else 'non significatif'}, p = {p_value:.3f})" if p_value is not None else "",
-            ". Une corrélation faible ou négative signifie que Random Forest et les modèles linéaires ne "
-            "classent PAS les mêmes variables comme importantes -- à lire avant de citer un classement "
-            "Random Forest comme confirmé par les autres modèles.",
+            ". Si ce lien est faible, cela veut juste dire que les modèles ne mettent pas l'accent sur les "
+            "mêmes variables.",
         ], size="sm"),
         color="blue", variant="light", icon=DashIconify(icon="tabler:git-compare"), mb="sm",
     )

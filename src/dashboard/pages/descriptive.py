@@ -66,17 +66,16 @@ def _missing_data_panel(category: str, weeks: tuple):
         counts = raw_vs_clean_counts(category, w)
         rows.append({
             "Semaine": f"S{w}",
-            "Produits scrapés": counts["n_raw"],
-            "Retenus (nettoyage)": counts["n_clean"],
-            "Écartés": counts["n_excluded"],
-            "% écarté": f"{100 * counts['n_excluded'] / counts['n_raw']:.1f} %" if counts["n_raw"] else "—",
+            "Produits collectés": counts["n_raw"],
+            "Conservés après contrôle": counts["n_clean"],
+            "Retirés": counts["n_excluded"],
+            "% retiré": f"{100 * counts['n_excluded'] / counts['n_raw']:.1f} %" if counts["n_raw"] else "—",
         })
     df = pd.DataFrame(rows)
     return dmc.Stack([
         dmc.Text(
-            "Un produit scrapé est écarté du jeu final s'il n'a aucun prix fiable après nettoyage "
-            "(hors bornes de plausibilité et non ré-extractible depuis la fiche produit) — jamais silencieusement, "
-            "cf. src/preprocessing/pipeline.py.",
+            "Un produit peut être retiré s'il manque des informations fiables ou si ses valeurs semblent "
+            "anormales. Le retrait est toujours compté ici pour que le total reste clair.",
             size="xs", c="dimmed", mb="xs",
         ),
         dag.AgGrid(
@@ -85,10 +84,10 @@ def _missing_data_panel(category: str, weeks: tuple):
             rowData=df.to_dict("records"),
             columnDefs=[
                 {"field": "Semaine", "flex": 1},
-                {"field": "Produits scrapés", "type": "rightAligned", "flex": 1},
-                {"field": "Retenus (nettoyage)", "type": "rightAligned", "flex": 1},
-                {"field": "Écartés", "type": "rightAligned", "flex": 1},
-                {"field": "% écarté", "type": "rightAligned", "flex": 1},
+                {"field": "Produits collectés", "type": "rightAligned", "flex": 1},
+                {"field": "Conservés après contrôle", "type": "rightAligned", "flex": 1},
+                {"field": "Retirés", "type": "rightAligned", "flex": 1},
+                {"field": "% retiré", "type": "rightAligned", "flex": 1},
             ],
             defaultColDef={"sortable": True, "resizable": True},
             style={"height": "180px"},
