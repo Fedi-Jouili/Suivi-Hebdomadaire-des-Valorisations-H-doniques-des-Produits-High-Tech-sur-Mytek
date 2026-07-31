@@ -7,12 +7,12 @@ HISENSE,Milieu de gamme,12,1,no_structure
 HISENSE,Premium,12,1,no_structure
 HISENSE,Économique,12,1,no_structure
 IFFALCON,Gamme unique,8,1,too_small
-LG,Milieu de gamme,11,1,no_structure
+LG,Milieu de gamme,15,1,no_structure
 LG,Premium,12,1,no_structure
-LG,Économique,17,1,no_structure
-MAXWELL,Milieu de gamme,11,1,no_structure
-MAXWELL,Premium,5,1,too_small
-MAXWELL,Économique,9,1,too_small
+LG,Économique,13,2,clustered
+MAXWELL,Milieu de gamme,8,1,too_small
+MAXWELL,Premium,9,1,too_small
+MAXWELL,Économique,8,1,too_small
 SAMSUNG,Milieu de gamme,23,2,clustered
 SAMSUNG,Premium,28,2,clustered
 SAMSUNG,Économique,32,2,clustered

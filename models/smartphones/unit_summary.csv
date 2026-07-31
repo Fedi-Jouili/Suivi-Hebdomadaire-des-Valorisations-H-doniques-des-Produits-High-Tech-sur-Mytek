@@ -1,6 +1,6 @@
 ﻿marque,gamme_prix,n,k,outcome
-HONOR,Milieu de gamme,28,2,clustered
-HONOR,Premium,36,3,clustered
+HONOR,Milieu de gamme,24,1,no_structure
+HONOR,Premium,40,3,clustered
 HONOR,Économique,54,5,clustered
 HUAWEI,Gamme unique,8,1,too_small
 INFINIX,Milieu de gamme,33,2,clustered

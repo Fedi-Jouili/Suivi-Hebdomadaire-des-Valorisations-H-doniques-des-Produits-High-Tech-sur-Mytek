@@ -64,11 +64,11 @@
     "marque_VEGA"
   ],
   "hedonic_ols": {
-    "r2_log": 0.9435175766337589,
-    "rmse_log": 0.2062754102821134,
-    "mae_log": 0.14451187648483915,
-    "rmse_tnd": 1178.9470834842423,
-    "mae_tnd": 538.8019827513577,
+    "r2_log": 0.9435175766337585,
+    "rmse_log": 0.20627541028211432,
+    "mae_log": 0.14451187648483918,
+    "rmse_tnd": 1178.947083484237,
+    "mae_tnd": 538.8019827513583,
     "retransformation_bias_correction": null,
     "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
     "adj_r2_train": 0.9825288525932446,
@@ -86,24 +86,24 @@
     "best_alpha": 10.0
   },
   "random_forest": {
-    "r2_log": 0.9333970727976619,
-    "rmse_log": 0.22399455282916467,
-    "mae_log": 0.16850549309131166,
-    "rmse_tnd": 928.2938481045333,
-    "mae_tnd": 514.3395030240698,
+    "r2_log": 0.9333208630415939,
+    "rmse_log": 0.22412266799265318,
+    "mae_log": 0.16650427784350277,
+    "rmse_tnd": 940.8481374874281,
+    "mae_tnd": 515.6474207635042,
     "retransformation_bias_correction": null,
     "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
     "best_params": {
-      "max_depth": 10,
-      "min_samples_split": 2,
+      "max_depth": 20,
+      "min_samples_split": 5,
       "n_estimators": 400
     },
-    "importance_note": "Importance MDI (reduction moyenne d'impurete), biaisee en faveur des variables continues/a forte cardinalite par rapport aux indicatrices categorielles (Strobl et al., 2007) -- cf. reports/audit_code.md §3.2. A interpreter avec prudence, pas comme un ordre causal. cf. rf_permutation_importance.csv (calculee sur le test, non biaisee par cardinalite) et model_agreement.csv (accord avec OLS/Ridge) pour une lecture moins susceptible a ce biais."
+    "importance_note": "Le graphique d'importance des variables de la Random Forest donne un indice utile, mais il peut favoriser certaines variables plus que d'autres. Il faut donc le lire comme un repère, pas comme une preuve de cause à effet. Pour une lecture plus robuste, consulter aussi l'importance par permutation et la comparaison avec OLS/Ridge."
   },
   "model_agreement": {
     "n_features_comparees": 35,
     "pct_signes_ols_ridge_accordent": 80.0,
-    "rf_ols_spearman_rho": -0.284,
-    "rf_ols_spearman_p_value": 0.0986
+    "rf_ols_spearman_rho": -0.273,
+    "rf_ols_spearman_p_value": 0.112
   }
 }

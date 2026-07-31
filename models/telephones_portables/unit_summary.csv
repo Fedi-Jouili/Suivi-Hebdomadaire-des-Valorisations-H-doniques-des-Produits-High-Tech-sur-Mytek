@@ -5,8 +5,8 @@ EVERTEK,Milieu de gamme,2,1,too_small
 EVERTEK,Économique,18,1,no_structure
 ITEL,Gamme unique,6,1,too_small
 MAXFONE,Gamme unique,8,1,too_small
-NOKIA,Milieu de gamme,9,1,too_small
-NOKIA,Premium,3,1,too_small
+NOKIA,Milieu de gamme,3,1,too_small
+NOKIA,Premium,9,1,too_small
 NOKIA,Économique,13,2,clustered
 PHILIPS,Milieu de gamme,6,1,too_small
 PHILIPS,Économique,20,1,no_structure
@@ -14,3 +14,4 @@ SMARTEC,Milieu de gamme,16,2,clustered
 SMARTEC,Économique,38,2,clustered
 UNIWA,Milieu de gamme,12,1,no_structure
 UNIWA,Économique,24,1,no_structure
+X-TIGI,nan,12,2,clustered

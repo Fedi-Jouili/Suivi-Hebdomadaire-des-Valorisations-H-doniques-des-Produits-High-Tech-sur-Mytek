@@ -49,14 +49,14 @@
     "marque_XIAOMI"
   ],
   "hedonic_ols": {
-    "r2_log": 0.8392852294909913,
-    "rmse_log": 0.35653800619108117,
-    "mae_log": 0.26774758262241183,
-    "rmse_tnd": 908.7753553054949,
-    "mae_tnd": 490.0379164960542,
+    "r2_log": 0.839285229490992,
+    "rmse_log": 0.3565380061910803,
+    "mae_log": 0.26774758262241055,
+    "rmse_tnd": 908.775355305445,
+    "mae_tnd": 490.0379164960375,
     "retransformation_bias_correction": null,
     "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
-    "adj_r2_train": 0.8234621519116683,
+    "adj_r2_train": 0.8234621519116684,
     "aic": 471.63164008452895,
     "bic": 575.1017785758279
   },
@@ -71,24 +71,24 @@
     "best_alpha": 10.0
   },
   "random_forest": {
-    "r2_log": 0.9856882263076595,
-    "rmse_log": 0.10639584433938365,
-    "mae_log": 0.04125188419235398,
-    "rmse_tnd": 152.52719905213473,
-    "mae_tnd": 57.68383075855739,
+    "r2_log": 0.9851545617711869,
+    "rmse_log": 0.10836135983830655,
+    "mae_log": 0.04965325977589203,
+    "rmse_tnd": 153.3489144650155,
+    "mae_tnd": 67.49495608960605,
     "retransformation_bias_correction": null,
     "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
     "best_params": {
-      "max_depth": 20,
+      "max_depth": 10,
       "min_samples_split": 2,
       "n_estimators": 200
     },
-    "importance_note": "Importance MDI (reduction moyenne d'impurete), biaisee en faveur des variables continues/a forte cardinalite par rapport aux indicatrices categorielles (Strobl et al., 2007) -- cf. reports/audit_code.md §3.2. A interpreter avec prudence, pas comme un ordre causal. cf. rf_permutation_importance.csv (calculee sur le test, non biaisee par cardinalite) et model_agreement.csv (accord avec OLS/Ridge) pour une lecture moins susceptible a ce biais."
+    "importance_note": "Le graphique d'importance des variables de la Random Forest donne un indice utile, mais il peut favoriser certaines variables plus que d'autres. Il faut donc le lire comme un repère, pas comme une preuve de cause à effet. Pour une lecture plus robuste, consulter aussi l'importance par permutation et la comparaison avec OLS/Ridge."
   },
   "model_agreement": {
     "n_features_comparees": 22,
-    "pct_signes_ols_ridge_accordent": 100.0,
-    "rf_ols_spearman_rho": 0.108,
-    "rf_ols_spearman_p_value": 0.6328
+    "pct_signes_ols_ridge_accordent": 95.5,
+    "rf_ols_spearman_rho": 0.123,
+    "rf_ols_spearman_p_value": 0.587
   }
 }
