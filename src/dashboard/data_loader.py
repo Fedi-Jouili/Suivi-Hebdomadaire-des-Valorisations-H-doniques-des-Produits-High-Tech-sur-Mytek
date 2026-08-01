@@ -240,6 +240,76 @@ def load_model_artifact(category: str, name: str):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
+# MODELES PAR CLUSTER (N1/N2, cf. save_artifacts.fit_models_per_segment --
+# decision utilisateur du 2026-08-01 : un seul modele categorie est trop
+# general, ajuste EN PLUS un OLS/Ridge/RF par cluster quand l'effectif le
+# permet ET que le resultat bat demontrablement le modele categorie sur le
+# meme test, cf. colonne retenu_pour_prediction).
+# ─────────────────────────────────────────────────────────────────────────────
+
+_SEGMENT_MODEL_FILES = {"hedonic_ols": "ols.joblib", "ridge": "ridge.joblib", "random_forest": "rf.joblib"}
+
+
+@functools.lru_cache(maxsize=None)
+def cluster_models_available(category: str, subdir: str) -> bool:
+    """subdir in {"clusters_n1", "clusters_n2"}. False (jamais une erreur)
+    si la categorie n'a pas encore ete regeneree avec ce correctif -- les
+    consommateurs (pages dashboard) doivent alors se rabattre sur le seul
+    modele categorie, silencieusement pour l'utilisateur mais jamais pour
+    le code (cf. retenu_pour_prediction, jamais suppose)."""
+    return (MODELS_DIR / category / f"{subdir}_summary.csv").exists()
+
+
+@functools.lru_cache(maxsize=None)
+def load_cluster_models_summary(category: str, subdir: str) -> pd.DataFrame:
+    """Table d'audit complete (ajuste/ecarte par segment x famille, cf.
+    save_artifacts.fit_models_per_segment) -- DataFrame vide (jamais une
+    erreur) si la categorie n'a pas encore ete regeneree avec ce correctif."""
+    path = MODELS_DIR / category / f"{subdir}_summary.csv"
+    return pd.read_csv(path, encoding="utf-8-sig") if path.exists() else pd.DataFrame()
+
+
+@functools.lru_cache(maxsize=None)
+def load_retained_cluster_models(category: str, subdir: str) -> dict:
+    """UNIQUEMENT les segments/familles avec retenu_pour_prediction=True
+    (bat le modele categorie sur son propre test, cf. sa docstring dans
+    save_artifacts.py -- jamais un modele simplement "ajustable"). Reutilise
+    par prediction_utils.py (prediction d'un produit hypothetique) ET par
+    la page Modeles (comparaison par cluster).
+
+    Returns: {segment (str): {famille: {"model": objet charge,
+        "continuous_features": list, "categorical_features": list,
+        "design_columns": list}}} -- dict vide si aucun cluster retenu ou
+    categorie pas encore regeneree."""
+    from src.models.save_artifacts import _sanitize_segment_name
+
+    summary = load_cluster_models_summary(category, subdir)
+    if summary.empty:
+        return {}
+    retained = summary[summary["retenu_pour_prediction"] == True]  # noqa: E712
+    if retained.empty:
+        return {}
+
+    root = MODELS_DIR / category / subdir
+    result = {}
+    for segment, famille in zip(retained["segment"], retained["famille"]):
+        seg_dir = root / _sanitize_segment_name(segment)
+        model_path = seg_dir / _SEGMENT_MODEL_FILES[famille]
+        schema_path = seg_dir / "feature_schema.json"
+        if not model_path.exists() or not schema_path.exists():
+            continue
+        with open(schema_path, "r", encoding="utf-8") as fh:
+            schema = json.load(fh)
+        result.setdefault(str(segment), {})[famille] = {
+            "model": joblib.load(model_path),
+            "continuous_features": schema["continuous_features"],
+            "categorical_features": schema["categorical_features"],
+            "design_columns": schema["design_matrix_columns"],
+        }
+    return result
+
+
+# ─────────────────────────────────────────────────────────────────────────────
 # RAPPORTS HEBDOMADAIRES (reports/, produits par src.models.weekly_report --
 # meme convention lecture-seule que les artefacts de save_artifacts.py)
 # ─────────────────────────────────────────────────────────────────────────────
@@ -484,6 +554,7 @@ __all__ = [
     "load_rf_permutation_importances", "load_model_agreement",
     "load_pooled_labeled", "load_brand_plan", "load_unit_summary", "load_n1_feature_schema",
     "load_model_artifact", "get_feature_ranges", "DISCRETE_OPTION_FEATURES", "category_label",
+    "cluster_models_available", "load_cluster_models_summary", "load_retained_cluster_models",
     "load_clustering_coverage", "load_cluster_geometric_means", "load_weekly_estimates",
     "load_hedonic_price_index", "load_catalog_composition",
     "load_marque_gamme_estimates", "load_cluster_transitions", "weekly_reports_available",

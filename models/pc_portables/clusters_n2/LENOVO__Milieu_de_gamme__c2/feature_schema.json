@@ -1,0 +1,28 @@
+{
+  "segment": "LENOVO::Milieu de gamme::c2",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "os_platform"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "os_platform_Windows 11 Famille",
+    "os_platform_Windows 11 Pro"
+  ],
+  "n_train": 44,
+  "n_test": 4,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": false,
+    "random_forest": false
+  }
+}

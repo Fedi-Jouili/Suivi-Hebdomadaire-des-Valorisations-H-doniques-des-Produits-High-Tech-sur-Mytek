@@ -221,6 +221,40 @@ def _n_gammes_for(n: int) -> int:
     return 1
 
 
+def n2_reference_week(df_pooled: pd.DataFrame) -> int:
+    """Semaine de reference pour le clustering N2 (marque x gamme) -- TOUJOURS
+    la plus ancienne semaine disponible dans `df_pooled`, jamais recalculee a
+    chaque appel/a chaque nouvelle semaine ajoutee (meme convention que
+    `ref_week = weeks[0]` dans fit_strategy_c_pooled_time/hedonic_price_index).
+
+    gamme_prix et cluster_id (N2) sont figes sur CETTE seule semaine
+    (compute_price_tiers + compute_cluster_labels appeles sur le sous-ensemble
+    df_pooled[semaine == n2_reference_week(df_pooled)] uniquement) puis
+    reappliques par produit (url) a toutes les semaines ou il apparait --
+    decision utilisateur du 2026-07-31 : un cluster K-Means ne doit JAMAIS
+    melanger des observations de semaines differentes (un meme produit vu 4
+    fois, une fois par semaine, n'est pas 4 points independants -- gonfle
+    artificiellement l'effectif d'une unite marque x gamme au-dela de
+    CLUSTERING_MIN_N et fait apparaitre une structure qui n'existe pas a
+    l'echelle d'une seule semaine). Different du pooling multi-semaines des
+    modeles de regression (legitime, decision utilisateur du 2026-07-21,
+    protege par un split train/test groupe par produit) : le K-Means n'a pas
+    de notion de "periode" dans ses features, mixer les semaines y cree des
+    doublons de points, pas de la donnee supplementaire.
+
+    Consequence assumee : un produit absent de la semaine de reference
+    (nouvelle arrivee dans une semaine ulterieure, ou marque alors sous
+    MIN_BRAND_COUNT) n'a AUCUN gamme_prix/cluster_id, dans aucune semaine, tant
+    que le pipeline n'est pas relance apres mise a jour de la semaine de
+    reference -- jamais invente silencieusement (cf. coverage_by_week, qui
+    continue de rapporter le taux de couverture N2 reel).
+
+    Seule source de verite pour save_artifacts.process_category,
+    weekly_report.cluster_stability_n2 et weekly_report.k_selection_justification
+    -- jamais de logique dupliquee/divergente entre ces 3 appelants."""
+    return int(sorted(df_pooled["semaine"].unique())[0])
+
+
 def compute_price_tiers(df: pd.DataFrame, min_brand_count: int = MIN_BRAND_COUNT):
     """
     Filtre les marques a effectif insuffisant (< min_brand_count) et assigne

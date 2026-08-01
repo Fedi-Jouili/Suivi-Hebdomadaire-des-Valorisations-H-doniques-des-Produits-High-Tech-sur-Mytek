@@ -1,0 +1,32 @@
+{
+  "segment": "DELL::Milieu de gamme::c1",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_serie",
+    "os_platform"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "cpu_serie_5.0",
+    "cpu_serie_7.0",
+    "os_platform_Windows 11 Pro"
+  ],
+  "n_train": 70,
+  "n_test": 5,
+  "familles_ajustees": [
+    "hedonic_ols",
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "hedonic_ols": true,
+    "ridge": true,
+    "random_forest": true
+  }
+}

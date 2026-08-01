@@ -1,0 +1,35 @@
+{
+  "segment": "HP::Milieu de gamme::c0",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_brand",
+    "cpu_serie",
+    "os_platform"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "cpu_brand_Intel",
+    "cpu_serie_3.0",
+    "cpu_serie_5.0",
+    "os_platform_Windows 11 Famille",
+    "os_platform_Windows 11 Pro"
+  ],
+  "n_train": 100,
+  "n_test": 8,
+  "familles_ajustees": [
+    "hedonic_ols",
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "hedonic_ols": false,
+    "ridge": false,
+    "random_forest": false
+  }
+}

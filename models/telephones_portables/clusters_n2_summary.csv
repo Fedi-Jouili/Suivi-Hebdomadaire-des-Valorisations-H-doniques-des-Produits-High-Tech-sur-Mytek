@@ -1,0 +1,22 @@
+﻿segment_col,segment,famille,n_lignes,n_produits_distincts,n_predicteurs,n_min_requis,ajuste,raison_rejet,n_test,r2_test,rmse_tnd_test,r2_test_categorie,rmse_tnd_test_categorie,comparaison_possible,retenu_pour_prediction
+cluster_id,AMI::Économique::c0,hedonic_ols,32,8,4,40,False,n_lignes=32 < n_min_requis=40 (ratio=10),8,,,,,False,False
+cluster_id,AMI::Économique::c0,ridge,32,8,4,20,True,,8,1.0,0.0,-2.8707,4.03,True,True
+cluster_id,AMI::Économique::c0,random_forest,32,8,4,20,True,,8,0.9996,0.04,0.9954,0.14,True,True
+cluster_id,AMI::Économique::c1,hedonic_ols,16,4,4,40,False,n_lignes=16 < n_min_requis=40 (ratio=10),8,,,,,False,False
+cluster_id,AMI::Économique::c1,ridge,16,4,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,AMI::Économique::c1,random_forest,16,4,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,CLEVER::Gamme unique::c0,hedonic_ols,17,5,4,40,False,n_lignes=17 < n_min_requis=40 (ratio=10),4,,,,,False,False
+cluster_id,CLEVER::Gamme unique::c0,ridge,17,5,4,20,False,n_lignes=17 < n_min_requis=20 (ratio=5),4,,,,,False,False
+cluster_id,CLEVER::Gamme unique::c0,random_forest,17,5,4,20,False,n_lignes=17 < n_min_requis=20 (ratio=5),4,,,,,False,False
+cluster_id,EVERTEK::Gamme unique::c0,hedonic_ols,16,6,4,40,False,n_lignes=16 < n_min_requis=40 (ratio=10),4,,,,,False,False
+cluster_id,EVERTEK::Gamme unique::c0,ridge,16,6,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),4,,,,,False,False
+cluster_id,EVERTEK::Gamme unique::c0,random_forest,16,6,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),4,,,,,False,False
+cluster_id,PHILIPS::Gamme unique::c0,hedonic_ols,12,3,4,40,False,n_lignes=12 < n_min_requis=40 (ratio=10),8,,,,,False,False
+cluster_id,PHILIPS::Gamme unique::c0,ridge,12,3,4,20,False,n_lignes=12 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,PHILIPS::Gamme unique::c0,random_forest,12,3,4,20,False,n_lignes=12 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,SMARTEC::Économique::c0,hedonic_ols,42,11,6,60,False,n_lignes=42 < n_min_requis=60 (ratio=10),12,,,,,False,False
+cluster_id,SMARTEC::Économique::c0,ridge,42,11,6,30,True,,12,0.2377,19.29,0.8592,8.41,True,False
+cluster_id,SMARTEC::Économique::c0,random_forest,42,11,6,30,True,,12,0.9998,0.38,0.9942,2.13,True,True
+cluster_id,UNIWA::Gamme unique::c0,hedonic_ols,32,8,5,50,False,n_lignes=32 < n_min_requis=50 (ratio=10),4,,,,,False,False
+cluster_id,UNIWA::Gamme unique::c0,ridge,32,8,5,25,True,,4,0.0,0.32,0.0,47.62,True,False
+cluster_id,UNIWA::Gamme unique::c0,random_forest,32,8,5,25,True,,4,0.0,0.22,0.0,39.52,True,False

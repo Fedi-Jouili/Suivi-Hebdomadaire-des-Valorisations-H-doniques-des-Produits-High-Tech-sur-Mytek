@@ -1,0 +1,7 @@
+﻿segment_col,segment,famille,n_lignes,n_produits_distincts,n_predicteurs,n_min_requis,ajuste,raison_rejet,n_test,r2_test,rmse_tnd_test,r2_test_categorie,rmse_tnd_test_categorie,comparaison_possible,retenu_pour_prediction
+cluster_direct,0,hedonic_ols,308,84,34,340,False,n_lignes=308 < n_min_requis=340 (ratio=10),80,,,,,False,False
+cluster_direct,0,ridge,308,84,34,170,True,,80,0.9352,1040.83,0.9333,1106.96,True,True
+cluster_direct,0,random_forest,308,84,34,170,True,,80,0.922,1056.57,0.9188,993.21,True,True
+cluster_direct,1,hedonic_ols,48,12,16,160,False,n_lignes=48 < n_min_requis=160 (ratio=10),12,,,,,False,False
+cluster_direct,1,ridge,48,12,16,80,False,n_lignes=48 < n_min_requis=80 (ratio=5),12,,,,,False,False
+cluster_direct,1,random_forest,48,12,16,80,False,n_lignes=48 < n_min_requis=80 (ratio=5),12,,,,,False,False

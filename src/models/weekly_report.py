@@ -17,10 +17,24 @@ ROLE :
        clustering (N1 technique / N2 marque x gamme) -- jamais suppose,
        toujours mesure. Distingue explicitement deux causes de non-
        couverture N2 (jamais confondues) :
-         - marque negligeable (< MIN_BRAND_COUNT, filtree AVANT tout essai
-           de clustering, cf. compute_price_tiers) ;
-         - unite marque x gamme retenue mais trop petite pour un clustering
-           significatif (< CLUSTERING_MIN_N, cluster_id reste NaN).
+         - marque negligeable sur l'effectif POOLE (< MIN_BRAND_COUNT,
+           filtree AVANT tout essai de clustering, cf. compute_price_tiers) --
+           la ligne n'apparait alors PAS DU TOUT dans pooled_labeled.csv ;
+         - marque/gamme absente ou sous MIN_BRAND_COUNT sur la SEULE semaine
+           de reference (cf. hedonic_model.n2_reference_week) alors qu'elle
+           passe le seuil poole -- gamme_prix/cluster_id restent NaN pour ce
+           produit, dans TOUTES les semaines, mais la ligne reste presente
+           (cluster_direct/N1 toujours renseigne). gamme_prix/cluster_id ne
+           sont JAMAIS calcules sur le pool multi-semaines (decision
+           utilisateur du 2026-07-31 -- un K-Means/qcut ne doit jamais
+           melanger des observations de semaines differentes, cf.
+           n2_reference_week) ; ils sont figes sur cette semaine puis
+           reappliques par produit (url) partout ou il apparait. A
+           l'interieur d'une unite couverte, un effectif encore insuffisant
+           pour une STRUCTURE K-Means (< CLUSTERING_MIN_N sur la semaine de
+           reference) ne produit PAS de NaN mais un groupe local trivial
+           unique ("c0") -- a distinguer via unit_summary.csv (colonne
+           outcome), jamais via la nullite de cluster_id.
        N1 est construit sur la totalite du catalogue poole (jamais de
        filtrage de marque) -- sa couverture est structurellement de 100%.
 
@@ -74,10 +88,25 @@ ROLE :
        moyenne_geometrique (prix reel), moyenne_estimee_ridge/_hedonic/_rf,
        erreur_ridge_pct/_hedonic_pct/_rf_pct (ajoutees le 2026-07-29, page
        Telechargements -- ecart relatif estime vs reel, positif = le
-       modele surestime), n_produits. Base de l'etude de transitions
-       (point 7), du notebook notebooks/Etude_Transitions_Clusters_
-       Marque_Gamme.ipynb, et des exports CSV par categorie de la page
-       Telechargements du dashboard.
+       modele surestime), n_produits, source_ridge/_hedonic/_rf (ajoutees
+       le 2026-08-01). Base de l'etude de transitions (point 7), du
+       notebook notebooks/Etude_Transitions_Clusters_Marque_Gamme.ipynb, et
+       des exports CSV par categorie de la page Telechargements du
+       dashboard.
+
+       MODELISATION PAR CLUSTER (2026-08-01, cf. save_artifacts.py
+       §3ter/fit_models_per_segment) : moyenne_estimee_* n'utilise plus
+       SYSTEMATIQUEMENT le modele categorie entiere -- chaque produit est
+       estime par le modele le plus specifique RETENU pour sa famille
+       (N2 > N1 > categorie, cf. _predict_all_models_cluster_aware),
+       "retenu" signifiant demontre MEILLEUR que le modele categorie sur le
+       meme test hors-echantillon (jamais un modele de cluster simplement
+       "ajustable", cf. fit_models_per_segment -- mesure empirique sur ce
+       projet : passer le seuil d'effectif ne garantit pas une bonne
+       generalisation, des R² hors-echantillon fortement negatifs ont ete
+       observes sur des segments qui passaient pourtant le seuil). Colonnes
+       source_ridge/_hedonic/_rf ("n2"/"n1"/"categorie") tracent EXPLICITEMENT
+       quel modele a produit quelle estimation, jamais ambigu.
 
     7. transitions_cluster_hebdo.csv : pour chaque cluster et chaque paire
        de semaines consecutives, classe la transition dans une grille 3x3
@@ -180,6 +209,7 @@ from src.models.hedonic_model import (
     build_design_matrix,
     compute_price_tiers,
     fit_strategy_c_pooled_time,
+    n2_reference_week,
 )
 from src.models.save_artifacts import MODELS_DIR, load_pooled_category
 from src.utils.cluster_names import n1_cluster_name
@@ -304,6 +334,120 @@ def _predict_all_models(category: str, df: pd.DataFrame) -> tuple:
     return price_true, price_pred
 
 
+def _sanitize_segment_name(value) -> str:
+    """Identique a save_artifacts._sanitize_segment_name (":" invalide dans
+    un chemin Windows, cluster_id contient "::") -- reproduit ici plutot
+    qu'importe pour eviter une dependance circulaire (save_artifacts importe
+    deja des symboles de hedonic_model, pas de weekly_report)."""
+    text = str(value)
+    for bad, repl in ((":", "_"), ("/", "-"), ("\\", "-"), ("*", ""), ("?", ""),
+                       ('"', ""), ("<", ""), (">", ""), ("|", "_"), (" ", "_")):
+        text = text.replace(bad, repl)
+    return text
+
+
+def _load_retained_segment_models(category: str, subdir: str) -> dict:
+    """Charge, pour clusters_n1 ou clusters_n2 (cf. save_artifacts.
+    persist_segment_models), UNIQUEMENT les modeles marques
+    retenu_pour_prediction=True dans <subdir>_summary.csv (bat le modele
+    categorie sur le meme test, cf. sa docstring -- jamais un modele
+    simplement "ajuste" mais pire que le repli categorie).
+
+    Returns: {segment (str): {famille: {"model": objet charge,
+        "continuous_features": list, "categorical_features": list,
+        "design_columns": list}}} -- dict vide si le sous-dossier ou le
+    summary sont absents (categorie pas encore regeneree avec ce
+    correctif, ou aucun cluster retenu)."""
+    root = MODELS_DIR / category / subdir
+    summary_path = MODELS_DIR / category / f"{subdir}_summary.csv"
+    if not root.exists() or not summary_path.exists():
+        return {}
+
+    summary = pd.read_csv(summary_path, encoding="utf-8-sig")
+    retained = summary[summary["retenu_pour_prediction"] == True]  # noqa: E712 (comparaison explicite, pas "is True")
+    if retained.empty:
+        return {}
+
+    files = {"hedonic_ols": "ols.joblib", "ridge": "ridge.joblib", "random_forest": "rf.joblib"}
+    result = {}
+    for segment, famille in zip(retained["segment"], retained["famille"]):
+        seg_dir = root / _sanitize_segment_name(segment)
+        model_path = seg_dir / files[famille]
+        schema_path = seg_dir / "feature_schema.json"
+        if not model_path.exists() or not schema_path.exists():
+            continue
+        with open(schema_path, "r", encoding="utf-8") as fh:
+            schema = json.load(fh)
+        result.setdefault(str(segment), {})[famille] = {
+            "model": joblib.load(model_path),
+            "continuous_features": schema["continuous_features"],
+            "categorical_features": schema["categorical_features"],
+            "design_columns": schema["design_matrix_columns"],
+        }
+    return result
+
+
+def _predict_all_models_cluster_aware(category: str, df: pd.DataFrame) -> tuple:
+    """
+    Meme resultat que _predict_all_models (price_true, price_pred -- prix
+    reel et estime par les 3 familles, alignes sur df.reset_index()), mais
+    utilise, POUR CHAQUE LIGNE, le modele le plus specifique disponible et
+    RETENU (bat le modele categorie sur son propre test, cf.
+    _load_retained_segment_models) :
+        1. modele N2 (cluster_id) si retenu pour cette famille ;
+        2. sinon modele N1 (cluster_direct) si retenu pour cette famille ;
+        3. sinon le modele categorie entiere (repli, cf. _predict_all_models).
+    Decision utilisateur du 2026-08-01 : un seul modele par categorie est
+    trop general -- mais jamais au prix d'utiliser un modele de cluster
+    DEMONTRE moins bon que le repli (cf. retenu_pour_prediction).
+
+    `df` DOIT contenir cluster_direct et cluster_id (cf. pooled_labeled.csv
+    -- pas load_pooled_category, qui ne les fournit pas) -- sinon
+    equivalent a _predict_all_models (aucune ligne couverte par un cluster).
+
+    Returns: (price_true, price_pred, source) -- source :
+        {famille: np.ndarray[str]} valant "n2"/"n1"/"categorie" par ligne,
+        JAMAIS ambigu sur quel modele a produit quelle prediction (decision
+        utilisateur du 2026-08-01).
+    """
+    price_true_cat, price_pred_cat = _predict_all_models(category, df)
+    df = df.reset_index(drop=True)
+
+    has_cluster_cols = "cluster_id" in df.columns and "cluster_direct" in df.columns
+    source = {famille: np.array(["categorie"] * len(df), dtype=object) for famille in price_pred_cat}
+    if not has_cluster_cols:
+        return price_true_cat, price_pred_cat, source
+
+    n1_models = _load_retained_segment_models(category, "clusters_n1")
+    n2_models = _load_retained_segment_models(category, "clusters_n2")
+    if not n1_models and not n2_models:
+        return price_true_cat, price_pred_cat, source
+
+    price_pred = {famille: arr.copy() for famille, arr in price_pred_cat.items()}
+
+    for famille in price_pred:
+        for segment_col, segment_models, label in (
+            ("cluster_direct", n1_models, "n1"), ("cluster_id", n2_models, "n2"),
+        ):
+            for segment_str, by_famille in segment_models.items():
+                if famille not in by_famille:
+                    continue
+                # cluster_direct est un entier (cf. pooled_labeled.csv) --
+                # segment_str (cle du summary, toujours str) doit etre
+                # compare comme tel, jamais suppose deja du bon type.
+                mask = df[segment_col].astype(str) == segment_str
+                if not mask.any():
+                    continue
+                info = by_famille[famille]
+                X_seg, _ = build_design_matrix(df.loc[mask], info["continuous_features"], info["categorical_features"])
+                X_seg = X_seg.reindex(columns=info["design_columns"], fill_value=0.0).astype(float)
+                log_pred = np.asarray(info["model"].predict(X_seg), dtype=float)
+                price_pred[famille][mask.to_numpy()] = np.exp(log_pred)
+                source[famille][mask.to_numpy()] = label
+
+    return price_true_cat, price_pred, source
+
+
 def weekly_model_estimates(category: str) -> pd.DataFrame:
     df_pooled = load_pooled_category(category)
     price_true, price_pred = _predict_all_models(category, df_pooled)
@@ -345,11 +489,17 @@ def _marque_gamme_product_level(category: str) -> pd.DataFrame:
     Restreint aux lignes N2-couvertes (cluster_id non NaN, cf.
     couverture_clustering_hebdo.csv) -- une ligne sans cluster_id n'a, par
     construction, aucun (marque, gamme, cluster) a lui attribuer.
+
+    Predictions VIA _predict_all_models_cluster_aware (decision utilisateur
+    du 2026-08-01) : chaque produit est estime par le modele le plus
+    specifique RETENU (N2 > N1 > categorie, cf. sa docstring) -- colonnes
+    <famille>_source ("n2"/"n1"/"categorie") ajoutees pour tracer, jamais
+    ambigu, quel modele a produit quelle estimation.
     """
     df = pd.read_csv(MODELS_DIR / category / "pooled_labeled.csv")
     df = df[df["cluster_id"].notna()].reset_index(drop=True)
 
-    price_true, price_pred = _predict_all_models(category, df)
+    price_true, price_pred, source = _predict_all_models_cluster_aware(category, df)
 
     work = df[["marque", "gamme_prix", "cluster_id", "semaine"]].copy()
     work["cluster"] = work["cluster_id"].str.split("::").str[-1]
@@ -357,6 +507,7 @@ def _marque_gamme_product_level(category: str) -> pd.DataFrame:
     work["prix_reel"] = price_true
     for model_name, arr in price_pred.items():
         work[model_name] = arr
+        work[f"{model_name}_source"] = source[model_name]
     work["semaine"] = work["semaine"].astype(int)
     return work
 
@@ -376,6 +527,15 @@ def marque_gamme_model_estimates(category: str, product_level: pd.DataFrame | No
     REELLE -- (estime - reel) / reel * 100, meme formule/convention que
     erreur_pct dans weekly_model_estimates (positif = le modele SURESTIME
     ce cluster cette semaine-la, negatif = il le SOUS-ESTIME).
+
+    Colonnes source_<modele> ajoutees le 2026-08-01 (modelisation par
+    cluster N1/N2) : "n2"/"n1"/"categorie" -- quel modele a REELLEMENT
+    produit moyenne_estimee_<modele> pour cette ligne (cf.
+    _predict_all_models_cluster_aware). Toutes les lignes d'un meme
+    (marque, gamme, cluster) partagent la MEME source pour une famille
+    donnee (le modele retenu d'un cluster s'applique a tout le cluster,
+    jamais produit par produit) -- premiere valeur du groupe suffit,
+    jamais un mode/vote necessaire.
     """
     work = product_level if product_level is not None else _marque_gamme_product_level(category)
 
@@ -385,6 +545,9 @@ def marque_gamme_model_estimates(category: str, product_level: pd.DataFrame | No
         moyenne_estimee_ridge=("ridge", _geo_mean),
         moyenne_estimee_hedonic=("hedonic_ols", _geo_mean),
         moyenne_estimee_rf=("random_forest", _geo_mean),
+        source_ridge=("ridge_source", "first"),
+        source_hedonic=("hedonic_ols_source", "first"),
+        source_rf=("random_forest_source", "first"),
     ).reset_index()
 
     grouped.insert(0, "categorie", category)
@@ -403,7 +566,8 @@ def marque_gamme_model_estimates(category: str, product_level: pd.DataFrame | No
 
     col_order = ["categorie", "marque", "gamme", "cluster", "semaine",
                  "moyenne_geometrique", "moyenne_estimee_ridge", "moyenne_estimee_hedonic", "moyenne_estimee_rf",
-                 "erreur_ridge_pct", "erreur_hedonic_pct", "erreur_rf_pct", "n_produits"]
+                 "erreur_ridge_pct", "erreur_hedonic_pct", "erreur_rf_pct", "n_produits",
+                 "source_ridge", "source_hedonic", "source_rf"]
     return grouped[col_order].sort_values(["marque", "gamme", "cluster", "semaine"]).reset_index(drop=True)
 
 
@@ -820,16 +984,25 @@ def cluster_stability_n2(category: str, n_boot: int = DEFAULT_N_BOOT_STABILITE,
     N'affecte JAMAIS le clustering persiste (aucun re-fit des artefacts de
     save_artifacts.py) -- purement diagnostique, cf. reports/
     stabilite_clustering_n2.csv.
+
+    Restreint a la SEULE semaine de reference (n2_reference_week -- meme
+    semaine que celle figee par save_artifacts.process_category) : audite le
+    clustering REELLEMENT persiste, jamais un clustering fictif ajuste sur le
+    pool multi-semaines (qui gonflerait artificiellement l'effectif de
+    chaque unite et testerait la stabilite d'un K-Means qui n'est plus celui
+    produit en amont, cf. decision utilisateur du 2026-07-31).
     """
     df_pooled = load_pooled_category(category)
-    df_tiers, _ = compute_price_tiers(df_pooled)
+    reference_week = n2_reference_week(df_pooled)
+    df_reference = df_pooled[df_pooled["semaine"] == reference_week]
+    df_tiers, _ = compute_price_tiers(df_reference)
     continuous_features, categorical_features = _classify_features(df_tiers, exclude=_ID_COLUMNS | {"semaine"})
     rng = np.random.default_rng(random_state)
 
     rows = []
     for (marque, gamme), df_unit in df_tiers.groupby(["marque", "gamme_prix"], observed=True):
         n = len(df_unit)
-        row = {"categorie": category, "marque": marque, "gamme": gamme, "n": n}
+        row = {"categorie": category, "marque": marque, "gamme": gamme, "semaine_reference": reference_week, "n": n}
 
         if n < CLUSTERING_MIN_N:
             rows.append({**row, "k": 1, "outcome": "too_small",
@@ -898,8 +1071,10 @@ def k_selection_justification(category: str) -> pd.DataFrame:
         None) -- reproduit fit_n1_clustering (save_artifacts.py) a
         l'identique.
       - N2_marque_gamme : un choix de k PAR unite marque x gamme
-        atteignant CLUSTERING_MIN_N -- reproduit la boucle de
-        cluster_stability_n2.
+        atteignant CLUSTERING_MIN_N sur la SEULE semaine de reference
+        (n2_reference_week) -- reproduit la boucle de cluster_stability_n2
+        et la logique de save_artifacts.process_category (jamais un k choisi
+        sur le pool multi-semaines, cf. decision utilisateur du 2026-07-31).
 
     N'affecte JAMAIS les artefacts persistes (aucun impact sur
     save_artifacts.py) -- purement diagnostique, cf. reports/
@@ -921,8 +1096,12 @@ def k_selection_justification(category: str) -> pd.DataFrame:
     trace_n1.insert(2, "marque", None)
     trace_n1.insert(3, "gamme", None)
 
-    # ── N2 : un k par unite marque x gamme (reproduit cluster_stability_n2) ──
-    df_tiers, _ = compute_price_tiers(df_pooled)
+    # ── N2 : un k par unite marque x gamme, sur la SEULE semaine de reference
+    # (reproduit cluster_stability_n2 / save_artifacts.process_category --
+    # jamais le pool multi-semaines, cf. n2_reference_week) ──
+    reference_week = n2_reference_week(df_pooled)
+    df_reference = df_pooled[df_pooled["semaine"] == reference_week]
+    df_tiers, _ = compute_price_tiers(df_reference)
     n2_continuous, n2_categorical = _classify_features(df_tiers, exclude=_ID_COLUMNS | {"semaine"})
     n2_frames = []
     for (marque, gamme), df_unit in df_tiers.groupby(["marque", "gamme_prix"], observed=True):

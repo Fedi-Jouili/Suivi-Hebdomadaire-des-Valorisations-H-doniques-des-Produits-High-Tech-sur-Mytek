@@ -45,16 +45,16 @@
     "marque_MSI"
   ],
   "hedonic_ols": {
-    "r2_log": 0.6804630243339044,
-    "rmse_log": 0.29840794634008744,
-    "mae_log": 0.24374656866025063,
-    "rmse_tnd": 1530.993856719063,
-    "mae_tnd": 902.2448870301115,
+    "r2_log": 0.6804630243339034,
+    "rmse_log": 0.29840794634008794,
+    "mae_log": 0.24374656866025085,
+    "rmse_tnd": 1530.9938567190395,
+    "mae_tnd": 902.2448870301056,
     "retransformation_bias_correction": null,
     "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
     "adj_r2_train": 0.6611850106591795,
-    "aic": 193.26431358656055,
-    "bic": 318.58938394507715
+    "aic": 193.26431358656146,
+    "bic": 318.58938394507805
   },
   "ridge": {
     "r2_log": 0.6827986292682318,
@@ -67,11 +67,11 @@
     "best_alpha": 100.0
   },
   "random_forest": {
-    "r2_log": 0.6844339647903608,
-    "rmse_log": 0.2965479664992549,
-    "mae_log": 0.19023537329832438,
-    "rmse_tnd": 1600.7321347878858,
-    "mae_tnd": 750.9634168063513,
+    "r2_log": 0.6845752697521762,
+    "rmse_log": 0.2964815645636956,
+    "mae_log": 0.1902146997508727,
+    "rmse_tnd": 1600.1620567423772,
+    "mae_tnd": 750.9351987634059,
     "retransformation_bias_correction": null,
     "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
     "best_params": {

@@ -41,46 +41,46 @@
     "marque_MYTEK"
   ],
   "hedonic_ols": {
-    "r2_log": 0.5451455984650045,
-    "rmse_log": 0.30017942353511173,
-    "mae_log": 0.2204852924795263,
-    "rmse_tnd": 989.2623431786185,
-    "mae_tnd": 675.7108746974562,
+    "r2_log": 0.5451455984650104,
+    "rmse_log": 0.30017942353510974,
+    "mae_log": 0.22048529247952323,
+    "rmse_tnd": 989.2623431786112,
+    "mae_tnd": 675.7108746974394,
     "retransformation_bias_correction": null,
     "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
     "adj_r2_train": 0.7968284452191192,
-    "aic": -119.77957035190661,
-    "bic": -38.04103036648836
+    "aic": -119.77957035190616,
+    "bic": -38.0410303664879
   },
   "ridge": {
-    "r2_log": 0.5447044576762408,
-    "rmse_log": 0.3003249528468471,
-    "mae_log": 0.22038725228148898,
-    "rmse_tnd": 989.7982066383419,
-    "mae_tnd": 675.4869978952909,
+    "r2_log": 0.5413697883347295,
+    "rmse_log": 0.30142276431222365,
+    "mae_log": 0.21937623452887575,
+    "rmse_tnd": 993.2362412903042,
+    "mae_tnd": 672.7379416437503,
     "retransformation_bias_correction": null,
     "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
-    "best_alpha": 1.0
+    "best_alpha": 10.0
   },
   "random_forest": {
-    "r2_log": 0.4141926212194432,
-    "rmse_log": 0.3406607806347453,
-    "mae_log": 0.2326803172615025,
-    "rmse_tnd": 941.464611759071,
-    "mae_tnd": 675.6785513189966,
+    "r2_log": 0.4057372362348749,
+    "rmse_log": 0.3431104754496581,
+    "mae_log": 0.23325887089854816,
+    "rmse_tnd": 943.7853213328447,
+    "mae_tnd": 675.3436348510187,
     "retransformation_bias_correction": null,
     "retransformation_note": "rmse_tnd/mae_tnd sont calcules par simple exp() des predictions log, sans correction de biais de retransformation (Duan/Miller) -- sous-estiment legerement l'erreur moyenne reelle en TND. La comparaison RELATIVE entre modeles reste valide (cf. reports/audit_code.md §3.3).",
     "best_params": {
       "max_depth": 10,
-      "min_samples_split": 5,
-      "n_estimators": 400
+      "min_samples_split": 2,
+      "n_estimators": 100
     },
     "importance_note": "Le graphique d'importance des variables de la Random Forest donne un indice utile, mais il peut favoriser certaines variables plus que d'autres. Il faut donc le lire comme un repère, pas comme une preuve de cause à effet. Pour une lecture plus robuste, consulter aussi l'importance par permutation et la comparaison avec OLS/Ridge."
   },
   "model_agreement": {
     "n_features_comparees": 18,
     "pct_signes_ols_ridge_accordent": 100.0,
-    "rf_ols_spearman_rho": -0.172,
-    "rf_ols_spearman_p_value": 0.4941
+    "rf_ols_spearman_rho": -0.174,
+    "rf_ols_spearman_p_value": 0.4888
   }
 }

@@ -1,0 +1,30 @@
+{
+  "segment": "MSI::Milieu de gamme::c0",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go"
+  ],
+  "categorical_features": [
+    "cpu_serie",
+    "has_5g"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "has_5g",
+    "cpu_serie_5.0",
+    "cpu_serie_7.0"
+  ],
+  "n_train": 84,
+  "n_test": 16,
+  "familles_ajustees": [
+    "hedonic_ols",
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "hedonic_ols": false,
+    "ridge": true,
+    "random_forest": true
+  }
+}

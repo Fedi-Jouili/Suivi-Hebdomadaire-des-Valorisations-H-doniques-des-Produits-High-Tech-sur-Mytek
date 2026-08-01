@@ -1,0 +1,32 @@
+{
+  "segment": "1",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "marque"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "marque_EVERTEK",
+    "marque_JOYTEL",
+    "marque_MAXFONE",
+    "marque_NOKIA",
+    "marque_SMARTEC",
+    "marque_X-TIGI"
+  ],
+  "n_train": 96,
+  "n_test": 31,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": false,
+    "random_forest": false
+  }
+}

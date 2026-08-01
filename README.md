@@ -39,18 +39,22 @@ tests/              # Tests unitaires et d'intégration (mirroir partiel de src/
 Dockerfile, docker-compose.yml, render.yaml, requirements-deploy.txt   # Déploiement du dashboard (cf. §Déploiement)
 ```
 
-> `outputs/labels/*.csv` date du tout premier commit et ne couvre que la semaine 1 : le clustering utilisé
-> partout ailleurs dans le projet (notebooks récents, dashboard, rapports) est recalculé à la volée sur
-> l'ensemble des semaines disponibles (`compute_cluster_labels`, `src/models/hedonic_model.py`) — ces fichiers
-> restent référencés par quelques notebooks plus anciens à titre de point de comparaison historique, mais ne
-> doivent jamais être lus comme le clustering "actuel".
+> `outputs/labels/*.csv` provient des notebooks de clustering (`Clustering_produits_technologiques.ipynb` pour
+> N1, `Segmentation_Prix_Clustering_produits_technologiques.ipynb` pour N2), calculé sur le seul instantané
+> semaine 1 — `produits_prix_cluster_semaine_<catégorie>.csv` étend ensuite ces clusters à toutes les semaines
+> disponibles, PAR PRODUIT (un cluster ne doit jamais mélanger des observations de semaines différentes,
+> décision utilisateur du 2026-07-31, cf. `hedonic_model.n2_reference_week`), pas en le recalculant. Depuis le
+> correctif d'harmonisation du 2026-08-01, ces notebooks délèguent leur règle de classification continue/
+> catégorielle à `src/models/hedonic_model.py::_classify_features` (source unique) — leurs clusters concordent
+> désormais à 100% (gamme ET composition exacte) avec `models/<catégorie>/pooled_labeled.csv`, le clustering
+> utilisé par le reste du projet (dashboard, rapports), lui-même ancré sur la même semaine de référence.
 
 ## Pipeline
 
 1. **Scraping** (`src/scraper`) — collecte hebdomadaire des fiches produits.
 2. **Preprocessing** (`src/preprocessing`) — nettoyage, bornage des valeurs aberrantes, imputation, encodage, sélection de features pertinentes pour `log(prix_tnd)` (tests de Spearman/Kruskal-Wallis, ou justification théorique). `python -m src.preprocessing.pipeline --all` sélectionne les features UNE SEULE FOIS sur toutes les semaines poolées (recommandé, évite la dérive de schéma d'une semaine à l'autre) ; le mode une-semaine-à-la-fois reste disponible pour un usage ponctuel.
-3. **Modélisation** (`src/models`) — régression hédonique (OLS + Ridge) pour la décomposition du prix, Random Forest pour l'importance des features, rapports hebdomadaires agrégés (`weekly_report.py`).
-4. **Dashboard** (`src/dashboard`) — visualisation interactive (statistiques descriptives, modèles & clustering, évolution hebdomadaire, prédiction, téléchargements) sur les artefacts générés aux étapes 2-3, strictement en lecture seule.
+3. **Modélisation** (`src/models`) — régression hédonique (OLS + Ridge) pour la décomposition du prix, Random Forest pour l'importance des features, un modèle **par catégorie entière** puis, en plus, un modèle **par cluster** (N1 technique et N2 marque × gamme séparément) quand l'effectif le permet ET que le résultat bat démontrablement le modèle catégorie sur son propre test hors-échantillon (`save_artifacts.fit_models_per_segment` — jamais un modèle de cluster simplement estimable, cf. sa docstring), rapports hebdomadaires agrégés (`weekly_report.py`).
+4. **Dashboard** (`src/dashboard`) — visualisation interactive (statistiques descriptives, modèles & clustering, évolution hebdomadaire, prédiction, téléchargements) sur les artefacts générés aux étapes 2-3, strictement en lecture seule. La page Prédiction utilise automatiquement le modèle le plus spécifique retenu pour le produit hypothétique saisi (N2 > N1 > catégorie).
 5. **Notebooks** (`notebooks/`) — EDA, segmentation prix/marque, clustering, comparaison de modèles, évolution temporelle du marché, étude des transitions par cluster.
 
 ## Dashboard

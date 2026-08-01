@@ -1,0 +1,82 @@
+﻿segment_col,segment,famille,n_lignes,n_produits_distincts,n_predicteurs,n_min_requis,ajuste,raison_rejet,n_test,r2_test,rmse_tnd_test,r2_test_categorie,rmse_tnd_test_categorie,comparaison_possible,retenu_pour_prediction
+cluster_id,HONOR::Milieu de gamme::c0,hedonic_ols,24,7,7,70,False,n_lignes=24 < n_min_requis=70 (ratio=10),6,,,,,False,False
+cluster_id,HONOR::Milieu de gamme::c0,ridge,24,7,7,35,False,n_lignes=24 < n_min_requis=35 (ratio=5),6,,,,,False,False
+cluster_id,HONOR::Milieu de gamme::c0,random_forest,24,7,7,35,False,n_lignes=24 < n_min_requis=35 (ratio=5),6,,,,,False,False
+cluster_id,HONOR::Premium::c0,hedonic_ols,28,7,6,60,False,n_lignes=28 < n_min_requis=60 (ratio=10),12,,,,,False,False
+cluster_id,HONOR::Premium::c0,ridge,28,7,6,30,False,n_lignes=28 < n_min_requis=30 (ratio=5),12,,,,,False,False
+cluster_id,HONOR::Premium::c0,random_forest,28,7,6,30,False,n_lignes=28 < n_min_requis=30 (ratio=5),12,,,,,False,False
+cluster_id,HONOR::Économique::c0,hedonic_ols,32,8,7,70,False,n_lignes=32 < n_min_requis=70 (ratio=10),5,,,,,False,False
+cluster_id,HONOR::Économique::c0,ridge,32,8,7,35,False,n_lignes=32 < n_min_requis=35 (ratio=5),5,,,,,False,False
+cluster_id,HONOR::Économique::c0,random_forest,32,8,7,35,False,n_lignes=32 < n_min_requis=35 (ratio=5),5,,,,,False,False
+cluster_id,INFINIX::Milieu de gamme::c0,hedonic_ols,25,7,6,60,False,n_lignes=25 < n_min_requis=60 (ratio=10),8,,,,,False,False
+cluster_id,INFINIX::Milieu de gamme::c0,ridge,25,7,6,30,False,n_lignes=25 < n_min_requis=30 (ratio=5),8,,,,,False,False
+cluster_id,INFINIX::Milieu de gamme::c0,random_forest,25,7,6,30,False,n_lignes=25 < n_min_requis=30 (ratio=5),8,,,,,False,False
+cluster_id,INFINIX::Premium::c0,hedonic_ols,16,4,8,80,False,n_lignes=16 < n_min_requis=80 (ratio=10),4,,,,,False,False
+cluster_id,INFINIX::Premium::c0,ridge,16,4,8,40,False,n_lignes=16 < n_min_requis=40 (ratio=5),4,,,,,False,False
+cluster_id,INFINIX::Premium::c0,random_forest,16,4,8,40,False,n_lignes=16 < n_min_requis=40 (ratio=5),4,,,,,False,False
+cluster_id,INFINIX::Économique::c0,hedonic_ols,28,7,4,40,False,n_lignes=28 < n_min_requis=40 (ratio=10),4,,,,,False,False
+cluster_id,INFINIX::Économique::c0,ridge,28,7,4,20,True,,4,0.0,0.0,0.0,105.31,True,False
+cluster_id,INFINIX::Économique::c0,random_forest,28,7,4,20,True,,4,0.0,0.0,0.0,1.02,True,False
+cluster_id,LESIA::Premium::c0,hedonic_ols,20,5,5,50,False,n_lignes=20 < n_min_requis=50 (ratio=10),4,,,,,False,False
+cluster_id,LESIA::Premium::c0,ridge,20,5,5,25,False,n_lignes=20 < n_min_requis=25 (ratio=5),4,,,,,False,False
+cluster_id,LESIA::Premium::c0,random_forest,20,5,5,25,False,n_lignes=20 < n_min_requis=25 (ratio=5),4,,,,,False,False
+cluster_id,LESIA::Économique::c0,hedonic_ols,12,3,4,40,False,n_lignes=12 < n_min_requis=40 (ratio=10),12,,,,,False,False
+cluster_id,LESIA::Économique::c0,ridge,12,3,4,20,False,n_lignes=12 < n_min_requis=20 (ratio=5),12,,,,,False,False
+cluster_id,LESIA::Économique::c0,random_forest,12,3,4,20,False,n_lignes=12 < n_min_requis=20 (ratio=5),12,,,,,False,False
+cluster_id,OPPO::Milieu de gamme::c0,hedonic_ols,24,6,7,70,False,n_lignes=24 < n_min_requis=70 (ratio=10),4,,,,,False,False
+cluster_id,OPPO::Milieu de gamme::c0,ridge,24,6,7,35,False,n_lignes=24 < n_min_requis=35 (ratio=5),4,,,,,False,False
+cluster_id,OPPO::Milieu de gamme::c0,random_forest,24,6,7,35,False,n_lignes=24 < n_min_requis=35 (ratio=5),4,,,,,False,False
+cluster_id,OPPO::Premium::c0,hedonic_ols,18,5,5,50,False,n_lignes=18 < n_min_requis=50 (ratio=10),8,,,,,False,False
+cluster_id,OPPO::Premium::c0,ridge,18,5,5,25,False,n_lignes=18 < n_min_requis=25 (ratio=5),8,,,,,False,False
+cluster_id,OPPO::Premium::c0,random_forest,18,5,5,25,False,n_lignes=18 < n_min_requis=25 (ratio=5),8,,,,,False,False
+cluster_id,OPPO::Économique::c0,hedonic_ols,21,6,7,70,False,n_lignes=21 < n_min_requis=70 (ratio=10),8,,,,,False,False
+cluster_id,OPPO::Économique::c0,ridge,21,6,7,35,False,n_lignes=21 < n_min_requis=35 (ratio=5),8,,,,,False,False
+cluster_id,OPPO::Économique::c0,random_forest,21,6,7,35,False,n_lignes=21 < n_min_requis=35 (ratio=5),8,,,,,False,False
+cluster_id,OSCAL::Gamme unique::c0,hedonic_ols,24,6,5,50,False,n_lignes=24 < n_min_requis=50 (ratio=10),4,,,,,False,False
+cluster_id,OSCAL::Gamme unique::c0,ridge,24,6,5,25,False,n_lignes=24 < n_min_requis=25 (ratio=5),4,,,,,False,False
+cluster_id,OSCAL::Gamme unique::c0,random_forest,24,6,5,25,False,n_lignes=24 < n_min_requis=25 (ratio=5),4,,,,,False,False
+cluster_id,SAMSUNG::Milieu de gamme::c0,hedonic_ols,40,10,4,40,True,,8,-0.8754,125.21,-441.8015,1356.52,True,True
+cluster_id,SAMSUNG::Milieu de gamme::c0,ridge,40,10,4,20,True,,8,-0.5977,117.63,-398.627,1315.33,True,True
+cluster_id,SAMSUNG::Milieu de gamme::c0,random_forest,40,10,4,20,True,,8,-0.8395,124.06,-83.043,754.73,True,True
+cluster_id,SAMSUNG::Milieu de gamme::c1,hedonic_ols,36,9,4,40,False,n_lignes=36 < n_min_requis=40 (ratio=10),0,,,,,False,False
+cluster_id,SAMSUNG::Milieu de gamme::c1,ridge,36,9,4,20,True,,0,,,,,False,True
+cluster_id,SAMSUNG::Milieu de gamme::c1,random_forest,36,9,4,20,True,,0,,,,,False,True
+cluster_id,SAMSUNG::Milieu de gamme::c2,hedonic_ols,16,4,4,40,False,n_lignes=16 < n_min_requis=40 (ratio=10),8,,,,,False,False
+cluster_id,SAMSUNG::Milieu de gamme::c2,ridge,16,4,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,SAMSUNG::Milieu de gamme::c2,random_forest,16,4,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,SAMSUNG::Premium::c0,hedonic_ols,49,13,7,70,False,n_lignes=49 < n_min_requis=70 (ratio=10),12,,,,,False,False
+cluster_id,SAMSUNG::Premium::c0,ridge,49,13,7,35,True,,12,0.5443,597.24,-125.7943,4968.05,True,True
+cluster_id,SAMSUNG::Premium::c0,random_forest,49,13,7,35,True,,12,-1.1144,1290.76,0.9043,288.65,True,False
+cluster_id,SAMSUNG::Premium::c1,hedonic_ols,24,6,4,40,False,n_lignes=24 < n_min_requis=40 (ratio=10),11,,,,,False,False
+cluster_id,SAMSUNG::Premium::c1,ridge,24,6,4,20,True,,11,0.6993,313.35,-33.7916,2480.9,True,True
+cluster_id,SAMSUNG::Premium::c1,random_forest,24,6,4,20,True,,11,0.6993,313.34,-0.3846,527.4,True,True
+cluster_id,SAMSUNG::Économique::c0,hedonic_ols,56,14,4,40,True,,4,1.0,0.0,0.0,35.87,True,True
+cluster_id,SAMSUNG::Économique::c0,ridge,56,14,4,20,True,,4,0.0,19.68,0.0,11.33,True,False
+cluster_id,SAMSUNG::Économique::c0,random_forest,56,14,4,20,True,,4,0.0,0.0,0.0,4.55,True,False
+cluster_id,SAMSUNG::Économique::c1,hedonic_ols,20,5,5,50,False,n_lignes=20 < n_min_requis=50 (ratio=10),1,,,,,False,False
+cluster_id,SAMSUNG::Économique::c1,ridge,20,5,5,25,False,n_lignes=20 < n_min_requis=25 (ratio=5),1,,,,,False,False
+cluster_id,SAMSUNG::Économique::c1,random_forest,20,5,5,25,False,n_lignes=20 < n_min_requis=25 (ratio=5),1,,,,,False,False
+cluster_id,SAMSUNG::Économique::c2,hedonic_ols,16,4,4,40,False,n_lignes=16 < n_min_requis=40 (ratio=10),8,,,,,False,False
+cluster_id,SAMSUNG::Économique::c2,ridge,16,4,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,SAMSUNG::Économique::c2,random_forest,16,4,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,TECNO::Gamme unique::c0,hedonic_ols,18,6,5,50,False,n_lignes=18 < n_min_requis=50 (ratio=10),0,,,,,False,False
+cluster_id,TECNO::Gamme unique::c0,ridge,18,6,5,25,False,n_lignes=18 < n_min_requis=25 (ratio=5),0,,,,,False,False
+cluster_id,TECNO::Gamme unique::c0,random_forest,18,6,5,25,False,n_lignes=18 < n_min_requis=25 (ratio=5),0,,,,,False,False
+cluster_id,VIVO::Milieu de gamme::c0,hedonic_ols,28,7,6,60,False,n_lignes=28 < n_min_requis=60 (ratio=10),8,,,,,False,False
+cluster_id,VIVO::Milieu de gamme::c0,ridge,28,7,6,30,False,n_lignes=28 < n_min_requis=30 (ratio=5),8,,,,,False,False
+cluster_id,VIVO::Milieu de gamme::c0,random_forest,28,7,6,30,False,n_lignes=28 < n_min_requis=30 (ratio=5),8,,,,,False,False
+cluster_id,VIVO::Premium::c0,hedonic_ols,16,4,6,60,False,n_lignes=16 < n_min_requis=60 (ratio=10),12,,,,,False,False
+cluster_id,VIVO::Premium::c0,ridge,16,4,6,30,False,n_lignes=16 < n_min_requis=30 (ratio=5),12,,,,,False,False
+cluster_id,VIVO::Premium::c0,random_forest,16,4,6,30,False,n_lignes=16 < n_min_requis=30 (ratio=5),12,,,,,False,False
+cluster_id,VIVO::Économique::c0,hedonic_ols,18,6,4,40,False,n_lignes=18 < n_min_requis=40 (ratio=10),5,,,,,False,False
+cluster_id,VIVO::Économique::c0,ridge,18,6,4,20,False,n_lignes=18 < n_min_requis=20 (ratio=5),5,,,,,False,False
+cluster_id,VIVO::Économique::c0,random_forest,18,6,4,20,False,n_lignes=18 < n_min_requis=20 (ratio=5),5,,,,,False,False
+cluster_id,XIAOMI::Milieu de gamme::c0,hedonic_ols,44,11,9,90,False,n_lignes=44 < n_min_requis=90 (ratio=10),12,,,,,False,False
+cluster_id,XIAOMI::Milieu de gamme::c0,ridge,44,11,9,45,False,n_lignes=44 < n_min_requis=45 (ratio=5),12,,,,,False,False
+cluster_id,XIAOMI::Milieu de gamme::c0,random_forest,44,11,9,45,False,n_lignes=44 < n_min_requis=45 (ratio=5),12,,,,,False,False
+cluster_id,XIAOMI::Premium::c0,hedonic_ols,48,12,8,80,False,n_lignes=48 < n_min_requis=80 (ratio=10),12,,,,,False,False
+cluster_id,XIAOMI::Premium::c0,ridge,48,12,8,40,True,,12,0.3714,372.38,-5.8633,948.86,True,True
+cluster_id,XIAOMI::Premium::c0,random_forest,48,12,8,40,True,,12,0.2618,422.69,0.2813,234.99,True,False
+cluster_id,XIAOMI::Économique::c0,hedonic_ols,62,17,10,100,False,n_lignes=62 < n_min_requis=100 (ratio=10),9,,,,,False,False
+cluster_id,XIAOMI::Économique::c0,ridge,62,17,10,50,True,,9,0.9999,0.81,0.294,66.52,True,True
+cluster_id,XIAOMI::Économique::c0,random_forest,62,17,10,50,True,,9,1.0,0.09,0.9364,19.14,True,True

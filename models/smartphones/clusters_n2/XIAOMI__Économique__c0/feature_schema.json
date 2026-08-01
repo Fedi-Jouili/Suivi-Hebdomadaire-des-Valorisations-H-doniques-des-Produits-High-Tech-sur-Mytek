@@ -1,0 +1,36 @@
+{
+  "segment": "XIAOMI::Économique::c0",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_brand",
+    "has_4g",
+    "has_5g",
+    "has_wifi",
+    "has_bluetooth"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "has_4g",
+    "has_5g",
+    "has_wifi",
+    "has_bluetooth",
+    "cpu_brand_MediaTek",
+    "cpu_brand_Qualcomm"
+  ],
+  "n_train": 62,
+  "n_test": 9,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": true,
+    "random_forest": true
+  }
+}

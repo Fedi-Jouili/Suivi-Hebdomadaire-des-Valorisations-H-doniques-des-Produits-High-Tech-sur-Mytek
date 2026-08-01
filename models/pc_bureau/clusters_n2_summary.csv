@@ -1,0 +1,67 @@
+﻿segment_col,segment,famille,n_lignes,n_produits_distincts,n_predicteurs,n_min_requis,ajuste,raison_rejet,n_test,r2_test,rmse_tnd_test,r2_test_categorie,rmse_tnd_test_categorie,comparaison_possible,retenu_pour_prediction
+cluster_id,ASUS::Milieu de gamme::c0,hedonic_ols,23,6,5,50,False,n_lignes=23 < n_min_requis=50 (ratio=10),0,,,,,False,False
+cluster_id,ASUS::Milieu de gamme::c0,ridge,23,6,5,25,False,n_lignes=23 < n_min_requis=25 (ratio=5),0,,,,,False,False
+cluster_id,ASUS::Milieu de gamme::c0,random_forest,23,6,5,25,False,n_lignes=23 < n_min_requis=25 (ratio=5),0,,,,,False,False
+cluster_id,ASUS::Premium::c0,hedonic_ols,20,5,4,40,False,n_lignes=20 < n_min_requis=40 (ratio=10),3,,,,,False,False
+cluster_id,ASUS::Premium::c0,ridge,20,5,4,20,True,,3,0.0,49.7,0.0,46.49,True,False
+cluster_id,ASUS::Premium::c0,random_forest,20,5,4,20,True,,3,0.0,36.81,0.0,111.77,True,False
+cluster_id,ASUS::Économique::c0,hedonic_ols,18,5,5,50,False,n_lignes=18 < n_min_requis=50 (ratio=10),4,,,,,False,False
+cluster_id,ASUS::Économique::c0,ridge,18,5,5,25,False,n_lignes=18 < n_min_requis=25 (ratio=5),4,,,,,False,False
+cluster_id,ASUS::Économique::c0,random_forest,18,5,5,25,False,n_lignes=18 < n_min_requis=25 (ratio=5),4,,,,,False,False
+cluster_id,DELL::Milieu de gamme::c0,hedonic_ols,22,7,7,70,False,n_lignes=22 < n_min_requis=70 (ratio=10),0,,,,,False,False
+cluster_id,DELL::Milieu de gamme::c0,ridge,22,7,7,35,False,n_lignes=22 < n_min_requis=35 (ratio=5),0,,,,,False,False
+cluster_id,DELL::Milieu de gamme::c0,random_forest,22,7,7,35,False,n_lignes=22 < n_min_requis=35 (ratio=5),0,,,,,False,False
+cluster_id,DELL::Premium::c0,hedonic_ols,15,4,5,50,False,n_lignes=15 < n_min_requis=50 (ratio=10),12,,,,,False,False
+cluster_id,DELL::Premium::c0,ridge,15,4,5,25,False,n_lignes=15 < n_min_requis=25 (ratio=5),12,,,,,False,False
+cluster_id,DELL::Premium::c0,random_forest,15,4,5,25,False,n_lignes=15 < n_min_requis=25 (ratio=5),12,,,,,False,False
+cluster_id,DELL::Économique::c0,hedonic_ols,21,6,6,60,False,n_lignes=21 < n_min_requis=60 (ratio=10),4,,,,,False,False
+cluster_id,DELL::Économique::c0,ridge,21,6,6,30,False,n_lignes=21 < n_min_requis=30 (ratio=5),4,,,,,False,False
+cluster_id,DELL::Économique::c0,random_forest,21,6,6,30,False,n_lignes=21 < n_min_requis=30 (ratio=5),4,,,,,False,False
+cluster_id,HP::Milieu de gamme::c0,hedonic_ols,6,2,3,30,False,n_lignes=6 < n_min_requis=30 (ratio=10),9,,,,,False,False
+cluster_id,HP::Milieu de gamme::c0,ridge,6,2,3,15,False,n_lignes=6 < n_min_requis=15 (ratio=5),9,,,,,False,False
+cluster_id,HP::Milieu de gamme::c0,random_forest,6,2,3,15,False,n_lignes=6 < n_min_requis=15 (ratio=5),9,,,,,False,False
+cluster_id,HP::Premium::c0,hedonic_ols,16,4,4,40,False,n_lignes=16 < n_min_requis=40 (ratio=10),8,,,,,False,False
+cluster_id,HP::Premium::c0,ridge,16,4,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,HP::Premium::c0,random_forest,16,4,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,HP::Économique::c0,hedonic_ols,24,6,6,60,False,n_lignes=24 < n_min_requis=60 (ratio=10),4,,,,,False,False
+cluster_id,HP::Économique::c0,ridge,24,6,6,30,False,n_lignes=24 < n_min_requis=30 (ratio=5),4,,,,,False,False
+cluster_id,HP::Économique::c0,random_forest,24,6,6,30,False,n_lignes=24 < n_min_requis=30 (ratio=5),4,,,,,False,False
+cluster_id,LENOVO::Milieu de gamme::c0,hedonic_ols,16,4,5,50,False,n_lignes=16 < n_min_requis=50 (ratio=10),8,,,,,False,False
+cluster_id,LENOVO::Milieu de gamme::c0,ridge,16,4,5,25,False,n_lignes=16 < n_min_requis=25 (ratio=5),8,,,,,False,False
+cluster_id,LENOVO::Milieu de gamme::c0,random_forest,16,4,5,25,False,n_lignes=16 < n_min_requis=25 (ratio=5),8,,,,,False,False
+cluster_id,LENOVO::Premium::c0,hedonic_ols,20,5,5,50,False,n_lignes=20 < n_min_requis=50 (ratio=10),8,,,,,False,False
+cluster_id,LENOVO::Premium::c0,ridge,20,5,5,25,False,n_lignes=20 < n_min_requis=25 (ratio=5),8,,,,,False,False
+cluster_id,LENOVO::Premium::c0,random_forest,20,5,5,25,False,n_lignes=20 < n_min_requis=25 (ratio=5),8,,,,,False,False
+cluster_id,LENOVO::Économique::c0,hedonic_ols,18,5,5,50,False,n_lignes=18 < n_min_requis=50 (ratio=10),8,,,,,False,False
+cluster_id,LENOVO::Économique::c0,ridge,18,5,5,25,False,n_lignes=18 < n_min_requis=25 (ratio=5),8,,,,,False,False
+cluster_id,LENOVO::Économique::c0,random_forest,18,5,5,25,False,n_lignes=18 < n_min_requis=25 (ratio=5),8,,,,,False,False
+cluster_id,MSI::Milieu de gamme::c0,hedonic_ols,84,21,6,60,True,,16,-247.4788,1665.32,-14.0035,1485.8,True,False
+cluster_id,MSI::Milieu de gamme::c0,ridge,84,21,6,30,True,,16,-0.1382,523.2,-9.6839,1279.69,True,True
+cluster_id,MSI::Milieu de gamme::c0,random_forest,84,21,6,30,True,,16,0.6317,283.98,-2.8069,1085.32,True,True
+cluster_id,MSI::Premium::c0,hedonic_ols,28,7,5,50,False,n_lignes=28 < n_min_requis=50 (ratio=10),4,,,,,False,False
+cluster_id,MSI::Premium::c0,ridge,28,7,5,25,True,,4,0.0,1695.61,0.0,2500.47,True,False
+cluster_id,MSI::Premium::c0,random_forest,28,7,5,25,True,,4,0.0,2727.64,0.0,1423.23,True,False
+cluster_id,MSI::Premium::c1,hedonic_ols,60,15,5,50,True,,16,-0.2391,225.57,-234.1237,2321.52,True,True
+cluster_id,MSI::Premium::c1,ridge,60,15,5,25,True,,16,0.0127,202.3,-171.6851,2061.11,True,True
+cluster_id,MSI::Premium::c1,random_forest,60,15,5,25,True,,16,-0.3049,231.4,-27.695,960.6,True,True
+cluster_id,MSI::Économique::c0,hedonic_ols,48,12,3,30,True,,12,-0.0973,119.35,-97.8082,962.95,True,True
+cluster_id,MSI::Économique::c0,ridge,48,12,3,15,True,,12,-0.3711,133.66,-58.5912,777.27,True,True
+cluster_id,MSI::Économique::c0,random_forest,48,12,3,15,True,,12,-1.9245,192.45,-13.2498,421.77,True,True
+cluster_id,MSI::Économique::c1,hedonic_ols,33,10,4,40,False,n_lignes=33 < n_min_requis=40 (ratio=10),20,,,,,False,False
+cluster_id,MSI::Économique::c1,ridge,33,10,4,20,True,,20,-1.3657,403.95,-1.7048,381.8,True,True
+cluster_id,MSI::Économique::c1,random_forest,33,10,4,20,True,,20,-0.3604,313.7,-16.4944,1552.92,True,True
+cluster_id,MYTEK::Milieu de gamme::c0,hedonic_ols,61,16,6,60,True,,8,-0.1425,275.69,-20.3679,966.81,True,True
+cluster_id,MYTEK::Milieu de gamme::c0,ridge,61,16,6,30,True,,8,0.026,249.18,-13.2742,811.96,True,True
+cluster_id,MYTEK::Milieu de gamme::c0,random_forest,61,16,6,30,True,,8,-3.101,500.8,-1.5934,398.27,True,False
+cluster_id,MYTEK::Premium::c0,hedonic_ols,27,7,7,70,False,n_lignes=27 < n_min_requis=70 (ratio=10),4,,,,,False,False
+cluster_id,MYTEK::Premium::c0,ridge,27,7,7,35,False,n_lignes=27 < n_min_requis=35 (ratio=5),4,,,,,False,False
+cluster_id,MYTEK::Premium::c0,random_forest,27,7,7,35,False,n_lignes=27 < n_min_requis=35 (ratio=5),4,,,,,False,False
+cluster_id,MYTEK::Premium::c1,hedonic_ols,36,9,5,50,False,n_lignes=36 < n_min_requis=50 (ratio=10),4,,,,,False,False
+cluster_id,MYTEK::Premium::c1,ridge,36,9,5,25,True,,4,0.0,1255.62,0.0,477.72,True,False
+cluster_id,MYTEK::Premium::c1,random_forest,36,9,5,25,True,,4,0.0,821.87,0.0,2117.05,True,False
+cluster_id,MYTEK::Économique::c0,hedonic_ols,28,7,4,40,False,n_lignes=28 < n_min_requis=40 (ratio=10),8,,,,,False,False
+cluster_id,MYTEK::Économique::c0,ridge,28,7,4,20,True,,8,-708.7398,577.67,-306.1685,398.85,True,False
+cluster_id,MYTEK::Économique::c0,random_forest,28,7,4,20,True,,8,-702.6913,575.54,-48.6389,182.79,True,False
+cluster_id,MYTEK::Économique::c1,hedonic_ols,23,6,3,30,False,n_lignes=23 < n_min_requis=30 (ratio=10),13,,,,,False,False
+cluster_id,MYTEK::Économique::c1,ridge,23,6,3,15,True,,13,-0.4396,453.27,-1.7843,708.01,True,True
+cluster_id,MYTEK::Économique::c1,random_forest,23,6,3,15,True,,13,-0.8037,498.98,-5.4527,1287.12,True,True

@@ -117,6 +117,19 @@ class RidgeModel:
             d'alpha vers moins de regularisation (le modele "valide" en
             partie sur une ligne quasi-identique a une ligne d'entrainement).
             None (par defaut) : KFold ordinaire, comportement inchange.
+
+            NOMBRE DE PLIS ADAPTATIF (correctif du 2026-08-01, modelisation
+            par cluster) : GroupKFold exige n_splits <= nombre de groupes
+            distincts -- fixe a 5 auparavant, ce qui plantait des qu'un
+            cluster (marque x gamme, ou technique) comptait moins de 5
+            produits distincts. Desormais min(5, n_groupes) -- 5 au niveau
+            categorie (comportement inchange, toujours >=5 groupes), moins
+            sur un petit cluster. En dessous de 2 groupes, la CV n'a
+            structurellement aucun sens (aucun pli de validation possible) :
+            leve ValueError plutot qu'un echec sklearn peu explicite --
+            l'appelant doit garder cette unite hors de tout ajustement
+            (cf. hedonic_model.fit_models_per_segment, qui garde via
+            _min_rows_required AVANT d'appeler fit()).
         """
         pipeline = Pipeline([
             ("poly", PolynomialFeatures(degree=self.degree, include_bias=False, interaction_only=True)),
@@ -125,7 +138,16 @@ class RidgeModel:
         ])
 
         param_grid = {"ridge__alpha": self.alphas}
-        cv = GroupKFold(n_splits=5) if groups is not None else 5
+        if groups is not None:
+            n_groups = pd.Series(groups).nunique()
+            if n_groups < 2:
+                raise ValueError(
+                    f"RidgeModel.fit : {n_groups} groupe(s) distinct(s) dans `groups` -- "
+                    f"GroupKFold exige au moins 2 groupes pour former un pli de validation."
+                )
+            cv = GroupKFold(n_splits=min(5, n_groups))
+        else:
+            cv = 5
         grid_search = GridSearchCV(pipeline, param_grid, cv=cv, n_jobs=-1)
         grid_search.fit(X, y, groups=groups)
 

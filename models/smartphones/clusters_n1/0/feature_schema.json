@@ -1,0 +1,42 @@
+{
+  "segment": "0",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_brand",
+    "has_4g",
+    "has_wifi",
+    "marque"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "has_4g",
+    "has_wifi",
+    "cpu_brand_MediaTek",
+    "cpu_brand_Qualcomm",
+    "cpu_brand_Samsung Exynos",
+    "marque_INFINIX",
+    "marque_OPPO",
+    "marque_SAMSUNG",
+    "marque_TECNO",
+    "marque_VIVO",
+    "marque_XIAOMI"
+  ],
+  "n_train": 301,
+  "n_test": 94,
+  "familles_ajustees": [
+    "hedonic_ols",
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "hedonic_ols": true,
+    "ridge": true,
+    "random_forest": true
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "segment": "HP::Premium::c1",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_serie",
+    "os_platform"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "cpu_serie",
+    "os_platform_Windows 11 Famille",
+    "os_platform_Windows 11 Pro"
+  ],
+  "n_train": 40,
+  "n_test": 10,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": false,
+    "random_forest": false
+  }
+}

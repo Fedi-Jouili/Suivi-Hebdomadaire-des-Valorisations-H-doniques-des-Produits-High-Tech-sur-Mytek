@@ -1,0 +1,29 @@
+{
+  "segment": "ASUS::Premium::c2",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_serie"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "cpu_serie"
+  ],
+  "n_train": 64,
+  "n_test": 12,
+  "familles_ajustees": [
+    "hedonic_ols",
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "hedonic_ols": true,
+    "ridge": true,
+    "random_forest": true
+  }
+}

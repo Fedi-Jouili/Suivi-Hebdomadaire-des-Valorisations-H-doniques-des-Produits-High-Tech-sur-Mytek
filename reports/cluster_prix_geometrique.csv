@@ -19,177 +19,94 @@ pc_bureau,N1_technique,Station d'entrée de gamme,,,1,14,1919.81
 pc_bureau,N1_technique,Station d'entrée de gamme,,,2,14,2054.98
 pc_bureau,N1_technique,Station d'entrée de gamme,,,3,14,2054.98
 pc_bureau,N1_technique,Station d'entrée de gamme,,,4,14,2163.16
-pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,1,3,2051.92
-pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,2,3,2051.92
-pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,3,3,2051.92
-pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,4,3,2051.92
-pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,1,2,2133.99
-pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,2,2,2133.99
-pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,3,2,2133.99
-pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,4,1,2139.0
-pc_bureau,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,1,3,2451.97
-pc_bureau,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,2,3,2451.97
-pc_bureau,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,3,3,2451.97
-pc_bureau,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,4,2,2414.34
-pc_bureau,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,1,3,2530.55
-pc_bureau,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,2,3,2530.55
-pc_bureau,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,3,3,2530.55
-pc_bureau,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,4,3,2530.55
-pc_bureau,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,1,4,1784.03
-pc_bureau,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,2,4,1784.03
-pc_bureau,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,3,4,1784.03
-pc_bureau,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,4,3,1782.38
-pc_bureau,N2_marque_gamme,ASUS::Économique::c1,ASUS,Économique,1,3,1521.33
-pc_bureau,N2_marque_gamme,ASUS::Économique::c1,ASUS,Économique,2,3,1521.33
-pc_bureau,N2_marque_gamme,ASUS::Économique::c1,ASUS,Économique,3,3,1521.33
-pc_bureau,N2_marque_gamme,ASUS::Économique::c1,ASUS,Économique,4,2,1586.44
-pc_bureau,N2_marque_gamme,BMAX::Gamme unique::c0,BMAX,Gamme unique,1,2,686.8
-pc_bureau,N2_marque_gamme,BMAX::Gamme unique::c0,BMAX,Gamme unique,2,1,569.0
-pc_bureau,N2_marque_gamme,BMAX::Gamme unique::c0,BMAX,Gamme unique,3,1,569.0
-pc_bureau,N2_marque_gamme,BMAX::Gamme unique::c0,BMAX,Gamme unique,4,1,569.0
-pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,1,3,2269.45
-pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,2,3,2269.45
-pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,3,3,2269.45
-pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,4,3,2269.45
-pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,1,5,2117.35
-pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,2,4,2190.53
-pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,3,3,2250.89
-pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,4,5,2159.35
-pc_bureau,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,2,2,2970.36
-pc_bureau,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,3,2,2892.09
-pc_bureau,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,4,2,2892.09
-pc_bureau,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,1,4,3536.93
-pc_bureau,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,2,4,3536.93
-pc_bureau,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,3,4,3536.93
-pc_bureau,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,4,4,3519.57
-pc_bureau,N2_marque_gamme,DELL::Premium::c2,DELL,Premium,1,2,2944.1
-pc_bureau,N2_marque_gamme,DELL::Premium::c2,DELL,Premium,2,2,2944.1
-pc_bureau,N2_marque_gamme,DELL::Premium::c2,DELL,Premium,3,2,2944.1
-pc_bureau,N2_marque_gamme,DELL::Premium::c2,DELL,Premium,4,2,2944.1
-pc_bureau,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,1,2,1583.93
-pc_bureau,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,2,2,1583.93
-pc_bureau,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,3,2,1583.93
-pc_bureau,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,4,2,1583.93
-pc_bureau,N2_marque_gamme,DELL::Économique::c1,DELL,Économique,1,4,1626.13
-pc_bureau,N2_marque_gamme,DELL::Économique::c1,DELL,Économique,2,4,1599.1
-pc_bureau,N2_marque_gamme,DELL::Économique::c1,DELL,Économique,3,4,1599.1
-pc_bureau,N2_marque_gamme,DELL::Économique::c1,DELL,Économique,4,4,1599.1
-pc_bureau,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,1,1,1855.0
-pc_bureau,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,2,2,1857.0
-pc_bureau,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,3,2,1857.0
-pc_bureau,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,4,2,1857.0
-pc_bureau,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,1,6,3086.41
-pc_bureau,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,2,5,3136.21
-pc_bureau,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,3,4,3133.02
-pc_bureau,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,4,4,3133.02
-pc_bureau,N2_marque_gamme,HP::Premium::c0,HP,Premium,1,1,3619.0
-pc_bureau,N2_marque_gamme,HP::Premium::c0,HP,Premium,2,1,3619.0
-pc_bureau,N2_marque_gamme,HP::Premium::c0,HP,Premium,3,1,3619.0
-pc_bureau,N2_marque_gamme,HP::Premium::c0,HP,Premium,4,2,3643.91
-pc_bureau,N2_marque_gamme,HP::Premium::c1,HP,Premium,1,4,3861.42
-pc_bureau,N2_marque_gamme,HP::Premium::c1,HP,Premium,2,4,3861.42
-pc_bureau,N2_marque_gamme,HP::Premium::c1,HP,Premium,3,4,3861.42
-pc_bureau,N2_marque_gamme,HP::Premium::c1,HP,Premium,4,4,3861.42
-pc_bureau,N2_marque_gamme,HP::Économique::c0,HP,Économique,1,5,2559.2
-pc_bureau,N2_marque_gamme,HP::Économique::c0,HP,Économique,2,5,2559.2
-pc_bureau,N2_marque_gamme,HP::Économique::c0,HP,Économique,3,5,2559.2
-pc_bureau,N2_marque_gamme,HP::Économique::c0,HP,Économique,4,5,2559.2
-pc_bureau,N2_marque_gamme,HP::Économique::c1,HP,Économique,1,2,1573.3
-pc_bureau,N2_marque_gamme,HP::Économique::c1,HP,Économique,2,2,1573.3
-pc_bureau,N2_marque_gamme,HP::Économique::c1,HP,Économique,3,2,1573.3
-pc_bureau,N2_marque_gamme,HP::Économique::c1,HP,Économique,4,2,1573.3
-pc_bureau,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,1,5,2359.94
-pc_bureau,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,2,8,2280.78
-pc_bureau,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,3,8,2280.78
-pc_bureau,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,4,8,2280.78
+pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,1,6,2059.4
+pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,2,6,2059.4
+pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,3,6,2059.4
+pc_bureau,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,4,5,2045.76
+pc_bureau,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,1,6,2490.95
+pc_bureau,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,2,6,2490.95
+pc_bureau,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,3,6,2490.95
+pc_bureau,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,4,5,2483.41
+pc_bureau,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,1,6,1624.74
+pc_bureau,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,2,6,1624.74
+pc_bureau,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,3,6,1624.74
+pc_bureau,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,4,4,1646.53
+pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,1,7,2108.03
+pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,2,5,2098.56
+pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,3,4,2118.94
+pc_bureau,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,4,6,2088.52
+pc_bureau,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,1,7,3227.44
+pc_bureau,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,2,7,3227.44
+pc_bureau,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,3,7,3227.44
+pc_bureau,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,4,6,3201.9
+pc_bureau,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,1,7,1644.6
+pc_bureau,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,2,6,1646.21
+pc_bureau,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,3,6,1646.21
+pc_bureau,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,4,6,1646.21
+pc_bureau,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,1,5,3029.93
+pc_bureau,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,2,4,3076.92
+pc_bureau,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,3,3,3053.27
+pc_bureau,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,4,3,3053.27
+pc_bureau,N2_marque_gamme,HP::Premium::c0,HP,Premium,1,6,3736.99
+pc_bureau,N2_marque_gamme,HP::Premium::c0,HP,Premium,2,6,3736.99
+pc_bureau,N2_marque_gamme,HP::Premium::c0,HP,Premium,3,6,3736.99
+pc_bureau,N2_marque_gamme,HP::Premium::c0,HP,Premium,4,6,3736.99
+pc_bureau,N2_marque_gamme,HP::Économique::c0,HP,Économique,1,7,2227.07
+pc_bureau,N2_marque_gamme,HP::Économique::c0,HP,Économique,2,7,2227.07
+pc_bureau,N2_marque_gamme,HP::Économique::c0,HP,Économique,3,7,2227.07
+pc_bureau,N2_marque_gamme,HP::Économique::c0,HP,Économique,4,7,2227.07
+pc_bureau,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,1,6,2283.92
+pc_bureau,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,2,6,2283.92
+pc_bureau,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,3,6,2283.92
+pc_bureau,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,4,6,2283.92
 pc_bureau,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,1,7,3169.4
 pc_bureau,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,2,7,3169.4
 pc_bureau,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,3,7,3169.4
 pc_bureau,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,4,7,3169.4
-pc_bureau,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,1,4,1523.93
-pc_bureau,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,2,4,1523.93
-pc_bureau,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,3,3,1542.7
-pc_bureau,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,4,3,1542.7
-pc_bureau,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,1,4,1731.22
-pc_bureau,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,2,4,1731.22
-pc_bureau,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,3,4,1731.22
-pc_bureau,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,4,4,1731.22
-pc_bureau,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,1,28,4031.0
-pc_bureau,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,2,25,4081.12
-pc_bureau,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,3,25,4081.12
-pc_bureau,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,4,26,4060.12
-pc_bureau,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,1,12,5705.25
-pc_bureau,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,2,12,5705.25
-pc_bureau,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,3,12,5705.25
-pc_bureau,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,4,11,5795.68
-pc_bureau,N2_marque_gamme,MSI::Premium::c1,MSI,Premium,1,11,5352.21
-pc_bureau,N2_marque_gamme,MSI::Premium::c1,MSI,Premium,2,11,5352.21
-pc_bureau,N2_marque_gamme,MSI::Premium::c1,MSI,Premium,3,11,5352.21
-pc_bureau,N2_marque_gamme,MSI::Premium::c1,MSI,Premium,4,11,5352.21
-pc_bureau,N2_marque_gamme,MSI::Premium::c2,MSI,Premium,1,4,7230.08
-pc_bureau,N2_marque_gamme,MSI::Premium::c2,MSI,Premium,2,4,7230.08
-pc_bureau,N2_marque_gamme,MSI::Premium::c2,MSI,Premium,3,4,7230.08
-pc_bureau,N2_marque_gamme,MSI::Premium::c2,MSI,Premium,4,4,7230.08
-pc_bureau,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,1,8,3171.86
-pc_bureau,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,2,9,3204.6
-pc_bureau,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,3,9,3204.6
-pc_bureau,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,4,9,3204.6
-pc_bureau,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,1,4,2851.35
-pc_bureau,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,2,5,2917.72
-pc_bureau,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,3,5,2917.72
-pc_bureau,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,4,5,2917.72
-pc_bureau,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,1,2,2797.21
-pc_bureau,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,2,2,2797.21
-pc_bureau,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,3,2,2797.21
-pc_bureau,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,4,2,2797.21
-pc_bureau,N2_marque_gamme,MSI::Économique::c3,MSI,Économique,1,3,2957.64
-pc_bureau,N2_marque_gamme,MSI::Économique::c3,MSI,Économique,2,3,2957.64
-pc_bureau,N2_marque_gamme,MSI::Économique::c3,MSI,Économique,3,3,2957.64
-pc_bureau,N2_marque_gamme,MSI::Économique::c3,MSI,Économique,4,3,2957.64
-pc_bureau,N2_marque_gamme,MSI::Économique::c4,MSI,Économique,1,4,2319.46
-pc_bureau,N2_marque_gamme,MSI::Économique::c4,MSI,Économique,2,3,2287.2
-pc_bureau,N2_marque_gamme,MSI::Économique::c4,MSI,Économique,3,1,2559.0
-pc_bureau,N2_marque_gamme,MSI::Économique::c4,MSI,Économique,4,1,2559.0
-pc_bureau,N2_marque_gamme,MSI::Économique::c5,MSI,Économique,1,2,3392.67
-pc_bureau,N2_marque_gamme,MSI::Économique::c5,MSI,Économique,2,2,3392.67
-pc_bureau,N2_marque_gamme,MSI::Économique::c5,MSI,Économique,3,2,3392.67
-pc_bureau,N2_marque_gamme,MSI::Économique::c5,MSI,Économique,4,2,3392.67
-pc_bureau,N2_marque_gamme,MSI::Économique::c6,MSI,Économique,1,4,2919.03
-pc_bureau,N2_marque_gamme,MSI::Économique::c6,MSI,Économique,2,5,2984.06
-pc_bureau,N2_marque_gamme,MSI::Économique::c6,MSI,Économique,3,5,2931.52
-pc_bureau,N2_marque_gamme,MSI::Économique::c6,MSI,Économique,4,5,2931.52
-pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c0,MYTEK,Milieu de gamme,1,9,2879.42
-pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c0,MYTEK,Milieu de gamme,2,9,2809.44
-pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c0,MYTEK,Milieu de gamme,3,9,2809.44
-pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c0,MYTEK,Milieu de gamme,4,9,2773.44
-pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c1,MYTEK,Milieu de gamme,1,10,2997.36
-pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c1,MYTEK,Milieu de gamme,2,10,2997.36
-pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c1,MYTEK,Milieu de gamme,3,10,2997.36
-pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c1,MYTEK,Milieu de gamme,4,12,2871.77
-pc_bureau,N2_marque_gamme,MYTEK::Premium::c0,MYTEK,Premium,1,7,6847.33
-pc_bureau,N2_marque_gamme,MYTEK::Premium::c0,MYTEK,Premium,2,7,6847.33
-pc_bureau,N2_marque_gamme,MYTEK::Premium::c0,MYTEK,Premium,3,7,6847.33
+pc_bureau,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,1,7,1583.69
+pc_bureau,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,2,7,1583.69
+pc_bureau,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,3,6,1603.66
+pc_bureau,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,4,6,1603.66
+pc_bureau,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,1,25,4100.05
+pc_bureau,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,2,25,4068.6
+pc_bureau,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,3,25,4068.6
+pc_bureau,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,4,25,4043.77
+pc_bureau,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,1,8,7041.0
+pc_bureau,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,2,8,7041.0
+pc_bureau,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,3,8,7041.0
+pc_bureau,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,4,8,7041.0
+pc_bureau,N2_marque_gamme,MSI::Premium::c1,MSI,Premium,1,19,5289.37
+pc_bureau,N2_marque_gamme,MSI::Premium::c1,MSI,Premium,2,19,5289.37
+pc_bureau,N2_marque_gamme,MSI::Premium::c1,MSI,Premium,3,19,5289.37
+pc_bureau,N2_marque_gamme,MSI::Premium::c1,MSI,Premium,4,19,5249.67
+pc_bureau,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,1,15,3150.89
+pc_bureau,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,2,15,3150.89
+pc_bureau,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,3,15,3132.28
+pc_bureau,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,4,15,3132.28
+pc_bureau,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,1,15,2786.52
+pc_bureau,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,2,14,2796.85
+pc_bureau,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,3,12,2919.4
+pc_bureau,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,4,12,2919.4
+pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c0,MYTEK,Milieu de gamme,1,18,2981.41
+pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c0,MYTEK,Milieu de gamme,2,17,2991.25
+pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c0,MYTEK,Milieu de gamme,3,17,2991.25
+pc_bureau,N2_marque_gamme,MYTEK::Milieu de gamme::c0,MYTEK,Milieu de gamme,4,17,2970.9
+pc_bureau,N2_marque_gamme,MYTEK::Premium::c0,MYTEK,Premium,1,8,6668.22
+pc_bureau,N2_marque_gamme,MYTEK::Premium::c0,MYTEK,Premium,2,8,6668.22
+pc_bureau,N2_marque_gamme,MYTEK::Premium::c0,MYTEK,Premium,3,8,6668.22
 pc_bureau,N2_marque_gamme,MYTEK::Premium::c0,MYTEK,Premium,4,7,6847.33
-pc_bureau,N2_marque_gamme,MYTEK::Premium::c1,MYTEK,Premium,1,3,5358.93
-pc_bureau,N2_marque_gamme,MYTEK::Premium::c1,MYTEK,Premium,2,3,5358.93
-pc_bureau,N2_marque_gamme,MYTEK::Premium::c1,MYTEK,Premium,3,3,5358.93
-pc_bureau,N2_marque_gamme,MYTEK::Premium::c1,MYTEK,Premium,4,2,5271.1
-pc_bureau,N2_marque_gamme,MYTEK::Premium::c2,MYTEK,Premium,1,8,4794.96
-pc_bureau,N2_marque_gamme,MYTEK::Premium::c2,MYTEK,Premium,2,9,4806.41
-pc_bureau,N2_marque_gamme,MYTEK::Premium::c2,MYTEK,Premium,3,9,4806.41
-pc_bureau,N2_marque_gamme,MYTEK::Premium::c2,MYTEK,Premium,4,9,4806.41
-pc_bureau,N2_marque_gamme,MYTEK::Économique::c0,MYTEK,Économique,1,3,1632.75
-pc_bureau,N2_marque_gamme,MYTEK::Économique::c0,MYTEK,Économique,2,3,1632.75
-pc_bureau,N2_marque_gamme,MYTEK::Économique::c0,MYTEK,Économique,3,3,1632.75
-pc_bureau,N2_marque_gamme,MYTEK::Économique::c0,MYTEK,Économique,4,5,1709.43
+pc_bureau,N2_marque_gamme,MYTEK::Premium::c1,MYTEK,Premium,1,10,4886.61
+pc_bureau,N2_marque_gamme,MYTEK::Premium::c1,MYTEK,Premium,2,10,4886.61
+pc_bureau,N2_marque_gamme,MYTEK::Premium::c1,MYTEK,Premium,3,10,4886.61
+pc_bureau,N2_marque_gamme,MYTEK::Premium::c1,MYTEK,Premium,4,10,4886.61
+pc_bureau,N2_marque_gamme,MYTEK::Économique::c0,MYTEK,Économique,1,9,1829.73
+pc_bureau,N2_marque_gamme,MYTEK::Économique::c0,MYTEK,Économique,2,9,1829.73
+pc_bureau,N2_marque_gamme,MYTEK::Économique::c0,MYTEK,Économique,3,9,1829.73
+pc_bureau,N2_marque_gamme,MYTEK::Économique::c0,MYTEK,Économique,4,9,1829.73
 pc_bureau,N2_marque_gamme,MYTEK::Économique::c1,MYTEK,Économique,1,10,1326.25
-pc_bureau,N2_marque_gamme,MYTEK::Économique::c1,MYTEK,Économique,2,12,1415.34
-pc_bureau,N2_marque_gamme,MYTEK::Économique::c1,MYTEK,Économique,3,12,1415.34
-pc_bureau,N2_marque_gamme,MYTEK::Économique::c1,MYTEK,Économique,4,9,1365.96
-pc_bureau,N2_marque_gamme,MYTEK::Économique::c2,MYTEK,Économique,1,5,1871.7
-pc_bureau,N2_marque_gamme,MYTEK::Économique::c2,MYTEK,Économique,2,5,1871.7
-pc_bureau,N2_marque_gamme,MYTEK::Économique::c2,MYTEK,Économique,3,6,1859.38
-pc_bureau,N2_marque_gamme,MYTEK::Économique::c2,MYTEK,Économique,4,5,1871.7
+pc_bureau,N2_marque_gamme,MYTEK::Économique::c1,MYTEK,Économique,2,10,1326.25
+pc_bureau,N2_marque_gamme,MYTEK::Économique::c1,MYTEK,Économique,3,10,1326.25
+pc_bureau,N2_marque_gamme,MYTEK::Économique::c1,MYTEK,Économique,4,6,1298.73
 pc_portables,N1_technique,Polyvalent grand public,,,1,438,2974.77
 pc_portables,N1_technique,Polyvalent grand public,,,2,464,3003.98
 pc_portables,N1_technique,Polyvalent grand public,,,3,437,3016.33
@@ -198,55 +115,34 @@ pc_portables,N1_technique,Productivité Core i5,,,1,90,2781.94
 pc_portables,N1_technique,Productivité Core i5,,,2,94,2730.43
 pc_portables,N1_technique,Productivité Core i5,,,3,92,2777.65
 pc_portables,N1_technique,Productivité Core i5,,,4,94,2745.71
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,1,2,3229.0
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,2,2,3229.0
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,3,2,3229.0
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,4,2,3229.0
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,1,21,2887.06
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,2,21,2887.06
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,3,22,2883.75
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,4,22,2883.75
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c2,ASUS,Milieu de gamme,1,11,2827.44
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c2,ASUS,Milieu de gamme,2,11,2827.44
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c2,ASUS,Milieu de gamme,3,10,2862.57
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c2,ASUS,Milieu de gamme,4,11,2877.83
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c3,ASUS,Milieu de gamme,1,7,3032.29
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c3,ASUS,Milieu de gamme,2,7,3032.29
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c3,ASUS,Milieu de gamme,3,7,3032.29
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c3,ASUS,Milieu de gamme,4,7,3026.98
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c4,ASUS,Milieu de gamme,1,5,2843.34
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c4,ASUS,Milieu de gamme,2,5,2843.34
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c4,ASUS,Milieu de gamme,3,5,2843.34
-pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c4,ASUS,Milieu de gamme,4,5,2843.34
-pc_portables,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,1,7,5002.32
-pc_portables,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,2,7,5002.32
-pc_portables,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,3,6,5248.65
-pc_portables,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,4,6,5248.65
-pc_portables,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,1,12,4458.07
-pc_portables,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,2,12,4523.17
-pc_portables,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,3,10,4473.65
-pc_portables,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,4,10,4473.65
-pc_portables,N2_marque_gamme,ASUS::Premium::c2,ASUS,Premium,1,5,3904.6
-pc_portables,N2_marque_gamme,ASUS::Premium::c2,ASUS,Premium,2,2,3956.98
-pc_portables,N2_marque_gamme,ASUS::Premium::c3,ASUS,Premium,1,10,4926.96
-pc_portables,N2_marque_gamme,ASUS::Premium::c3,ASUS,Premium,2,10,4926.96
-pc_portables,N2_marque_gamme,ASUS::Premium::c3,ASUS,Premium,3,10,4913.92
-pc_portables,N2_marque_gamme,ASUS::Premium::c3,ASUS,Premium,4,10,4911.65
-pc_portables,N2_marque_gamme,ASUS::Premium::c4,ASUS,Premium,2,3,3870.07
-pc_portables,N2_marque_gamme,ASUS::Premium::c4,ASUS,Premium,3,5,3904.6
-pc_portables,N2_marque_gamme,ASUS::Premium::c4,ASUS,Premium,4,4,3876.51
-pc_portables,N2_marque_gamme,ASUS::Premium::c5,ASUS,Premium,1,7,5430.3
-pc_portables,N2_marque_gamme,ASUS::Premium::c5,ASUS,Premium,2,8,5333.0
-pc_portables,N2_marque_gamme,ASUS::Premium::c5,ASUS,Premium,3,8,5222.09
-pc_portables,N2_marque_gamme,ASUS::Premium::c5,ASUS,Premium,4,8,5222.09
-pc_portables,N2_marque_gamme,ASUS::Premium::c6,ASUS,Premium,1,4,3957.76
-pc_portables,N2_marque_gamme,ASUS::Premium::c6,ASUS,Premium,2,4,3957.76
-pc_portables,N2_marque_gamme,ASUS::Premium::c6,ASUS,Premium,3,4,3957.76
-pc_portables,N2_marque_gamme,ASUS::Premium::c6,ASUS,Premium,4,4,3957.76
-pc_portables,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,1,5,1678.04
-pc_portables,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,2,5,1678.04
-pc_portables,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,3,5,1678.04
-pc_portables,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,4,5,1678.04
+pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,1,38,2819.12
+pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,2,38,2819.12
+pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,3,37,2828.32
+pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c0,ASUS,Milieu de gamme,4,37,2828.32
+pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,1,8,3015.05
+pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,2,8,3015.05
+pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,3,8,3015.05
+pc_portables,N2_marque_gamme,ASUS::Milieu de gamme::c1,ASUS,Milieu de gamme,4,8,3010.43
+pc_portables,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,1,8,4594.91
+pc_portables,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,2,8,4594.91
+pc_portables,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,3,8,4579.72
+pc_portables,N2_marque_gamme,ASUS::Premium::c0,ASUS,Premium,4,8,4577.07
+pc_portables,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,1,9,3928.14
+pc_portables,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,2,9,3928.14
+pc_portables,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,3,9,3928.14
+pc_portables,N2_marque_gamme,ASUS::Premium::c1,ASUS,Premium,4,8,3916.93
+pc_portables,N2_marque_gamme,ASUS::Premium::c2,ASUS,Premium,1,20,4725.91
+pc_portables,N2_marque_gamme,ASUS::Premium::c2,ASUS,Premium,2,20,4767.2
+pc_portables,N2_marque_gamme,ASUS::Premium::c2,ASUS,Premium,3,18,4721.57
+pc_portables,N2_marque_gamme,ASUS::Premium::c2,ASUS,Premium,4,18,4721.57
+pc_portables,N2_marque_gamme,ASUS::Premium::c3,ASUS,Premium,1,10,5102.65
+pc_portables,N2_marque_gamme,ASUS::Premium::c3,ASUS,Premium,2,10,5102.65
+pc_portables,N2_marque_gamme,ASUS::Premium::c3,ASUS,Premium,3,9,5280.45
+pc_portables,N2_marque_gamme,ASUS::Premium::c3,ASUS,Premium,4,9,5280.45
+pc_portables,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,1,17,1999.33
+pc_portables,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,2,15,2009.46
+pc_portables,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,3,15,2009.46
+pc_portables,N2_marque_gamme,ASUS::Économique::c0,ASUS,Économique,4,15,2009.46
 pc_portables,N2_marque_gamme,ASUS::Économique::c1,ASUS,Économique,1,14,1834.31
 pc_portables,N2_marque_gamme,ASUS::Économique::c1,ASUS,Économique,2,13,1835.5
 pc_portables,N2_marque_gamme,ASUS::Économique::c1,ASUS,Économique,3,12,1830.3
@@ -255,363 +151,150 @@ pc_portables,N2_marque_gamme,ASUS::Économique::c2,ASUS,Économique,1,5,2034.66
 pc_portables,N2_marque_gamme,ASUS::Économique::c2,ASUS,Économique,2,5,2034.66
 pc_portables,N2_marque_gamme,ASUS::Économique::c2,ASUS,Économique,3,5,2034.66
 pc_portables,N2_marque_gamme,ASUS::Économique::c2,ASUS,Économique,4,5,2034.66
-pc_portables,N2_marque_gamme,ASUS::Économique::c3,ASUS,Économique,1,14,2011.89
-pc_portables,N2_marque_gamme,ASUS::Économique::c3,ASUS,Économique,2,12,2026.75
-pc_portables,N2_marque_gamme,ASUS::Économique::c3,ASUS,Économique,3,12,2026.75
-pc_portables,N2_marque_gamme,ASUS::Économique::c3,ASUS,Économique,4,12,2026.75
-pc_portables,N2_marque_gamme,ASUS::Économique::c4,ASUS,Économique,1,4,2010.74
-pc_portables,N2_marque_gamme,ASUS::Économique::c4,ASUS,Économique,2,4,2010.74
-pc_portables,N2_marque_gamme,ASUS::Économique::c4,ASUS,Économique,3,3,1969.72
-pc_portables,N2_marque_gamme,ASUS::Économique::c4,ASUS,Économique,4,3,1969.72
-pc_portables,N2_marque_gamme,ASUS::Économique::c5,ASUS,Économique,1,5,2208.6
-pc_portables,N2_marque_gamme,ASUS::Économique::c5,ASUS,Économique,2,5,2208.6
-pc_portables,N2_marque_gamme,ASUS::Économique::c5,ASUS,Économique,3,5,2208.6
-pc_portables,N2_marque_gamme,ASUS::Économique::c5,ASUS,Économique,4,5,2208.6
-pc_portables,N2_marque_gamme,ASUS::Économique::c6,ASUS,Économique,1,2,2199.0
-pc_portables,N2_marque_gamme,ASUS::Économique::c6,ASUS,Économique,2,2,2199.0
-pc_portables,N2_marque_gamme,ASUS::Économique::c6,ASUS,Économique,3,2,2199.0
-pc_portables,N2_marque_gamme,ASUS::Économique::c6,ASUS,Économique,4,2,2199.0
-pc_portables,N2_marque_gamme,BMAX::Gamme unique::c0,BMAX,Gamme unique,1,2,1157.45
-pc_portables,N2_marque_gamme,BMAX::Gamme unique::c0,BMAX,Gamme unique,2,2,1157.45
-pc_portables,N2_marque_gamme,BMAX::Gamme unique::c0,BMAX,Gamme unique,3,2,1157.45
-pc_portables,N2_marque_gamme,BMAX::Gamme unique::c0,BMAX,Gamme unique,4,3,1161.28
-pc_portables,N2_marque_gamme,CHUWI::Milieu de gamme::c0,CHUWI,Milieu de gamme,1,2,1645.97
-pc_portables,N2_marque_gamme,CHUWI::Milieu de gamme::c0,CHUWI,Milieu de gamme,2,2,1645.97
-pc_portables,N2_marque_gamme,CHUWI::Milieu de gamme::c0,CHUWI,Milieu de gamme,3,2,1645.97
-pc_portables,N2_marque_gamme,CHUWI::Milieu de gamme::c0,CHUWI,Milieu de gamme,4,2,1645.97
-pc_portables,N2_marque_gamme,CHUWI::Premium::c0,CHUWI,Premium,1,2,2380.15
-pc_portables,N2_marque_gamme,CHUWI::Premium::c0,CHUWI,Premium,2,2,2380.15
-pc_portables,N2_marque_gamme,CHUWI::Premium::c0,CHUWI,Premium,3,2,2380.15
-pc_portables,N2_marque_gamme,CHUWI::Premium::c0,CHUWI,Premium,4,2,2380.15
-pc_portables,N2_marque_gamme,CHUWI::Économique::c0,CHUWI,Économique,1,2,1261.14
-pc_portables,N2_marque_gamme,CHUWI::Économique::c0,CHUWI,Économique,2,2,1261.14
-pc_portables,N2_marque_gamme,CHUWI::Économique::c0,CHUWI,Économique,3,2,1261.14
-pc_portables,N2_marque_gamme,CHUWI::Économique::c0,CHUWI,Économique,4,2,1261.14
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,1,3,2327.46
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,2,3,2327.46
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,3,3,2327.46
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,4,3,2327.46
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,1,4,2333.59
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,2,2,2564.03
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,3,2,2564.03
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,4,2,2564.03
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c2,DELL,Milieu de gamme,1,4,2557.58
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c2,DELL,Milieu de gamme,2,4,2557.58
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c2,DELL,Milieu de gamme,3,4,2557.58
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c2,DELL,Milieu de gamme,4,4,2557.58
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c3,DELL,Milieu de gamme,1,6,2239.0
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c3,DELL,Milieu de gamme,2,6,2361.29
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c3,DELL,Milieu de gamme,3,6,2361.29
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c3,DELL,Milieu de gamme,4,6,2361.29
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c4,DELL,Milieu de gamme,1,5,2324.14
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c4,DELL,Milieu de gamme,2,3,2360.19
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c4,DELL,Milieu de gamme,3,3,2360.19
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c4,DELL,Milieu de gamme,4,3,2360.19
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c5,DELL,Milieu de gamme,1,2,2204.49
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c5,DELL,Milieu de gamme,2,2,2204.49
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c5,DELL,Milieu de gamme,3,2,2204.49
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c5,DELL,Milieu de gamme,4,2,2204.49
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c6,DELL,Milieu de gamme,1,2,2294.27
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c6,DELL,Milieu de gamme,2,2,2294.27
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c6,DELL,Milieu de gamme,3,2,2294.27
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c6,DELL,Milieu de gamme,4,2,2294.27
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c7,DELL,Milieu de gamme,1,2,2410.72
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c7,DELL,Milieu de gamme,2,2,2410.72
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c7,DELL,Milieu de gamme,3,1,2619.0
-pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c7,DELL,Milieu de gamme,4,1,2619.0
-pc_portables,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,1,5,3126.79
-pc_portables,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,2,5,3126.79
-pc_portables,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,3,6,3111.99
-pc_portables,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,4,6,3111.99
-pc_portables,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,1,11,3548.0
-pc_portables,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,2,11,3548.0
-pc_portables,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,3,11,3548.0
-pc_portables,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,4,14,3617.71
-pc_portables,N2_marque_gamme,DELL::Premium::c2,DELL,Premium,1,4,5192.63
-pc_portables,N2_marque_gamme,DELL::Premium::c2,DELL,Premium,2,4,5192.63
-pc_portables,N2_marque_gamme,DELL::Premium::c2,DELL,Premium,3,4,5192.63
-pc_portables,N2_marque_gamme,DELL::Premium::c2,DELL,Premium,4,4,5192.63
-pc_portables,N2_marque_gamme,DELL::Premium::c3,DELL,Premium,1,4,4983.22
-pc_portables,N2_marque_gamme,DELL::Premium::c3,DELL,Premium,2,4,4983.22
-pc_portables,N2_marque_gamme,DELL::Premium::c3,DELL,Premium,3,4,4983.22
-pc_portables,N2_marque_gamme,DELL::Premium::c3,DELL,Premium,4,4,4983.22
-pc_portables,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,1,3,1759.79
-pc_portables,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,2,3,1759.79
-pc_portables,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,3,3,1759.79
-pc_portables,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,4,3,1759.79
-pc_portables,N2_marque_gamme,DELL::Économique::c1,DELL,Économique,2,2,1599.0
-pc_portables,N2_marque_gamme,DELL::Économique::c1,DELL,Économique,3,2,1599.0
-pc_portables,N2_marque_gamme,DELL::Économique::c1,DELL,Économique,4,2,1599.0
-pc_portables,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,1,6,1834.43
-pc_portables,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,2,7,1822.57
-pc_portables,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,3,6,1802.31
-pc_portables,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,4,6,1802.31
-pc_portables,N2_marque_gamme,DELL::Économique::c3,DELL,Économique,1,5,1614.49
-pc_portables,N2_marque_gamme,DELL::Économique::c3,DELL,Économique,2,5,1614.49
-pc_portables,N2_marque_gamme,DELL::Économique::c3,DELL,Économique,3,5,1614.49
-pc_portables,N2_marque_gamme,DELL::Économique::c3,DELL,Économique,4,5,1614.49
-pc_portables,N2_marque_gamme,DELL::Économique::c4,DELL,Économique,1,1,1849.0
-pc_portables,N2_marque_gamme,DELL::Économique::c4,DELL,Économique,2,2,1873.83
-pc_portables,N2_marque_gamme,DELL::Économique::c4,DELL,Économique,3,2,1873.83
-pc_portables,N2_marque_gamme,DELL::Économique::c4,DELL,Économique,4,2,1873.83
-pc_portables,N2_marque_gamme,DELL::Économique::c5,DELL,Économique,1,4,1807.1
-pc_portables,N2_marque_gamme,DELL::Économique::c5,DELL,Économique,2,4,1752.74
-pc_portables,N2_marque_gamme,DELL::Économique::c5,DELL,Économique,3,3,1830.39
-pc_portables,N2_marque_gamme,DELL::Économique::c5,DELL,Économique,4,3,1830.39
-pc_portables,N2_marque_gamme,DELL::Économique::c6,DELL,Économique,2,2,1639.0
-pc_portables,N2_marque_gamme,DELL::Économique::c6,DELL,Économique,3,1,1639.0
-pc_portables,N2_marque_gamme,DELL::Économique::c6,DELL,Économique,4,2,1639.0
-pc_portables,N2_marque_gamme,DELL::Économique::c7,DELL,Économique,1,4,1527.19
-pc_portables,N2_marque_gamme,DELL::Économique::c7,DELL,Économique,2,4,1527.19
-pc_portables,N2_marque_gamme,DELL::Économique::c7,DELL,Économique,3,4,1527.19
-pc_portables,N2_marque_gamme,DELL::Économique::c7,DELL,Économique,4,4,1527.19
-pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c0,GIGABYTE,Milieu de gamme,1,3,5074.36
-pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c0,GIGABYTE,Milieu de gamme,2,3,5074.36
-pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c0,GIGABYTE,Milieu de gamme,3,3,5074.36
-pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c0,GIGABYTE,Milieu de gamme,4,3,5074.36
-pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c1,GIGABYTE,Milieu de gamme,1,4,4977.8
-pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c1,GIGABYTE,Milieu de gamme,2,4,4977.8
-pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c1,GIGABYTE,Milieu de gamme,3,4,5174.98
-pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c1,GIGABYTE,Milieu de gamme,4,4,5174.98
-pc_portables,N2_marque_gamme,GIGABYTE::Premium::c0,GIGABYTE,Premium,1,4,6670.65
-pc_portables,N2_marque_gamme,GIGABYTE::Premium::c0,GIGABYTE,Premium,2,4,6670.65
-pc_portables,N2_marque_gamme,GIGABYTE::Premium::c0,GIGABYTE,Premium,3,4,6670.65
-pc_portables,N2_marque_gamme,GIGABYTE::Premium::c0,GIGABYTE,Premium,4,4,6670.65
-pc_portables,N2_marque_gamme,GIGABYTE::Premium::c1,GIGABYTE,Premium,1,3,11574.68
-pc_portables,N2_marque_gamme,GIGABYTE::Premium::c1,GIGABYTE,Premium,2,3,11574.68
-pc_portables,N2_marque_gamme,GIGABYTE::Premium::c1,GIGABYTE,Premium,3,3,11574.68
-pc_portables,N2_marque_gamme,GIGABYTE::Premium::c1,GIGABYTE,Premium,4,3,11574.68
+pc_portables,N2_marque_gamme,ASUS::Économique::c3,ASUS,Économique,1,11,1922.07
+pc_portables,N2_marque_gamme,ASUS::Économique::c3,ASUS,Économique,2,11,1922.07
+pc_portables,N2_marque_gamme,ASUS::Économique::c3,ASUS,Économique,3,10,1901.62
+pc_portables,N2_marque_gamme,ASUS::Économique::c3,ASUS,Économique,4,10,1901.62
+pc_portables,N2_marque_gamme,CHUWI::Gamme unique::c0,CHUWI,Gamme unique,1,6,1703.19
+pc_portables,N2_marque_gamme,CHUWI::Gamme unique::c0,CHUWI,Gamme unique,2,6,1703.19
+pc_portables,N2_marque_gamme,CHUWI::Gamme unique::c0,CHUWI,Gamme unique,3,6,1703.19
+pc_portables,N2_marque_gamme,CHUWI::Gamme unique::c0,CHUWI,Gamme unique,4,6,1703.19
+pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,1,6,2359.02
+pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,2,6,2154.9
+pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,3,5,2142.31
+pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c0,DELL,Milieu de gamme,4,5,2142.31
+pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,1,20,2366.14
+pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,2,19,2352.24
+pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,3,18,2376.95
+pc_portables,N2_marque_gamme,DELL::Milieu de gamme::c1,DELL,Milieu de gamme,4,18,2376.95
+pc_portables,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,1,16,3829.68
+pc_portables,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,2,16,3829.68
+pc_portables,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,3,16,3829.68
+pc_portables,N2_marque_gamme,DELL::Premium::c0,DELL,Premium,4,16,3829.68
+pc_portables,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,1,8,4034.49
+pc_portables,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,2,8,4034.49
+pc_portables,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,3,8,4034.49
+pc_portables,N2_marque_gamme,DELL::Premium::c1,DELL,Premium,4,8,4034.49
+pc_portables,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,1,7,1836.51
+pc_portables,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,2,7,1808.91
+pc_portables,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,3,7,1808.91
+pc_portables,N2_marque_gamme,DELL::Économique::c0,DELL,Économique,4,7,1808.91
+pc_portables,N2_marque_gamme,DELL::Économique::c1,DELL,Économique,1,11,1744.65
+pc_portables,N2_marque_gamme,DELL::Économique::c1,DELL,Économique,2,10,1702.74
+pc_portables,N2_marque_gamme,DELL::Économique::c1,DELL,Économique,3,9,1721.98
+pc_portables,N2_marque_gamme,DELL::Économique::c1,DELL,Économique,4,9,1721.98
+pc_portables,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,1,7,1622.86
+pc_portables,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,2,7,1622.86
+pc_portables,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,3,7,1622.86
+pc_portables,N2_marque_gamme,DELL::Économique::c2,DELL,Économique,4,7,1622.86
+pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c0,GIGABYTE,Milieu de gamme,1,7,5018.95
+pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c0,GIGABYTE,Milieu de gamme,2,7,5018.95
+pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c0,GIGABYTE,Milieu de gamme,3,7,5131.62
+pc_portables,N2_marque_gamme,GIGABYTE::Milieu de gamme::c0,GIGABYTE,Milieu de gamme,4,7,5131.62
+pc_portables,N2_marque_gamme,GIGABYTE::Premium::c0,GIGABYTE,Premium,1,7,8447.78
+pc_portables,N2_marque_gamme,GIGABYTE::Premium::c0,GIGABYTE,Premium,2,7,8447.78
+pc_portables,N2_marque_gamme,GIGABYTE::Premium::c0,GIGABYTE,Premium,3,7,8447.78
+pc_portables,N2_marque_gamme,GIGABYTE::Premium::c0,GIGABYTE,Premium,4,7,8447.78
 pc_portables,N2_marque_gamme,GIGABYTE::Économique::c0,GIGABYTE,Économique,1,8,4242.82
 pc_portables,N2_marque_gamme,GIGABYTE::Économique::c0,GIGABYTE,Économique,2,8,4242.82
 pc_portables,N2_marque_gamme,GIGABYTE::Économique::c0,GIGABYTE,Économique,3,7,4194.25
 pc_portables,N2_marque_gamme,GIGABYTE::Économique::c0,GIGABYTE,Économique,4,7,4194.25
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,1,6,2624.34
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,2,6,2624.34
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,3,6,2624.34
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,4,6,2624.34
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c1,HP,Milieu de gamme,1,10,2621.64
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c1,HP,Milieu de gamme,2,13,2543.38
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c1,HP,Milieu de gamme,3,9,2459.12
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c1,HP,Milieu de gamme,4,9,2459.12
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c2,HP,Milieu de gamme,1,8,2738.24
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c2,HP,Milieu de gamme,2,10,2673.39
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c2,HP,Milieu de gamme,3,10,2672.51
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c2,HP,Milieu de gamme,4,10,2672.51
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c3,HP,Milieu de gamme,1,8,2735.53
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c3,HP,Milieu de gamme,2,8,2735.53
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c3,HP,Milieu de gamme,3,8,2735.53
-pc_portables,N2_marque_gamme,HP::Milieu de gamme::c3,HP,Milieu de gamme,4,8,2735.53
-pc_portables,N2_marque_gamme,HP::Premium::c0,HP,Premium,1,4,3500.99
-pc_portables,N2_marque_gamme,HP::Premium::c0,HP,Premium,2,4,3500.99
-pc_portables,N2_marque_gamme,HP::Premium::c0,HP,Premium,3,3,3460.6
-pc_portables,N2_marque_gamme,HP::Premium::c0,HP,Premium,4,3,3460.6
-pc_portables,N2_marque_gamme,HP::Premium::c1,HP,Premium,1,3,4473.95
-pc_portables,N2_marque_gamme,HP::Premium::c1,HP,Premium,2,4,4311.59
-pc_portables,N2_marque_gamme,HP::Premium::c1,HP,Premium,3,3,4458.6
-pc_portables,N2_marque_gamme,HP::Premium::c1,HP,Premium,4,3,4458.6
-pc_portables,N2_marque_gamme,HP::Premium::c2,HP,Premium,1,4,3964.25
-pc_portables,N2_marque_gamme,HP::Premium::c2,HP,Premium,2,5,3847.75
-pc_portables,N2_marque_gamme,HP::Premium::c2,HP,Premium,3,4,3892.19
-pc_portables,N2_marque_gamme,HP::Premium::c2,HP,Premium,4,4,3892.19
-pc_portables,N2_marque_gamme,HP::Premium::c3,HP,Premium,1,9,3458.19
-pc_portables,N2_marque_gamme,HP::Premium::c3,HP,Premium,2,9,3458.19
-pc_portables,N2_marque_gamme,HP::Premium::c3,HP,Premium,3,9,3458.19
-pc_portables,N2_marque_gamme,HP::Premium::c3,HP,Premium,4,9,3458.19
-pc_portables,N2_marque_gamme,HP::Premium::c4,HP,Premium,1,2,3186.19
-pc_portables,N2_marque_gamme,HP::Premium::c4,HP,Premium,2,2,3186.19
-pc_portables,N2_marque_gamme,HP::Premium::c4,HP,Premium,3,2,3186.19
-pc_portables,N2_marque_gamme,HP::Premium::c4,HP,Premium,4,2,3186.19
-pc_portables,N2_marque_gamme,HP::Premium::c5,HP,Premium,1,3,3630.24
-pc_portables,N2_marque_gamme,HP::Premium::c5,HP,Premium,2,3,3630.24
-pc_portables,N2_marque_gamme,HP::Premium::c5,HP,Premium,3,3,3630.24
-pc_portables,N2_marque_gamme,HP::Premium::c5,HP,Premium,4,3,3630.24
-pc_portables,N2_marque_gamme,HP::Premium::c6,HP,Premium,1,5,5348.03
-pc_portables,N2_marque_gamme,HP::Premium::c6,HP,Premium,2,7,5313.94
-pc_portables,N2_marque_gamme,HP::Premium::c6,HP,Premium,3,6,5376.09
-pc_portables,N2_marque_gamme,HP::Premium::c6,HP,Premium,4,8,5431.23
-pc_portables,N2_marque_gamme,HP::Premium::c7,HP,Premium,1,1,3799.0
-pc_portables,N2_marque_gamme,HP::Premium::c7,HP,Premium,2,2,3778.95
-pc_portables,N2_marque_gamme,HP::Premium::c7,HP,Premium,3,3,3649.15
-pc_portables,N2_marque_gamme,HP::Premium::c7,HP,Premium,4,2,3759.0
-pc_portables,N2_marque_gamme,HP::Économique::c0,HP,Économique,1,5,2055.41
-pc_portables,N2_marque_gamme,HP::Économique::c0,HP,Économique,2,5,2055.41
-pc_portables,N2_marque_gamme,HP::Économique::c0,HP,Économique,3,4,2018.71
-pc_portables,N2_marque_gamme,HP::Économique::c0,HP,Économique,4,4,2018.71
-pc_portables,N2_marque_gamme,HP::Économique::c1,HP,Économique,1,8,1715.0
-pc_portables,N2_marque_gamme,HP::Économique::c1,HP,Économique,2,9,1676.63
-pc_portables,N2_marque_gamme,HP::Économique::c1,HP,Économique,3,9,1675.98
-pc_portables,N2_marque_gamme,HP::Économique::c1,HP,Économique,4,9,1672.06
-pc_portables,N2_marque_gamme,HP::Économique::c2,HP,Économique,1,2,2208.43
-pc_portables,N2_marque_gamme,HP::Économique::c2,HP,Économique,2,5,2004.43
-pc_portables,N2_marque_gamme,HP::Économique::c2,HP,Économique,3,4,1967.54
-pc_portables,N2_marque_gamme,HP::Économique::c2,HP,Économique,4,5,1924.57
-pc_portables,N2_marque_gamme,HP::Économique::c3,HP,Économique,1,3,1814.38
-pc_portables,N2_marque_gamme,HP::Économique::c3,HP,Économique,2,4,1795.23
-pc_portables,N2_marque_gamme,HP::Économique::c3,HP,Économique,3,4,1795.23
-pc_portables,N2_marque_gamme,HP::Économique::c3,HP,Économique,4,4,1795.23
-pc_portables,N2_marque_gamme,HP::Économique::c4,HP,Économique,1,2,2176.96
-pc_portables,N2_marque_gamme,HP::Économique::c4,HP,Économique,2,2,2176.96
-pc_portables,N2_marque_gamme,HP::Économique::c4,HP,Économique,3,2,2176.96
-pc_portables,N2_marque_gamme,HP::Économique::c4,HP,Économique,4,2,2176.96
-pc_portables,N2_marque_gamme,HP::Économique::c5,HP,Économique,2,3,1669.0
-pc_portables,N2_marque_gamme,HP::Économique::c5,HP,Économique,3,3,1669.0
-pc_portables,N2_marque_gamme,HP::Économique::c5,HP,Économique,4,3,1665.0
-pc_portables,N2_marque_gamme,HP::Économique::c6,HP,Économique,1,3,2158.25
-pc_portables,N2_marque_gamme,HP::Économique::c6,HP,Économique,2,4,1922.57
-pc_portables,N2_marque_gamme,HP::Économique::c6,HP,Économique,3,4,1922.57
-pc_portables,N2_marque_gamme,HP::Économique::c6,HP,Économique,4,4,1922.57
-pc_portables,N2_marque_gamme,HP::Économique::c7,HP,Économique,1,5,1865.55
-pc_portables,N2_marque_gamme,HP::Économique::c7,HP,Économique,2,5,1829.29
-pc_portables,N2_marque_gamme,HP::Économique::c7,HP,Économique,3,4,1877.37
-pc_portables,N2_marque_gamme,HP::Économique::c7,HP,Économique,4,5,1829.29
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,1,7,2836.3
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,2,9,2846.6
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,3,10,2900.59
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,4,10,2900.59
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c1,LENOVO,Milieu de gamme,1,9,3294.69
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c1,LENOVO,Milieu de gamme,2,9,3291.87
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c1,LENOVO,Milieu de gamme,3,9,3291.87
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c1,LENOVO,Milieu de gamme,4,9,3291.87
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c2,LENOVO,Milieu de gamme,1,12,3393.67
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c2,LENOVO,Milieu de gamme,2,13,3404.64
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c2,LENOVO,Milieu de gamme,3,13,3404.64
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c2,LENOVO,Milieu de gamme,4,13,3404.64
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c3,LENOVO,Milieu de gamme,1,11,3211.13
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c3,LENOVO,Milieu de gamme,2,13,3168.85
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c3,LENOVO,Milieu de gamme,3,13,3168.85
-pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c3,LENOVO,Milieu de gamme,4,13,3168.85
-pc_portables,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,1,5,4480.98
-pc_portables,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,2,8,5035.79
-pc_portables,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,3,7,5204.39
-pc_portables,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,4,7,5204.39
-pc_portables,N2_marque_gamme,LENOVO::Premium::c1,LENOVO,Premium,1,4,7489.48
-pc_portables,N2_marque_gamme,LENOVO::Premium::c1,LENOVO,Premium,2,9,7515.6
-pc_portables,N2_marque_gamme,LENOVO::Premium::c1,LENOVO,Premium,3,9,7515.6
-pc_portables,N2_marque_gamme,LENOVO::Premium::c1,LENOVO,Premium,4,9,7515.6
-pc_portables,N2_marque_gamme,LENOVO::Premium::c2,LENOVO,Premium,1,4,10706.55
-pc_portables,N2_marque_gamme,LENOVO::Premium::c2,LENOVO,Premium,2,4,10706.55
-pc_portables,N2_marque_gamme,LENOVO::Premium::c2,LENOVO,Premium,3,4,10706.55
-pc_portables,N2_marque_gamme,LENOVO::Premium::c2,LENOVO,Premium,4,4,10706.55
-pc_portables,N2_marque_gamme,LENOVO::Premium::c3,LENOVO,Premium,1,11,4440.66
-pc_portables,N2_marque_gamme,LENOVO::Premium::c3,LENOVO,Premium,2,11,4440.66
-pc_portables,N2_marque_gamme,LENOVO::Premium::c3,LENOVO,Premium,3,10,4384.89
-pc_portables,N2_marque_gamme,LENOVO::Premium::c3,LENOVO,Premium,4,10,4384.89
-pc_portables,N2_marque_gamme,LENOVO::Premium::c4,LENOVO,Premium,1,2,6160.15
-pc_portables,N2_marque_gamme,LENOVO::Premium::c4,LENOVO,Premium,2,2,6160.15
-pc_portables,N2_marque_gamme,LENOVO::Premium::c4,LENOVO,Premium,3,2,6160.15
-pc_portables,N2_marque_gamme,LENOVO::Premium::c4,LENOVO,Premium,4,2,6160.15
-pc_portables,N2_marque_gamme,LENOVO::Premium::c5,LENOVO,Premium,1,4,4408.13
-pc_portables,N2_marque_gamme,LENOVO::Premium::c5,LENOVO,Premium,2,4,4382.65
-pc_portables,N2_marque_gamme,LENOVO::Premium::c5,LENOVO,Premium,3,4,4382.65
-pc_portables,N2_marque_gamme,LENOVO::Premium::c5,LENOVO,Premium,4,4,4382.65
-pc_portables,N2_marque_gamme,LENOVO::Premium::c6,LENOVO,Premium,1,8,5237.1
-pc_portables,N2_marque_gamme,LENOVO::Premium::c6,LENOVO,Premium,2,8,5237.1
-pc_portables,N2_marque_gamme,LENOVO::Premium::c6,LENOVO,Premium,3,6,4712.72
-pc_portables,N2_marque_gamme,LENOVO::Premium::c6,LENOVO,Premium,4,7,4619.72
-pc_portables,N2_marque_gamme,LENOVO::Premium::c7,LENOVO,Premium,1,2,4090.03
-pc_portables,N2_marque_gamme,LENOVO::Premium::c7,LENOVO,Premium,2,2,4090.03
-pc_portables,N2_marque_gamme,LENOVO::Premium::c7,LENOVO,Premium,3,1,4219.0
-pc_portables,N2_marque_gamme,LENOVO::Premium::c7,LENOVO,Premium,4,1,4219.0
-pc_portables,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,1,5,1623.85
-pc_portables,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,2,6,1626.37
-pc_portables,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,3,6,1626.37
-pc_portables,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,4,6,1626.37
-pc_portables,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,1,7,1954.13
-pc_portables,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,2,6,1977.61
-pc_portables,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,3,5,1936.08
-pc_portables,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,4,5,1936.08
-pc_portables,N2_marque_gamme,LENOVO::Économique::c2,LENOVO,Économique,1,4,1349.3
-pc_portables,N2_marque_gamme,LENOVO::Économique::c2,LENOVO,Économique,2,4,1312.9
-pc_portables,N2_marque_gamme,LENOVO::Économique::c2,LENOVO,Économique,3,3,1312.2
-pc_portables,N2_marque_gamme,LENOVO::Économique::c2,LENOVO,Économique,4,4,1312.9
-pc_portables,N2_marque_gamme,LENOVO::Économique::c3,LENOVO,Économique,1,9,1253.64
-pc_portables,N2_marque_gamme,LENOVO::Économique::c3,LENOVO,Économique,2,8,1240.89
-pc_portables,N2_marque_gamme,LENOVO::Économique::c3,LENOVO,Économique,3,7,1244.05
-pc_portables,N2_marque_gamme,LENOVO::Économique::c3,LENOVO,Économique,4,7,1244.05
-pc_portables,N2_marque_gamme,LENOVO::Économique::c4,LENOVO,Économique,1,6,2361.59
-pc_portables,N2_marque_gamme,LENOVO::Économique::c4,LENOVO,Économique,2,7,2372.49
-pc_portables,N2_marque_gamme,LENOVO::Économique::c4,LENOVO,Économique,3,7,2372.49
-pc_portables,N2_marque_gamme,LENOVO::Économique::c4,LENOVO,Économique,4,7,2372.49
-pc_portables,N2_marque_gamme,LENOVO::Économique::c5,LENOVO,Économique,1,6,1599.06
-pc_portables,N2_marque_gamme,LENOVO::Économique::c5,LENOVO,Économique,2,6,1599.06
-pc_portables,N2_marque_gamme,LENOVO::Économique::c5,LENOVO,Économique,3,5,1607.19
-pc_portables,N2_marque_gamme,LENOVO::Économique::c5,LENOVO,Économique,4,5,1607.19
-pc_portables,N2_marque_gamme,LENOVO::Économique::c6,LENOVO,Économique,1,4,2247.96
-pc_portables,N2_marque_gamme,LENOVO::Économique::c6,LENOVO,Économique,2,4,2247.96
-pc_portables,N2_marque_gamme,LENOVO::Économique::c6,LENOVO,Économique,3,4,2247.96
-pc_portables,N2_marque_gamme,LENOVO::Économique::c6,LENOVO,Économique,4,4,2247.96
-pc_portables,N2_marque_gamme,LENOVO::Économique::c7,LENOVO,Économique,1,5,1277.82
-pc_portables,N2_marque_gamme,LENOVO::Économique::c7,LENOVO,Économique,2,6,1268.91
-pc_portables,N2_marque_gamme,LENOVO::Économique::c7,LENOVO,Économique,3,4,1261.55
-pc_portables,N2_marque_gamme,LENOVO::Économique::c7,LENOVO,Économique,4,5,1270.9
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,1,2,3158.26
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,2,3,3393.83
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,3,3,3393.83
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,4,3,3393.83
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c1,MSI,Milieu de gamme,1,5,3263.73
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c1,MSI,Milieu de gamme,2,4,3212.66
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c1,MSI,Milieu de gamme,3,4,3212.66
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c1,MSI,Milieu de gamme,4,4,3212.66
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c2,MSI,Milieu de gamme,1,3,3274.27
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c2,MSI,Milieu de gamme,2,2,3239.37
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c2,MSI,Milieu de gamme,3,2,3239.37
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c2,MSI,Milieu de gamme,4,2,3239.37
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c3,MSI,Milieu de gamme,1,2,3463.39
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c3,MSI,Milieu de gamme,2,2,3198.86
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c3,MSI,Milieu de gamme,3,2,3148.94
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c3,MSI,Milieu de gamme,4,2,3083.67
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c4,MSI,Milieu de gamme,1,2,3452.32
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c4,MSI,Milieu de gamme,2,3,3554.4
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c4,MSI,Milieu de gamme,3,3,3554.4
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c4,MSI,Milieu de gamme,4,3,3554.4
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c5,MSI,Milieu de gamme,1,3,3254.83
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c5,MSI,Milieu de gamme,2,4,3203.33
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c5,MSI,Milieu de gamme,3,4,3200.81
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c5,MSI,Milieu de gamme,4,4,3200.81
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c6,MSI,Milieu de gamme,1,2,3198.28
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c6,MSI,Milieu de gamme,2,2,3198.28
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c6,MSI,Milieu de gamme,3,2,3198.28
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c6,MSI,Milieu de gamme,4,2,3198.28
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c7,MSI,Milieu de gamme,1,2,3440.22
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c7,MSI,Milieu de gamme,2,2,3440.22
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c7,MSI,Milieu de gamme,3,2,3440.22
-pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c7,MSI,Milieu de gamme,4,2,3440.22
-pc_portables,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,1,21,4847.63
-pc_portables,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,2,21,4858.86
-pc_portables,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,3,21,4858.86
-pc_portables,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,4,21,4858.86
-pc_portables,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,1,2,2579.94
-pc_portables,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,2,2,2579.94
-pc_portables,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,3,2,2579.94
-pc_portables,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,4,2,2579.94
-pc_portables,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,1,4,2638.82
-pc_portables,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,2,2,2502.99
-pc_portables,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,3,2,2502.99
-pc_portables,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,4,2,2502.99
-pc_portables,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,1,3,2262.13
-pc_portables,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,2,2,2139.46
-pc_portables,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,3,2,2139.46
-pc_portables,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,4,2,2139.46
-pc_portables,N2_marque_gamme,MSI::Économique::c3,MSI,Économique,1,5,2709.71
-pc_portables,N2_marque_gamme,MSI::Économique::c3,MSI,Économique,2,5,2709.71
-pc_portables,N2_marque_gamme,MSI::Économique::c3,MSI,Économique,3,5,2709.71
-pc_portables,N2_marque_gamme,MSI::Économique::c3,MSI,Économique,4,5,2709.71
-pc_portables,N2_marque_gamme,MSI::Économique::c4,MSI,Économique,1,3,2662.22
-pc_portables,N2_marque_gamme,MSI::Économique::c4,MSI,Économique,2,3,2662.22
-pc_portables,N2_marque_gamme,MSI::Économique::c4,MSI,Économique,3,3,2662.22
-pc_portables,N2_marque_gamme,MSI::Économique::c4,MSI,Économique,4,3,2662.22
-pc_portables,N2_marque_gamme,MSI::Économique::c5,MSI,Économique,1,3,2138.54
-pc_portables,N2_marque_gamme,MSI::Économique::c5,MSI,Économique,2,2,2094.7
-pc_portables,N2_marque_gamme,MSI::Économique::c5,MSI,Économique,3,2,2094.7
-pc_portables,N2_marque_gamme,MSI::Économique::c5,MSI,Économique,4,2,2094.7
-pc_portables,N2_marque_gamme,MSI::Économique::c6,MSI,Économique,1,3,2352.83
-pc_portables,N2_marque_gamme,MSI::Économique::c6,MSI,Économique,2,3,2453.31
-pc_portables,N2_marque_gamme,MSI::Économique::c6,MSI,Économique,3,3,2453.31
-pc_portables,N2_marque_gamme,MSI::Économique::c6,MSI,Économique,4,3,2453.31
-pc_portables,N2_marque_gamme,MSI::Économique::c7,MSI,Économique,1,2,2625.17
-pc_portables,N2_marque_gamme,MSI::Économique::c7,MSI,Économique,2,2,2625.17
-pc_portables,N2_marque_gamme,MSI::Économique::c7,MSI,Économique,3,2,2625.17
-pc_portables,N2_marque_gamme,MSI::Économique::c7,MSI,Économique,4,2,2625.17
+pc_portables,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,1,29,2744.61
+pc_portables,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,2,29,2744.61
+pc_portables,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,3,25,2744.77
+pc_portables,N2_marque_gamme,HP::Milieu de gamme::c0,HP,Milieu de gamme,4,25,2744.77
+pc_portables,N2_marque_gamme,HP::Premium::c0,HP,Premium,1,9,3458.19
+pc_portables,N2_marque_gamme,HP::Premium::c0,HP,Premium,2,9,3458.19
+pc_portables,N2_marque_gamme,HP::Premium::c0,HP,Premium,3,9,3458.19
+pc_portables,N2_marque_gamme,HP::Premium::c0,HP,Premium,4,9,3458.19
+pc_portables,N2_marque_gamme,HP::Premium::c1,HP,Premium,1,15,4271.14
+pc_portables,N2_marque_gamme,HP::Premium::c1,HP,Premium,2,15,4271.14
+pc_portables,N2_marque_gamme,HP::Premium::c1,HP,Premium,3,10,4410.0
+pc_portables,N2_marque_gamme,HP::Premium::c1,HP,Premium,4,10,4410.0
+pc_portables,N2_marque_gamme,HP::Premium::c2,HP,Premium,1,6,3797.31
+pc_portables,N2_marque_gamme,HP::Premium::c2,HP,Premium,2,6,3797.31
+pc_portables,N2_marque_gamme,HP::Premium::c2,HP,Premium,3,5,3822.25
+pc_portables,N2_marque_gamme,HP::Premium::c2,HP,Premium,4,5,3822.25
+pc_portables,N2_marque_gamme,HP::Économique::c0,HP,Économique,1,15,1839.33
+pc_portables,N2_marque_gamme,HP::Économique::c0,HP,Économique,2,15,1827.34
+pc_portables,N2_marque_gamme,HP::Économique::c0,HP,Économique,3,14,1840.33
+pc_portables,N2_marque_gamme,HP::Économique::c0,HP,Économique,4,15,1824.36
+pc_portables,N2_marque_gamme,HP::Économique::c1,HP,Économique,1,6,1855.21
+pc_portables,N2_marque_gamme,HP::Économique::c1,HP,Économique,2,6,1855.21
+pc_portables,N2_marque_gamme,HP::Économique::c1,HP,Économique,3,6,1855.21
+pc_portables,N2_marque_gamme,HP::Économique::c1,HP,Économique,4,6,1855.21
+pc_portables,N2_marque_gamme,HP::Économique::c2,HP,Économique,1,11,2228.52
+pc_portables,N2_marque_gamme,HP::Économique::c2,HP,Économique,2,11,2228.52
+pc_portables,N2_marque_gamme,HP::Économique::c2,HP,Économique,3,9,2238.57
+pc_portables,N2_marque_gamme,HP::Économique::c2,HP,Économique,4,9,2238.57
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,1,11,3349.56
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,2,11,3349.56
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,3,11,3349.56
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c0,LENOVO,Milieu de gamme,4,11,3349.56
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c1,LENOVO,Milieu de gamme,1,11,3211.13
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c1,LENOVO,Milieu de gamme,2,11,3211.13
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c1,LENOVO,Milieu de gamme,3,11,3211.13
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c1,LENOVO,Milieu de gamme,4,11,3211.13
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c2,LENOVO,Milieu de gamme,1,12,2923.74
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c2,LENOVO,Milieu de gamme,2,12,2923.74
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c2,LENOVO,Milieu de gamme,3,12,2923.74
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c2,LENOVO,Milieu de gamme,4,12,2923.74
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c3,LENOVO,Milieu de gamme,1,7,2836.3
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c3,LENOVO,Milieu de gamme,2,7,2823.25
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c3,LENOVO,Milieu de gamme,3,7,2823.25
+pc_portables,N2_marque_gamme,LENOVO::Milieu de gamme::c3,LENOVO,Milieu de gamme,4,7,2823.25
+pc_portables,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,1,32,4578.41
+pc_portables,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,2,32,4573.99
+pc_portables,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,3,27,4453.07
+pc_portables,N2_marque_gamme,LENOVO::Premium::c0,LENOVO,Premium,4,27,4453.07
+pc_portables,N2_marque_gamme,LENOVO::Premium::c1,LENOVO,Premium,1,10,8258.19
+pc_portables,N2_marque_gamme,LENOVO::Premium::c1,LENOVO,Premium,2,10,8258.19
+pc_portables,N2_marque_gamme,LENOVO::Premium::c1,LENOVO,Premium,3,10,8258.19
+pc_portables,N2_marque_gamme,LENOVO::Premium::c1,LENOVO,Premium,4,10,8258.19
+pc_portables,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,1,8,1748.1
+pc_portables,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,2,8,1748.1
+pc_portables,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,3,7,1776.92
+pc_portables,N2_marque_gamme,LENOVO::Économique::c0,LENOVO,Économique,4,7,1776.92
+pc_portables,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,1,18,1281.07
+pc_portables,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,2,17,1266.34
+pc_portables,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,3,13,1263.72
+pc_portables,N2_marque_gamme,LENOVO::Économique::c1,LENOVO,Économique,4,15,1270.05
+pc_portables,N2_marque_gamme,LENOVO::Économique::c2,LENOVO,Économique,1,11,2056.25
+pc_portables,N2_marque_gamme,LENOVO::Économique::c2,LENOVO,Économique,2,10,2081.61
+pc_portables,N2_marque_gamme,LENOVO::Économique::c2,LENOVO,Économique,3,9,2068.96
+pc_portables,N2_marque_gamme,LENOVO::Économique::c2,LENOVO,Économique,4,9,2068.96
+pc_portables,N2_marque_gamme,LENOVO::Économique::c3,LENOVO,Économique,1,5,1623.85
+pc_portables,N2_marque_gamme,LENOVO::Économique::c3,LENOVO,Économique,2,5,1623.85
+pc_portables,N2_marque_gamme,LENOVO::Économique::c3,LENOVO,Économique,3,5,1623.85
+pc_portables,N2_marque_gamme,LENOVO::Économique::c3,LENOVO,Économique,4,5,1623.85
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,1,6,3289.36
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,2,6,3193.07
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,3,6,3193.07
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c0,MSI,Milieu de gamme,4,6,3193.07
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c1,MSI,Milieu de gamme,1,10,3227.79
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c1,MSI,Milieu de gamme,2,10,3125.13
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c1,MSI,Milieu de gamme,3,10,3114.34
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c1,MSI,Milieu de gamme,4,10,3101.32
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c2,MSI,Milieu de gamme,1,5,3263.73
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c2,MSI,Milieu de gamme,2,4,3212.66
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c2,MSI,Milieu de gamme,3,4,3212.66
+pc_portables,N2_marque_gamme,MSI::Milieu de gamme::c2,MSI,Milieu de gamme,4,4,3212.66
+pc_portables,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,1,22,4800.45
+pc_portables,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,2,22,4742.99
+pc_portables,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,3,22,4742.99
+pc_portables,N2_marque_gamme,MSI::Premium::c0,MSI,Premium,4,22,4742.99
+pc_portables,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,1,10,2393.74
+pc_portables,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,2,6,2292.11
+pc_portables,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,3,6,2292.11
+pc_portables,N2_marque_gamme,MSI::Économique::c0,MSI,Économique,4,6,2292.11
+pc_portables,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,1,7,2671.99
+pc_portables,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,2,7,2671.99
+pc_portables,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,3,7,2671.99
+pc_portables,N2_marque_gamme,MSI::Économique::c1,MSI,Économique,4,7,2671.99
+pc_portables,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,1,7,2441.71
+pc_portables,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,2,6,2427.46
+pc_portables,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,3,6,2427.46
+pc_portables,N2_marque_gamme,MSI::Économique::c2,MSI,Économique,4,6,2427.46
 smartphones,N1_technique,Entrée de gamme basique,,,1,26,445.04
 smartphones,N1_technique,Entrée de gamme basique,,,2,26,402.6
 smartphones,N1_technique,Entrée de gamme basique,,,3,32,420.91
@@ -628,173 +311,74 @@ smartphones,N1_technique,Ultra-premium 5G,,,1,23,1876.89
 smartphones,N1_technique,Ultra-premium 5G,,,2,23,1876.89
 smartphones,N1_technique,Ultra-premium 5G,,,3,23,1876.89
 smartphones,N1_technique,Ultra-premium 5G,,,4,23,1876.89
-smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c0,HONOR,Milieu de gamme,1,3,979.0
-smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c0,HONOR,Milieu de gamme,2,3,979.0
-smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c0,HONOR,Milieu de gamme,3,8,919.2
-smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c0,HONOR,Milieu de gamme,4,9,923.54
-smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c1,HONOR,Milieu de gamme,1,2,1072.31
-smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c1,HONOR,Milieu de gamme,2,1,1199.0
-smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c1,HONOR,Milieu de gamme,3,1,1199.0
-smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c1,HONOR,Milieu de gamme,4,1,1199.0
-smartphones,N2_marque_gamme,HONOR::Premium::c0,HONOR,Premium,1,3,1499.0
-smartphones,N2_marque_gamme,HONOR::Premium::c0,HONOR,Premium,2,3,1499.0
-smartphones,N2_marque_gamme,HONOR::Premium::c0,HONOR,Premium,3,3,1499.0
-smartphones,N2_marque_gamme,HONOR::Premium::c0,HONOR,Premium,4,3,1499.0
-smartphones,N2_marque_gamme,HONOR::Premium::c1,HONOR,Premium,1,3,1999.0
-smartphones,N2_marque_gamme,HONOR::Premium::c1,HONOR,Premium,2,3,1999.0
-smartphones,N2_marque_gamme,HONOR::Premium::c1,HONOR,Premium,3,3,1999.0
-smartphones,N2_marque_gamme,HONOR::Premium::c1,HONOR,Premium,4,3,1999.0
-smartphones,N2_marque_gamme,HONOR::Premium::c2,HONOR,Premium,1,3,1399.0
-smartphones,N2_marque_gamme,HONOR::Premium::c2,HONOR,Premium,2,3,1399.0
-smartphones,N2_marque_gamme,HONOR::Premium::c2,HONOR,Premium,3,3,1399.0
-smartphones,N2_marque_gamme,HONOR::Premium::c2,HONOR,Premium,4,3,1399.0
-smartphones,N2_marque_gamme,HONOR::Économique::c0,HONOR,Économique,1,6,714.54
-smartphones,N2_marque_gamme,HONOR::Économique::c0,HONOR,Économique,2,4,675.71
-smartphones,N2_marque_gamme,HONOR::Économique::c0,HONOR,Économique,3,4,675.71
-smartphones,N2_marque_gamme,HONOR::Économique::c0,HONOR,Économique,4,3,639.0
-smartphones,N2_marque_gamme,HONOR::Économique::c1,HONOR,Économique,1,3,445.97
-smartphones,N2_marque_gamme,HONOR::Économique::c1,HONOR,Économique,2,2,421.61
-smartphones,N2_marque_gamme,HONOR::Économique::c1,HONOR,Économique,3,2,421.61
-smartphones,N2_marque_gamme,HONOR::Économique::c1,HONOR,Économique,4,2,421.61
-smartphones,N2_marque_gamme,HONOR::Économique::c2,HONOR,Économique,1,3,799.0
-smartphones,N2_marque_gamme,HONOR::Économique::c2,HONOR,Économique,2,3,799.0
-smartphones,N2_marque_gamme,HONOR::Économique::c2,HONOR,Économique,3,3,799.0
-smartphones,N2_marque_gamme,HONOR::Économique::c2,HONOR,Économique,4,3,799.0
-smartphones,N2_marque_gamme,HONOR::Économique::c3,HONOR,Économique,1,2,599.0
-smartphones,N2_marque_gamme,HONOR::Économique::c3,HONOR,Économique,2,2,599.0
-smartphones,N2_marque_gamme,HONOR::Économique::c3,HONOR,Économique,3,2,599.0
-smartphones,N2_marque_gamme,HONOR::Économique::c3,HONOR,Économique,4,2,599.0
-smartphones,N2_marque_gamme,HONOR::Économique::c4,HONOR,Économique,1,2,479.0
-smartphones,N2_marque_gamme,HONOR::Économique::c4,HONOR,Économique,2,2,479.0
-smartphones,N2_marque_gamme,HONOR::Économique::c4,HONOR,Économique,3,2,479.0
-smartphones,N2_marque_gamme,HONOR::Économique::c4,HONOR,Économique,4,2,479.0
-smartphones,N2_marque_gamme,HUAWEI::Gamme unique::c0,HUAWEI,Gamme unique,1,2,747.33
-smartphones,N2_marque_gamme,HUAWEI::Gamme unique::c0,HUAWEI,Gamme unique,2,2,747.33
-smartphones,N2_marque_gamme,HUAWEI::Gamme unique::c0,HUAWEI,Gamme unique,3,2,747.33
-smartphones,N2_marque_gamme,HUAWEI::Gamme unique::c0,HUAWEI,Gamme unique,4,2,747.33
-smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c0,INFINIX,Milieu de gamme,1,5,799.0
-smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c0,INFINIX,Milieu de gamme,2,5,799.0
-smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c0,INFINIX,Milieu de gamme,3,5,799.0
-smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c0,INFINIX,Milieu de gamme,4,5,799.0
-smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c1,INFINIX,Milieu de gamme,1,4,1094.99
-smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c1,INFINIX,Milieu de gamme,2,3,1129.0
-smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c1,INFINIX,Milieu de gamme,3,3,1129.0
-smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c1,INFINIX,Milieu de gamme,4,3,1129.0
-smartphones,N2_marque_gamme,INFINIX::Premium::c0,INFINIX,Premium,1,3,1569.0
-smartphones,N2_marque_gamme,INFINIX::Premium::c0,INFINIX,Premium,2,3,1569.0
-smartphones,N2_marque_gamme,INFINIX::Premium::c0,INFINIX,Premium,3,3,1569.0
-smartphones,N2_marque_gamme,INFINIX::Premium::c0,INFINIX,Premium,4,3,1569.0
-smartphones,N2_marque_gamme,INFINIX::Premium::c1,INFINIX,Premium,1,2,1869.0
-smartphones,N2_marque_gamme,INFINIX::Premium::c1,INFINIX,Premium,2,2,1869.0
-smartphones,N2_marque_gamme,INFINIX::Premium::c1,INFINIX,Premium,3,2,1869.0
-smartphones,N2_marque_gamme,INFINIX::Premium::c1,INFINIX,Premium,4,2,1869.0
-smartphones,N2_marque_gamme,INFINIX::Économique::c0,INFINIX,Économique,1,4,399.0
-smartphones,N2_marque_gamme,INFINIX::Économique::c0,INFINIX,Économique,2,4,399.0
-smartphones,N2_marque_gamme,INFINIX::Économique::c0,INFINIX,Économique,3,4,399.0
-smartphones,N2_marque_gamme,INFINIX::Économique::c0,INFINIX,Économique,4,4,399.0
-smartphones,N2_marque_gamme,INFINIX::Économique::c1,INFINIX,Économique,1,4,429.0
-smartphones,N2_marque_gamme,INFINIX::Économique::c1,INFINIX,Économique,2,4,439.0
-smartphones,N2_marque_gamme,INFINIX::Économique::c1,INFINIX,Économique,3,4,439.0
-smartphones,N2_marque_gamme,INFINIX::Économique::c1,INFINIX,Économique,4,4,439.0
-smartphones,N2_marque_gamme,LESIA::Milieu de gamme::c0,LESIA,Milieu de gamme,1,3,209.9
-smartphones,N2_marque_gamme,LESIA::Milieu de gamme::c0,LESIA,Milieu de gamme,2,3,209.9
-smartphones,N2_marque_gamme,LESIA::Milieu de gamme::c0,LESIA,Milieu de gamme,3,3,209.9
-smartphones,N2_marque_gamme,LESIA::Milieu de gamme::c0,LESIA,Milieu de gamme,4,3,209.9
-smartphones,N2_marque_gamme,LESIA::Premium::c0,LESIA,Premium,2,2,239.45
-smartphones,N2_marque_gamme,LESIA::Premium::c0,LESIA,Premium,3,2,239.45
-smartphones,N2_marque_gamme,LESIA::Premium::c0,LESIA,Premium,4,2,239.45
-smartphones,N2_marque_gamme,LESIA::Premium::c1,LESIA,Premium,1,3,229.9
-smartphones,N2_marque_gamme,LESIA::Premium::c1,LESIA,Premium,2,3,229.9
-smartphones,N2_marque_gamme,LESIA::Premium::c1,LESIA,Premium,3,3,229.9
-smartphones,N2_marque_gamme,LESIA::Premium::c1,LESIA,Premium,4,3,229.9
+smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c0,HONOR,Milieu de gamme,1,10,864.86
+smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c0,HONOR,Milieu de gamme,2,7,871.69
+smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c0,HONOR,Milieu de gamme,3,7,871.69
+smartphones,N2_marque_gamme,HONOR::Milieu de gamme::c0,HONOR,Milieu de gamme,4,6,884.43
+smartphones,N2_marque_gamme,HONOR::Premium::c0,HONOR,Premium,1,10,1565.35
+smartphones,N2_marque_gamme,HONOR::Premium::c0,HONOR,Premium,2,10,1565.35
+smartphones,N2_marque_gamme,HONOR::Premium::c0,HONOR,Premium,3,10,1565.35
+smartphones,N2_marque_gamme,HONOR::Premium::c0,HONOR,Premium,4,10,1565.35
+smartphones,N2_marque_gamme,HONOR::Économique::c0,HONOR,Économique,1,10,534.56
+smartphones,N2_marque_gamme,HONOR::Économique::c0,HONOR,Économique,2,9,538.66
+smartphones,N2_marque_gamme,HONOR::Économique::c0,HONOR,Économique,3,9,538.66
+smartphones,N2_marque_gamme,HONOR::Économique::c0,HONOR,Économique,4,9,538.66
+smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c0,INFINIX,Milieu de gamme,1,9,919.13
+smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c0,INFINIX,Milieu de gamme,2,8,909.6
+smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c0,INFINIX,Milieu de gamme,3,8,909.6
+smartphones,N2_marque_gamme,INFINIX::Milieu de gamme::c0,INFINIX,Milieu de gamme,4,8,909.6
+smartphones,N2_marque_gamme,INFINIX::Premium::c0,INFINIX,Premium,1,5,1682.74
+smartphones,N2_marque_gamme,INFINIX::Premium::c0,INFINIX,Premium,2,5,1682.74
+smartphones,N2_marque_gamme,INFINIX::Premium::c0,INFINIX,Premium,3,5,1682.74
+smartphones,N2_marque_gamme,INFINIX::Premium::c0,INFINIX,Premium,4,5,1682.74
+smartphones,N2_marque_gamme,INFINIX::Économique::c0,INFINIX,Économique,1,8,413.73
+smartphones,N2_marque_gamme,INFINIX::Économique::c0,INFINIX,Économique,2,8,418.52
+smartphones,N2_marque_gamme,INFINIX::Économique::c0,INFINIX,Économique,3,8,418.52
+smartphones,N2_marque_gamme,INFINIX::Économique::c0,INFINIX,Économique,4,8,418.52
+smartphones,N2_marque_gamme,LESIA::Premium::c0,LESIA,Premium,1,6,219.67
+smartphones,N2_marque_gamme,LESIA::Premium::c0,LESIA,Premium,2,6,219.67
+smartphones,N2_marque_gamme,LESIA::Premium::c0,LESIA,Premium,3,6,219.67
+smartphones,N2_marque_gamme,LESIA::Premium::c0,LESIA,Premium,4,6,219.67
 smartphones,N2_marque_gamme,LESIA::Économique::c0,LESIA,Économique,1,6,179.62
 smartphones,N2_marque_gamme,LESIA::Économique::c0,LESIA,Économique,2,6,179.62
 smartphones,N2_marque_gamme,LESIA::Économique::c0,LESIA,Économique,3,6,179.62
 smartphones,N2_marque_gamme,LESIA::Économique::c0,LESIA,Économique,4,6,179.62
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c0,OPPO,Milieu de gamme,1,2,899.0
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c0,OPPO,Milieu de gamme,2,2,899.0
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c0,OPPO,Milieu de gamme,3,2,899.0
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c0,OPPO,Milieu de gamme,4,2,899.0
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c1,OPPO,Milieu de gamme,1,3,888.89
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c1,OPPO,Milieu de gamme,2,3,888.89
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c1,OPPO,Milieu de gamme,3,3,888.89
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c1,OPPO,Milieu de gamme,4,3,888.89
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c2,OPPO,Milieu de gamme,1,2,999.0
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c2,OPPO,Milieu de gamme,2,2,999.0
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c2,OPPO,Milieu de gamme,3,2,999.0
-smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c2,OPPO,Milieu de gamme,4,2,999.0
-smartphones,N2_marque_gamme,OPPO::Premium::c0,OPPO,Premium,1,2,1399.0
-smartphones,N2_marque_gamme,OPPO::Premium::c0,OPPO,Premium,2,2,1399.0
-smartphones,N2_marque_gamme,OPPO::Premium::c0,OPPO,Premium,3,2,1399.0
-smartphones,N2_marque_gamme,OPPO::Premium::c0,OPPO,Premium,4,2,1399.0
-smartphones,N2_marque_gamme,OPPO::Premium::c1,OPPO,Premium,1,3,2065.12
-smartphones,N2_marque_gamme,OPPO::Premium::c1,OPPO,Premium,2,3,2065.12
-smartphones,N2_marque_gamme,OPPO::Premium::c1,OPPO,Premium,3,3,2065.12
-smartphones,N2_marque_gamme,OPPO::Premium::c1,OPPO,Premium,4,2,2099.0
-smartphones,N2_marque_gamme,OPPO::Premium::c2,OPPO,Premium,1,2,1199.0
-smartphones,N2_marque_gamme,OPPO::Premium::c2,OPPO,Premium,2,2,1199.0
-smartphones,N2_marque_gamme,OPPO::Premium::c2,OPPO,Premium,3,2,1199.0
-smartphones,N2_marque_gamme,OPPO::Premium::c2,OPPO,Premium,4,2,1199.0
-smartphones,N2_marque_gamme,OPPO::Économique::c0,OPPO,Économique,1,6,630.63
-smartphones,N2_marque_gamme,OPPO::Économique::c0,OPPO,Économique,2,5,637.16
-smartphones,N2_marque_gamme,OPPO::Économique::c0,OPPO,Économique,3,5,637.16
-smartphones,N2_marque_gamme,OPPO::Économique::c0,OPPO,Économique,4,5,637.16
-smartphones,N2_marque_gamme,OPPO::Économique::c1,OPPO,Économique,1,2,699.0
-smartphones,N2_marque_gamme,OPPO::Économique::c1,OPPO,Économique,2,2,699.0
-smartphones,N2_marque_gamme,OPPO::Économique::c1,OPPO,Économique,3,2,699.0
-smartphones,N2_marque_gamme,OPPO::Économique::c1,OPPO,Économique,4,2,699.0
-smartphones,N2_marque_gamme,OSCAL::Milieu de gamme::c0,OSCAL,Milieu de gamme,1,1,449.0
-smartphones,N2_marque_gamme,OSCAL::Milieu de gamme::c0,OSCAL,Milieu de gamme,2,1,449.0
-smartphones,N2_marque_gamme,OSCAL::Milieu de gamme::c0,OSCAL,Milieu de gamme,3,1,449.0
-smartphones,N2_marque_gamme,OSCAL::Milieu de gamme::c0,OSCAL,Milieu de gamme,4,1,449.0
-smartphones,N2_marque_gamme,OSCAL::Premium::c0,OSCAL,Premium,1,2,499.0
-smartphones,N2_marque_gamme,OSCAL::Premium::c0,OSCAL,Premium,2,2,499.0
-smartphones,N2_marque_gamme,OSCAL::Premium::c0,OSCAL,Premium,3,2,499.0
-smartphones,N2_marque_gamme,OSCAL::Premium::c0,OSCAL,Premium,4,2,499.0
-smartphones,N2_marque_gamme,OSCAL::Économique::c0,OSCAL,Économique,1,2,329.0
-smartphones,N2_marque_gamme,OSCAL::Économique::c0,OSCAL,Économique,2,2,329.0
-smartphones,N2_marque_gamme,OSCAL::Économique::c0,OSCAL,Économique,3,2,329.0
-smartphones,N2_marque_gamme,OSCAL::Économique::c0,OSCAL,Économique,4,2,329.0
-smartphones,N2_marque_gamme,OSCAL::Économique::c1,OSCAL,Économique,1,2,399.0
-smartphones,N2_marque_gamme,OSCAL::Économique::c1,OSCAL,Économique,2,2,399.0
-smartphones,N2_marque_gamme,OSCAL::Économique::c1,OSCAL,Économique,3,2,399.0
-smartphones,N2_marque_gamme,OSCAL::Économique::c1,OSCAL,Économique,4,2,399.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,1,5,1680.51
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,2,5,1680.51
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,3,5,1680.51
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,4,5,1680.51
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,1,8,1943.22
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,2,8,1943.22
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,3,8,1943.22
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,4,8,1943.22
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c2,SAMSUNG,Milieu de gamme,1,4,1999.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c2,SAMSUNG,Milieu de gamme,2,4,1999.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c2,SAMSUNG,Milieu de gamme,3,4,1999.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c2,SAMSUNG,Milieu de gamme,4,4,1999.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c3,SAMSUNG,Milieu de gamme,1,2,1599.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c3,SAMSUNG,Milieu de gamme,2,2,1599.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c3,SAMSUNG,Milieu de gamme,3,2,1599.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c3,SAMSUNG,Milieu de gamme,4,2,1599.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c4,SAMSUNG,Milieu de gamme,1,4,2299.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c4,SAMSUNG,Milieu de gamme,2,4,2299.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c4,SAMSUNG,Milieu de gamme,3,4,2299.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c4,SAMSUNG,Milieu de gamme,4,4,2299.0
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c5,SAMSUNG,Milieu de gamme,1,4,1519.52
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c5,SAMSUNG,Milieu de gamme,2,4,1519.52
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c5,SAMSUNG,Milieu de gamme,3,4,1519.52
-smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c5,SAMSUNG,Milieu de gamme,4,4,1519.52
-smartphones,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,1,12,5761.98
-smartphones,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,2,11,5858.58
-smartphones,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,3,11,5858.58
-smartphones,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,4,11,5858.58
+smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c0,OPPO,Milieu de gamme,1,7,922.02
+smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c0,OPPO,Milieu de gamme,2,7,922.02
+smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c0,OPPO,Milieu de gamme,3,7,922.02
+smartphones,N2_marque_gamme,OPPO::Milieu de gamme::c0,OPPO,Milieu de gamme,4,7,922.02
+smartphones,N2_marque_gamme,OPPO::Premium::c0,OPPO,Premium,1,7,1581.83
+smartphones,N2_marque_gamme,OPPO::Premium::c0,OPPO,Premium,2,7,1581.83
+smartphones,N2_marque_gamme,OPPO::Premium::c0,OPPO,Premium,3,6,1521.31
+smartphones,N2_marque_gamme,OPPO::Premium::c0,OPPO,Premium,4,6,1521.31
+smartphones,N2_marque_gamme,OPPO::Économique::c0,OPPO,Économique,1,8,647.07
+smartphones,N2_marque_gamme,OPPO::Économique::c0,OPPO,Économique,2,7,654.25
+smartphones,N2_marque_gamme,OPPO::Économique::c0,OPPO,Économique,3,7,654.25
+smartphones,N2_marque_gamme,OPPO::Économique::c0,OPPO,Économique,4,7,654.25
+smartphones,N2_marque_gamme,OSCAL::Gamme unique::c0,OSCAL,Gamme unique,1,7,409.37
+smartphones,N2_marque_gamme,OSCAL::Gamme unique::c0,OSCAL,Gamme unique,2,7,409.37
+smartphones,N2_marque_gamme,OSCAL::Gamme unique::c0,OSCAL,Gamme unique,3,7,409.37
+smartphones,N2_marque_gamme,OSCAL::Gamme unique::c0,OSCAL,Gamme unique,4,7,409.37
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,1,12,2055.23
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,2,12,2055.23
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,3,12,2055.23
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,4,12,2055.23
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,1,9,1606.95
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,2,9,1606.95
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,3,9,1606.95
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,4,9,1606.95
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c2,SAMSUNG,Milieu de gamme,1,6,1855.63
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c2,SAMSUNG,Milieu de gamme,2,6,1855.63
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c2,SAMSUNG,Milieu de gamme,3,6,1855.63
+smartphones,N2_marque_gamme,SAMSUNG::Milieu de gamme::c2,SAMSUNG,Milieu de gamme,4,6,1855.63
+smartphones,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,1,16,4810.38
+smartphones,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,2,15,4811.14
+smartphones,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,3,15,4811.14
+smartphones,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,4,15,4811.14
 smartphones,N2_marque_gamme,SAMSUNG::Premium::c1,SAMSUNG,Premium,1,9,4336.98
 smartphones,N2_marque_gamme,SAMSUNG::Premium::c1,SAMSUNG,Premium,2,9,4336.98
 smartphones,N2_marque_gamme,SAMSUNG::Premium::c1,SAMSUNG,Premium,3,8,4471.13
 smartphones,N2_marque_gamme,SAMSUNG::Premium::c1,SAMSUNG,Premium,4,9,4336.98
-smartphones,N2_marque_gamme,SAMSUNG::Premium::c2,SAMSUNG,Premium,1,4,2799.0
-smartphones,N2_marque_gamme,SAMSUNG::Premium::c2,SAMSUNG,Premium,2,4,2799.0
-smartphones,N2_marque_gamme,SAMSUNG::Premium::c2,SAMSUNG,Premium,3,4,2799.0
-smartphones,N2_marque_gamme,SAMSUNG::Premium::c2,SAMSUNG,Premium,4,4,2799.0
 smartphones,N2_marque_gamme,SAMSUNG::Économique::c0,SAMSUNG,Économique,1,15,553.43
 smartphones,N2_marque_gamme,SAMSUNG::Économique::c0,SAMSUNG,Économique,2,15,553.43
 smartphones,N2_marque_gamme,SAMSUNG::Économique::c0,SAMSUNG,Économique,3,15,553.43
@@ -807,88 +391,34 @@ smartphones,N2_marque_gamme,SAMSUNG::Économique::c2,SAMSUNG,Économique,1,6,103
 smartphones,N2_marque_gamme,SAMSUNG::Économique::c2,SAMSUNG,Économique,2,6,1038.22
 smartphones,N2_marque_gamme,SAMSUNG::Économique::c2,SAMSUNG,Économique,3,6,1038.22
 smartphones,N2_marque_gamme,SAMSUNG::Économique::c2,SAMSUNG,Économique,4,6,1038.22
-smartphones,N2_marque_gamme,TECNO::Milieu de gamme::c0,TECNO,Milieu de gamme,1,2,599.0
-smartphones,N2_marque_gamme,TECNO::Milieu de gamme::c0,TECNO,Milieu de gamme,2,1,599.0
-smartphones,N2_marque_gamme,TECNO::Milieu de gamme::c0,TECNO,Milieu de gamme,3,1,599.0
-smartphones,N2_marque_gamme,TECNO::Milieu de gamme::c0,TECNO,Milieu de gamme,4,1,599.0
-smartphones,N2_marque_gamme,TECNO::Économique::c0,TECNO,Économique,1,4,556.48
-smartphones,N2_marque_gamme,TECNO::Économique::c0,TECNO,Économique,2,3,559.0
-smartphones,N2_marque_gamme,TECNO::Économique::c0,TECNO,Économique,3,3,559.0
-smartphones,N2_marque_gamme,TECNO::Économique::c0,TECNO,Économique,4,3,559.0
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c0,VIVO,Milieu de gamme,1,4,1007.21
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c0,VIVO,Milieu de gamme,2,4,1007.21
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c0,VIVO,Milieu de gamme,3,4,1007.21
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c0,VIVO,Milieu de gamme,4,4,1007.21
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c1,VIVO,Milieu de gamme,1,2,1499.0
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c1,VIVO,Milieu de gamme,2,2,1499.0
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c1,VIVO,Milieu de gamme,3,2,1499.0
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c1,VIVO,Milieu de gamme,4,2,1499.0
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c2,VIVO,Milieu de gamme,1,2,1169.0
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c2,VIVO,Milieu de gamme,2,2,1169.0
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c2,VIVO,Milieu de gamme,3,2,1169.0
-smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c2,VIVO,Milieu de gamme,4,2,1169.0
-smartphones,N2_marque_gamme,VIVO::Premium::c0,VIVO,Premium,1,3,1977.42
-smartphones,N2_marque_gamme,VIVO::Premium::c0,VIVO,Premium,2,3,1977.42
-smartphones,N2_marque_gamme,VIVO::Premium::c0,VIVO,Premium,3,5,2025.19
-smartphones,N2_marque_gamme,VIVO::Premium::c0,VIVO,Premium,4,5,2025.19
-smartphones,N2_marque_gamme,VIVO::Premium::c1,VIVO,Premium,1,2,1699.0
-smartphones,N2_marque_gamme,VIVO::Premium::c1,VIVO,Premium,2,2,1699.0
-smartphones,N2_marque_gamme,VIVO::Premium::c1,VIVO,Premium,3,2,1699.0
-smartphones,N2_marque_gamme,VIVO::Premium::c1,VIVO,Premium,4,2,1699.0
-smartphones,N2_marque_gamme,VIVO::Économique::c0,VIVO,Économique,1,4,480.68
-smartphones,N2_marque_gamme,VIVO::Économique::c0,VIVO,Économique,2,1,459.0
-smartphones,N2_marque_gamme,VIVO::Économique::c0,VIVO,Économique,3,1,459.0
-smartphones,N2_marque_gamme,VIVO::Économique::c0,VIVO,Économique,4,1,459.0
-smartphones,N2_marque_gamme,VIVO::Économique::c1,VIVO,Économique,1,3,789.47
-smartphones,N2_marque_gamme,VIVO::Économique::c1,VIVO,Économique,2,3,789.47
-smartphones,N2_marque_gamme,VIVO::Économique::c1,VIVO,Économique,3,3,789.47
-smartphones,N2_marque_gamme,VIVO::Économique::c1,VIVO,Économique,4,3,789.47
-smartphones,N2_marque_gamme,VIVO::Économique::c2,VIVO,Économique,1,4,393.71
-smartphones,N2_marque_gamme,VIVO::Économique::c2,VIVO,Économique,2,4,393.71
-smartphones,N2_marque_gamme,VIVO::Économique::c2,VIVO,Économique,3,4,393.71
-smartphones,N2_marque_gamme,VIVO::Économique::c2,VIVO,Économique,4,4,393.71
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c0,XIAOMI,Milieu de gamme,1,4,799.0
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c0,XIAOMI,Milieu de gamme,2,4,799.0
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c0,XIAOMI,Milieu de gamme,3,4,799.0
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c0,XIAOMI,Milieu de gamme,4,4,799.0
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c1,XIAOMI,Milieu de gamme,1,8,738.93
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c1,XIAOMI,Milieu de gamme,2,5,744.96
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c1,XIAOMI,Milieu de gamme,3,5,744.96
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c1,XIAOMI,Milieu de gamme,4,5,744.96
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c2,XIAOMI,Milieu de gamme,1,2,839.0
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c2,XIAOMI,Milieu de gamme,2,2,839.0
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c2,XIAOMI,Milieu de gamme,3,2,839.0
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c2,XIAOMI,Milieu de gamme,4,2,839.0
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c3,XIAOMI,Milieu de gamme,1,4,899.0
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c3,XIAOMI,Milieu de gamme,2,4,899.0
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c3,XIAOMI,Milieu de gamme,3,4,899.0
-smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c3,XIAOMI,Milieu de gamme,4,4,899.0
+smartphones,N2_marque_gamme,TECNO::Gamme unique::c0,TECNO,Gamme unique,1,6,570.31
+smartphones,N2_marque_gamme,TECNO::Gamme unique::c0,TECNO,Gamme unique,2,4,568.74
+smartphones,N2_marque_gamme,TECNO::Gamme unique::c0,TECNO,Gamme unique,3,4,568.74
+smartphones,N2_marque_gamme,TECNO::Gamme unique::c0,TECNO,Gamme unique,4,4,568.74
+smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c0,VIVO,Milieu de gamme,1,9,959.92
+smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c0,VIVO,Milieu de gamme,2,9,959.92
+smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c0,VIVO,Milieu de gamme,3,9,959.92
+smartphones,N2_marque_gamme,VIVO::Milieu de gamme::c0,VIVO,Milieu de gamme,4,9,959.92
+smartphones,N2_marque_gamme,VIVO::Premium::c0,VIVO,Premium,1,7,1749.44
+smartphones,N2_marque_gamme,VIVO::Premium::c0,VIVO,Premium,2,7,1749.44
+smartphones,N2_marque_gamme,VIVO::Premium::c0,VIVO,Premium,3,7,1749.44
+smartphones,N2_marque_gamme,VIVO::Premium::c0,VIVO,Premium,4,7,1749.44
+smartphones,N2_marque_gamme,VIVO::Économique::c0,VIVO,Économique,1,8,435.03
+smartphones,N2_marque_gamme,VIVO::Économique::c0,VIVO,Économique,2,5,405.98
+smartphones,N2_marque_gamme,VIVO::Économique::c0,VIVO,Économique,3,5,405.98
+smartphones,N2_marque_gamme,VIVO::Économique::c0,VIVO,Économique,4,5,405.98
+smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c0,XIAOMI,Milieu de gamme,1,14,816.94
+smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c0,XIAOMI,Milieu de gamme,2,14,816.94
+smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c0,XIAOMI,Milieu de gamme,3,14,816.94
+smartphones,N2_marque_gamme,XIAOMI::Milieu de gamme::c0,XIAOMI,Milieu de gamme,4,14,816.94
 smartphones,N2_marque_gamme,XIAOMI::Premium::c0,XIAOMI,Premium,1,15,1481.59
 smartphones,N2_marque_gamme,XIAOMI::Premium::c0,XIAOMI,Premium,2,15,1481.59
 smartphones,N2_marque_gamme,XIAOMI::Premium::c0,XIAOMI,Premium,3,15,1481.59
 smartphones,N2_marque_gamme,XIAOMI::Premium::c0,XIAOMI,Premium,4,15,1481.59
-smartphones,N2_marque_gamme,XIAOMI::Économique::c0,XIAOMI,Économique,1,2,647.07
-smartphones,N2_marque_gamme,XIAOMI::Économique::c0,XIAOMI,Économique,2,3,699.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c0,XIAOMI,Économique,3,3,699.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c0,XIAOMI,Économique,4,3,699.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c1,XIAOMI,Économique,1,4,679.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c1,XIAOMI,Économique,2,4,679.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c1,XIAOMI,Économique,3,4,679.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c1,XIAOMI,Économique,4,4,679.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c2,XIAOMI,Économique,1,1,649.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c2,XIAOMI,Économique,2,2,569.08
-smartphones,N2_marque_gamme,XIAOMI::Économique::c2,XIAOMI,Économique,3,7,490.41
-smartphones,N2_marque_gamme,XIAOMI::Économique::c2,XIAOMI,Économique,4,7,490.41
-smartphones,N2_marque_gamme,XIAOMI::Économique::c3,XIAOMI,Économique,1,6,551.37
-smartphones,N2_marque_gamme,XIAOMI::Économique::c3,XIAOMI,Économique,2,6,551.37
-smartphones,N2_marque_gamme,XIAOMI::Économique::c3,XIAOMI,Économique,3,6,551.37
-smartphones,N2_marque_gamme,XIAOMI::Économique::c3,XIAOMI,Économique,4,8,562.91
-smartphones,N2_marque_gamme,XIAOMI::Économique::c4,XIAOMI,Économique,1,3,699.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c4,XIAOMI,Économique,2,3,699.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c4,XIAOMI,Économique,3,3,699.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c4,XIAOMI,Économique,4,3,699.0
-smartphones,N2_marque_gamme,XIAOMI::Économique::c5,XIAOMI,Économique,3,4,421.94
-smartphones,N2_marque_gamme,XIAOMI::Économique::c5,XIAOMI,Économique,4,4,421.94
+smartphones,N2_marque_gamme,XIAOMI::Économique::c0,XIAOMI,Économique,1,20,645.26
+smartphones,N2_marque_gamme,XIAOMI::Économique::c0,XIAOMI,Économique,2,17,637.27
+smartphones,N2_marque_gamme,XIAOMI::Économique::c0,XIAOMI,Économique,3,17,637.27
+smartphones,N2_marque_gamme,XIAOMI::Économique::c0,XIAOMI,Économique,4,17,637.27
 telephones_portables,N1_technique,Basique compact,,,1,8,39.72
 telephones_portables,N1_technique,Basique compact,,,2,5,32.9
 telephones_portables,N1_technique,Basique compact,,,3,7,40.8
@@ -911,78 +441,34 @@ telephones_portables,N1_technique,Standard multimédia,,,1,34,48.33
 telephones_portables,N1_technique,Standard multimédia,,,2,32,48.46
 telephones_portables,N1_technique,Standard multimédia,,,3,30,52.51
 telephones_portables,N1_technique,Standard multimédia,,,4,30,52.51
-telephones_portables,N2_marque_gamme,AMI::Économique::c0,AMI,Économique,1,16,49.76
+telephones_portables,N2_marque_gamme,AMI::Économique::c0,AMI,Économique,1,10,37.45
 telephones_portables,N2_marque_gamme,AMI::Économique::c0,AMI,Économique,2,10,37.45
 telephones_portables,N2_marque_gamme,AMI::Économique::c0,AMI,Économique,3,10,37.45
 telephones_portables,N2_marque_gamme,AMI::Économique::c0,AMI,Économique,4,10,37.45
+telephones_portables,N2_marque_gamme,AMI::Économique::c1,AMI,Économique,1,6,79.9
 telephones_portables,N2_marque_gamme,AMI::Économique::c1,AMI,Économique,2,6,79.9
 telephones_portables,N2_marque_gamme,AMI::Économique::c1,AMI,Économique,3,6,79.9
 telephones_portables,N2_marque_gamme,AMI::Économique::c1,AMI,Économique,4,6,79.9
-telephones_portables,N2_marque_gamme,CLEVER::Économique::c0,CLEVER,Économique,2,7,89.0
-telephones_portables,N2_marque_gamme,CLEVER::Économique::c0,CLEVER,Économique,3,7,89.0
-telephones_portables,N2_marque_gamme,CLEVER::Économique::c0,CLEVER,Économique,4,7,89.0
-telephones_portables,N2_marque_gamme,CLEVER::Économique::c1,CLEVER,Économique,1,6,32.9
-telephones_portables,N2_marque_gamme,CLEVER::Économique::c1,CLEVER,Économique,2,5,32.9
-telephones_portables,N2_marque_gamme,CLEVER::Économique::c1,CLEVER,Économique,3,5,32.9
-telephones_portables,N2_marque_gamme,CLEVER::Économique::c1,CLEVER,Économique,4,5,32.9
-telephones_portables,N2_marque_gamme,EVERTEK::Milieu de gamme::c0,EVERTEK,Milieu de gamme,1,1,49.0
-telephones_portables,N2_marque_gamme,EVERTEK::Milieu de gamme::c0,EVERTEK,Milieu de gamme,2,1,49.0
-telephones_portables,N2_marque_gamme,EVERTEK::Économique::c0,EVERTEK,Économique,1,7,37.56
-telephones_portables,N2_marque_gamme,EVERTEK::Économique::c0,EVERTEK,Économique,2,7,37.56
-telephones_portables,N2_marque_gamme,EVERTEK::Économique::c0,EVERTEK,Économique,3,2,38.0
-telephones_portables,N2_marque_gamme,EVERTEK::Économique::c0,EVERTEK,Économique,4,2,38.0
-telephones_portables,N2_marque_gamme,ITEL::Gamme unique::c0,ITEL,Gamme unique,1,2,35.0
-telephones_portables,N2_marque_gamme,ITEL::Gamme unique::c0,ITEL,Gamme unique,2,2,35.0
-telephones_portables,N2_marque_gamme,ITEL::Gamme unique::c0,ITEL,Gamme unique,3,1,35.0
-telephones_portables,N2_marque_gamme,ITEL::Gamme unique::c0,ITEL,Gamme unique,4,1,35.0
-telephones_portables,N2_marque_gamme,MAXFONE::Gamme unique::c0,MAXFONE,Gamme unique,1,2,79.9
-telephones_portables,N2_marque_gamme,MAXFONE::Gamme unique::c0,MAXFONE,Gamme unique,2,2,79.9
-telephones_portables,N2_marque_gamme,MAXFONE::Gamme unique::c0,MAXFONE,Gamme unique,3,2,79.9
-telephones_portables,N2_marque_gamme,MAXFONE::Gamme unique::c0,MAXFONE,Gamme unique,4,2,79.9
-telephones_portables,N2_marque_gamme,NOKIA::Milieu de gamme::c0,NOKIA,Milieu de gamme,2,3,105.56
-telephones_portables,N2_marque_gamme,NOKIA::Milieu de gamme::c0,NOKIA,Milieu de gamme,3,3,105.56
-telephones_portables,N2_marque_gamme,NOKIA::Milieu de gamme::c0,NOKIA,Milieu de gamme,4,3,105.56
-telephones_portables,N2_marque_gamme,NOKIA::Premium::c0,NOKIA,Premium,2,1,249.0
-telephones_portables,N2_marque_gamme,NOKIA::Premium::c0,NOKIA,Premium,3,1,249.0
-telephones_portables,N2_marque_gamme,NOKIA::Premium::c0,NOKIA,Premium,4,1,249.0
-telephones_portables,N2_marque_gamme,NOKIA::Économique::c0,NOKIA,Économique,2,2,89.0
-telephones_portables,N2_marque_gamme,NOKIA::Économique::c0,NOKIA,Économique,3,2,89.0
-telephones_portables,N2_marque_gamme,NOKIA::Économique::c0,NOKIA,Économique,4,2,89.0
-telephones_portables,N2_marque_gamme,NOKIA::Économique::c1,NOKIA,Économique,1,2,59.0
-telephones_portables,N2_marque_gamme,NOKIA::Économique::c1,NOKIA,Économique,2,1,59.0
-telephones_portables,N2_marque_gamme,NOKIA::Économique::c1,NOKIA,Économique,3,2,59.0
-telephones_portables,N2_marque_gamme,NOKIA::Économique::c1,NOKIA,Économique,4,2,59.0
-telephones_portables,N2_marque_gamme,PHILIPS::Milieu de gamme::c0,PHILIPS,Milieu de gamme,2,2,94.34
-telephones_portables,N2_marque_gamme,PHILIPS::Milieu de gamme::c0,PHILIPS,Milieu de gamme,3,2,94.34
-telephones_portables,N2_marque_gamme,PHILIPS::Milieu de gamme::c0,PHILIPS,Milieu de gamme,4,2,94.34
-telephones_portables,N2_marque_gamme,PHILIPS::Économique::c0,PHILIPS,Économique,1,5,50.02
-telephones_portables,N2_marque_gamme,PHILIPS::Économique::c0,PHILIPS,Économique,2,5,50.02
-telephones_portables,N2_marque_gamme,PHILIPS::Économique::c0,PHILIPS,Économique,3,5,50.02
-telephones_portables,N2_marque_gamme,PHILIPS::Économique::c0,PHILIPS,Économique,4,5,50.02
-telephones_portables,N2_marque_gamme,SMARTEC::Milieu de gamme::c0,SMARTEC,Milieu de gamme,1,2,85.0
-telephones_portables,N2_marque_gamme,SMARTEC::Milieu de gamme::c0,SMARTEC,Milieu de gamme,2,2,85.0
-telephones_portables,N2_marque_gamme,SMARTEC::Milieu de gamme::c0,SMARTEC,Milieu de gamme,3,2,85.0
-telephones_portables,N2_marque_gamme,SMARTEC::Milieu de gamme::c0,SMARTEC,Milieu de gamme,4,2,85.0
-telephones_portables,N2_marque_gamme,SMARTEC::Milieu de gamme::c1,SMARTEC,Milieu de gamme,1,2,85.0
-telephones_portables,N2_marque_gamme,SMARTEC::Milieu de gamme::c1,SMARTEC,Milieu de gamme,2,2,85.0
-telephones_portables,N2_marque_gamme,SMARTEC::Milieu de gamme::c1,SMARTEC,Milieu de gamme,3,2,85.0
-telephones_portables,N2_marque_gamme,SMARTEC::Milieu de gamme::c1,SMARTEC,Milieu de gamme,4,2,85.0
-telephones_portables,N2_marque_gamme,SMARTEC::Économique::c0,SMARTEC,Économique,1,6,44.77
-telephones_portables,N2_marque_gamme,SMARTEC::Économique::c0,SMARTEC,Économique,2,4,39.0
-telephones_portables,N2_marque_gamme,SMARTEC::Économique::c0,SMARTEC,Économique,3,6,44.77
-telephones_portables,N2_marque_gamme,SMARTEC::Économique::c0,SMARTEC,Économique,4,6,44.77
-telephones_portables,N2_marque_gamme,SMARTEC::Économique::c1,SMARTEC,Économique,1,4,39.0
-telephones_portables,N2_marque_gamme,SMARTEC::Économique::c1,SMARTEC,Économique,2,4,39.0
-telephones_portables,N2_marque_gamme,SMARTEC::Économique::c1,SMARTEC,Économique,3,4,39.0
-telephones_portables,N2_marque_gamme,SMARTEC::Économique::c1,SMARTEC,Économique,4,4,39.0
-telephones_portables,N2_marque_gamme,UNIWA::Milieu de gamme::c0,UNIWA,Milieu de gamme,1,3,49.0
-telephones_portables,N2_marque_gamme,UNIWA::Milieu de gamme::c0,UNIWA,Milieu de gamme,2,3,49.0
-telephones_portables,N2_marque_gamme,UNIWA::Milieu de gamme::c0,UNIWA,Milieu de gamme,3,3,49.0
-telephones_portables,N2_marque_gamme,UNIWA::Milieu de gamme::c0,UNIWA,Milieu de gamme,4,3,49.0
-telephones_portables,N2_marque_gamme,UNIWA::Économique::c0,UNIWA,Économique,1,6,37.23
-telephones_portables,N2_marque_gamme,UNIWA::Économique::c0,UNIWA,Économique,2,6,37.23
-telephones_portables,N2_marque_gamme,UNIWA::Économique::c0,UNIWA,Économique,3,6,37.23
-telephones_portables,N2_marque_gamme,UNIWA::Économique::c0,UNIWA,Économique,4,6,37.23
+telephones_portables,N2_marque_gamme,CLEVER::Gamme unique::c0,CLEVER,Gamme unique,1,6,32.9
+telephones_portables,N2_marque_gamme,CLEVER::Gamme unique::c0,CLEVER,Gamme unique,2,5,32.9
+telephones_portables,N2_marque_gamme,CLEVER::Gamme unique::c0,CLEVER,Gamme unique,3,5,32.9
+telephones_portables,N2_marque_gamme,CLEVER::Gamme unique::c0,CLEVER,Gamme unique,4,5,32.9
+telephones_portables,N2_marque_gamme,EVERTEK::Gamme unique::c0,EVERTEK,Gamme unique,1,8,38.83
+telephones_portables,N2_marque_gamme,EVERTEK::Gamme unique::c0,EVERTEK,Gamme unique,2,8,38.83
+telephones_portables,N2_marque_gamme,EVERTEK::Gamme unique::c0,EVERTEK,Gamme unique,3,2,38.0
+telephones_portables,N2_marque_gamme,EVERTEK::Gamme unique::c0,EVERTEK,Gamme unique,4,2,38.0
+telephones_portables,N2_marque_gamme,PHILIPS::Gamme unique::c0,PHILIPS,Gamme unique,1,5,50.02
+telephones_portables,N2_marque_gamme,PHILIPS::Gamme unique::c0,PHILIPS,Gamme unique,2,5,50.02
+telephones_portables,N2_marque_gamme,PHILIPS::Gamme unique::c0,PHILIPS,Gamme unique,3,5,50.02
+telephones_portables,N2_marque_gamme,PHILIPS::Gamme unique::c0,PHILIPS,Gamme unique,4,5,50.02
+telephones_portables,N2_marque_gamme,SMARTEC::Économique::c0,SMARTEC,Économique,1,14,51.69
+telephones_portables,N2_marque_gamme,SMARTEC::Économique::c0,SMARTEC,Économique,2,12,50.56
+telephones_portables,N2_marque_gamme,SMARTEC::Économique::c0,SMARTEC,Économique,3,14,51.69
+telephones_portables,N2_marque_gamme,SMARTEC::Économique::c0,SMARTEC,Économique,4,14,51.69
+telephones_portables,N2_marque_gamme,UNIWA::Gamme unique::c0,UNIWA,Gamme unique,1,9,40.8
+telephones_portables,N2_marque_gamme,UNIWA::Gamme unique::c0,UNIWA,Gamme unique,2,9,40.8
+telephones_portables,N2_marque_gamme,UNIWA::Gamme unique::c0,UNIWA,Gamme unique,3,9,40.8
+telephones_portables,N2_marque_gamme,UNIWA::Gamme unique::c0,UNIWA,Gamme unique,4,9,40.8
 televiseurs,N1_technique,Smart TV 4K HDR,,,1,95,2347.02
 televiseurs,N1_technique,Smart TV 4K HDR,,,2,94,2369.05
 televiseurs,N1_technique,Smart TV 4K HDR,,,3,94,2369.05
@@ -991,151 +477,71 @@ televiseurs,N1_technique,TV Full HD standard,,,1,14,559.39
 televiseurs,N1_technique,TV Full HD standard,,,2,14,561.07
 televiseurs,N1_technique,TV Full HD standard,,,3,14,561.07
 televiseurs,N1_technique,TV Full HD standard,,,4,14,560.0
-televiseurs,N2_marque_gamme,ALMATV::Gamme unique::c0,ALMATV,Gamme unique,1,2,492.12
-televiseurs,N2_marque_gamme,ALMATV::Gamme unique::c0,ALMATV,Gamme unique,2,2,492.12
-televiseurs,N2_marque_gamme,ALMATV::Gamme unique::c0,ALMATV,Gamme unique,3,2,492.12
-televiseurs,N2_marque_gamme,ALMATV::Gamme unique::c0,ALMATV,Gamme unique,4,2,485.58
-televiseurs,N2_marque_gamme,ECOSAT::Milieu de gamme::c0,ECOSAT,Milieu de gamme,1,2,769.32
-televiseurs,N2_marque_gamme,ECOSAT::Milieu de gamme::c0,ECOSAT,Milieu de gamme,2,2,769.32
-televiseurs,N2_marque_gamme,ECOSAT::Milieu de gamme::c0,ECOSAT,Milieu de gamme,3,2,769.32
-televiseurs,N2_marque_gamme,ECOSAT::Milieu de gamme::c0,ECOSAT,Milieu de gamme,4,2,769.32
-televiseurs,N2_marque_gamme,ECOSAT::Premium::c0,ECOSAT,Premium,1,1,1499.0
-televiseurs,N2_marque_gamme,ECOSAT::Premium::c0,ECOSAT,Premium,2,1,1479.0
-televiseurs,N2_marque_gamme,ECOSAT::Premium::c0,ECOSAT,Premium,3,1,1479.0
-televiseurs,N2_marque_gamme,ECOSAT::Premium::c0,ECOSAT,Premium,4,1,1479.0
-televiseurs,N2_marque_gamme,ECOSAT::Économique::c0,ECOSAT,Économique,1,2,411.11
-televiseurs,N2_marque_gamme,ECOSAT::Économique::c0,ECOSAT,Économique,2,2,411.11
-televiseurs,N2_marque_gamme,ECOSAT::Économique::c0,ECOSAT,Économique,3,2,411.11
-televiseurs,N2_marque_gamme,ECOSAT::Économique::c0,ECOSAT,Économique,4,2,411.11
-televiseurs,N2_marque_gamme,HISENSE::Milieu de gamme::c0,HISENSE,Milieu de gamme,1,3,3967.74
-televiseurs,N2_marque_gamme,HISENSE::Milieu de gamme::c0,HISENSE,Milieu de gamme,2,3,3967.74
-televiseurs,N2_marque_gamme,HISENSE::Milieu de gamme::c0,HISENSE,Milieu de gamme,3,3,3967.74
-televiseurs,N2_marque_gamme,HISENSE::Milieu de gamme::c0,HISENSE,Milieu de gamme,4,3,3967.74
-televiseurs,N2_marque_gamme,HISENSE::Premium::c0,HISENSE,Premium,1,3,7741.29
-televiseurs,N2_marque_gamme,HISENSE::Premium::c0,HISENSE,Premium,2,3,7741.29
-televiseurs,N2_marque_gamme,HISENSE::Premium::c0,HISENSE,Premium,3,3,7741.29
-televiseurs,N2_marque_gamme,HISENSE::Premium::c0,HISENSE,Premium,4,3,7741.29
-televiseurs,N2_marque_gamme,HISENSE::Économique::c0,HISENSE,Économique,1,3,1195.34
-televiseurs,N2_marque_gamme,HISENSE::Économique::c0,HISENSE,Économique,2,3,1195.34
-televiseurs,N2_marque_gamme,HISENSE::Économique::c0,HISENSE,Économique,3,3,1195.34
-televiseurs,N2_marque_gamme,HISENSE::Économique::c0,HISENSE,Économique,4,3,1195.34
-televiseurs,N2_marque_gamme,IFFALCON::Gamme unique::c0,IFFALCON,Gamme unique,1,2,820.58
-televiseurs,N2_marque_gamme,IFFALCON::Gamme unique::c0,IFFALCON,Gamme unique,2,2,820.58
-televiseurs,N2_marque_gamme,IFFALCON::Gamme unique::c0,IFFALCON,Gamme unique,3,2,820.58
-televiseurs,N2_marque_gamme,IFFALCON::Gamme unique::c0,IFFALCON,Gamme unique,4,2,820.58
-televiseurs,N2_marque_gamme,LG::Milieu de gamme::c0,LG,Milieu de gamme,1,3,3541.61
-televiseurs,N2_marque_gamme,LG::Milieu de gamme::c0,LG,Milieu de gamme,2,3,3541.61
-televiseurs,N2_marque_gamme,LG::Milieu de gamme::c0,LG,Milieu de gamme,3,3,3541.61
-televiseurs,N2_marque_gamme,LG::Milieu de gamme::c0,LG,Milieu de gamme,4,2,3697.65
-televiseurs,N2_marque_gamme,LG::Premium::c0,LG,Premium,1,3,5508.04
-televiseurs,N2_marque_gamme,LG::Premium::c0,LG,Premium,2,3,5508.04
-televiseurs,N2_marque_gamme,LG::Premium::c0,LG,Premium,3,3,5508.04
-televiseurs,N2_marque_gamme,LG::Premium::c0,LG,Premium,4,3,5508.04
-televiseurs,N2_marque_gamme,LG::Économique::c0,LG,Économique,1,5,1811.88
-televiseurs,N2_marque_gamme,LG::Économique::c0,LG,Économique,2,4,1841.25
-televiseurs,N2_marque_gamme,LG::Économique::c0,LG,Économique,3,4,1841.25
+televiseurs,N2_marque_gamme,ECOSAT::Gamme unique::c0,ECOSAT,Gamme unique,1,5,684.21
+televiseurs,N2_marque_gamme,ECOSAT::Gamme unique::c0,ECOSAT,Gamme unique,2,5,682.37
+televiseurs,N2_marque_gamme,ECOSAT::Gamme unique::c0,ECOSAT,Gamme unique,3,5,682.37
+televiseurs,N2_marque_gamme,ECOSAT::Gamme unique::c0,ECOSAT,Gamme unique,4,5,682.37
+televiseurs,N2_marque_gamme,HISENSE::Gamme unique::c0,HISENSE,Gamme unique,1,9,3323.66
+televiseurs,N2_marque_gamme,HISENSE::Gamme unique::c0,HISENSE,Gamme unique,2,9,3323.66
+televiseurs,N2_marque_gamme,HISENSE::Gamme unique::c0,HISENSE,Gamme unique,3,9,3323.66
+televiseurs,N2_marque_gamme,HISENSE::Gamme unique::c0,HISENSE,Gamme unique,4,8,3062.35
+televiseurs,N2_marque_gamme,LG::Premium::c0,LG,Premium,1,5,4696.44
+televiseurs,N2_marque_gamme,LG::Premium::c0,LG,Premium,2,5,4696.44
+televiseurs,N2_marque_gamme,LG::Premium::c0,LG,Premium,3,5,4696.44
+televiseurs,N2_marque_gamme,LG::Premium::c0,LG,Premium,4,5,4696.44
+televiseurs,N2_marque_gamme,LG::Économique::c0,LG,Économique,1,6,1997.09
+televiseurs,N2_marque_gamme,LG::Économique::c0,LG,Économique,2,5,2062.72
+televiseurs,N2_marque_gamme,LG::Économique::c0,LG,Économique,3,5,2062.72
 televiseurs,N2_marque_gamme,LG::Économique::c0,LG,Économique,4,4,1841.25
-televiseurs,N2_marque_gamme,MAXWELL::Milieu de gamme::c0,MAXWELL,Milieu de gamme,1,2,1295.15
-televiseurs,N2_marque_gamme,MAXWELL::Milieu de gamme::c0,MAXWELL,Milieu de gamme,2,3,1069.35
-televiseurs,N2_marque_gamme,MAXWELL::Milieu de gamme::c0,MAXWELL,Milieu de gamme,3,3,1069.35
-televiseurs,N2_marque_gamme,MAXWELL::Milieu de gamme::c0,MAXWELL,Milieu de gamme,4,3,1069.35
-televiseurs,N2_marque_gamme,MAXWELL::Premium::c0,MAXWELL,Premium,1,2,2091.84
-televiseurs,N2_marque_gamme,MAXWELL::Premium::c0,MAXWELL,Premium,2,1,2189.0
-televiseurs,N2_marque_gamme,MAXWELL::Premium::c0,MAXWELL,Premium,3,1,2189.0
-televiseurs,N2_marque_gamme,MAXWELL::Premium::c0,MAXWELL,Premium,4,1,2189.0
-televiseurs,N2_marque_gamme,MAXWELL::Économique::c0,MAXWELL,Économique,1,3,550.76
-televiseurs,N2_marque_gamme,MAXWELL::Économique::c0,MAXWELL,Économique,2,2,488.88
-televiseurs,N2_marque_gamme,MAXWELL::Économique::c0,MAXWELL,Économique,3,2,488.88
-televiseurs,N2_marque_gamme,MAXWELL::Économique::c0,MAXWELL,Économique,4,2,488.88
-televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,1,3,2670.14
-televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,2,3,2670.14
-televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,3,3,2670.14
-televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,4,2,2478.5
-televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,1,3,2973.79
-televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,2,3,2973.79
-televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,3,3,2973.79
-televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c1,SAMSUNG,Milieu de gamme,4,3,2973.79
-televiseurs,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,1,5,5588.77
-televiseurs,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,2,5,5588.77
-televiseurs,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,3,5,5588.77
-televiseurs,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,4,5,5588.77
-televiseurs,N2_marque_gamme,SAMSUNG::Premium::c1,SAMSUNG,Premium,1,2,3797.94
-televiseurs,N2_marque_gamme,SAMSUNG::Premium::c1,SAMSUNG,Premium,2,2,3797.94
-televiseurs,N2_marque_gamme,SAMSUNG::Premium::c1,SAMSUNG,Premium,3,2,3797.94
-televiseurs,N2_marque_gamme,SAMSUNG::Premium::c1,SAMSUNG,Premium,4,2,3797.94
-televiseurs,N2_marque_gamme,SAMSUNG::Économique::c0,SAMSUNG,Économique,1,6,1707.41
-televiseurs,N2_marque_gamme,SAMSUNG::Économique::c0,SAMSUNG,Économique,2,6,1707.41
-televiseurs,N2_marque_gamme,SAMSUNG::Économique::c0,SAMSUNG,Économique,3,6,1707.41
-televiseurs,N2_marque_gamme,SAMSUNG::Économique::c0,SAMSUNG,Économique,4,6,1707.41
-televiseurs,N2_marque_gamme,SAMSUNG::Économique::c1,SAMSUNG,Économique,1,2,874.48
-televiseurs,N2_marque_gamme,SAMSUNG::Économique::c1,SAMSUNG,Économique,2,2,874.48
-televiseurs,N2_marque_gamme,SAMSUNG::Économique::c1,SAMSUNG,Économique,3,2,874.48
-televiseurs,N2_marque_gamme,SAMSUNG::Économique::c1,SAMSUNG,Économique,4,2,874.48
-televiseurs,N2_marque_gamme,TCL::Milieu de gamme::c0,TCL,Milieu de gamme,1,5,2935.46
-televiseurs,N2_marque_gamme,TCL::Milieu de gamme::c0,TCL,Milieu de gamme,2,5,2935.46
-televiseurs,N2_marque_gamme,TCL::Milieu de gamme::c0,TCL,Milieu de gamme,3,5,2935.46
-televiseurs,N2_marque_gamme,TCL::Milieu de gamme::c0,TCL,Milieu de gamme,4,5,2935.46
-televiseurs,N2_marque_gamme,TCL::Premium::c0,TCL,Premium,1,4,6308.45
-televiseurs,N2_marque_gamme,TCL::Premium::c0,TCL,Premium,2,4,6308.45
-televiseurs,N2_marque_gamme,TCL::Premium::c0,TCL,Premium,3,4,6308.45
-televiseurs,N2_marque_gamme,TCL::Premium::c0,TCL,Premium,4,4,6308.45
-televiseurs,N2_marque_gamme,TCL::Premium::c1,TCL,Premium,1,2,7258.67
-televiseurs,N2_marque_gamme,TCL::Premium::c1,TCL,Premium,2,2,7258.67
-televiseurs,N2_marque_gamme,TCL::Premium::c1,TCL,Premium,3,2,7258.67
-televiseurs,N2_marque_gamme,TCL::Premium::c1,TCL,Premium,4,2,7100.74
-televiseurs,N2_marque_gamme,TCL::Économique::c0,TCL,Économique,1,4,1681.25
-televiseurs,N2_marque_gamme,TCL::Économique::c0,TCL,Économique,2,4,1681.25
-televiseurs,N2_marque_gamme,TCL::Économique::c0,TCL,Économique,3,4,1681.25
-televiseurs,N2_marque_gamme,TCL::Économique::c0,TCL,Économique,4,4,1681.25
-televiseurs,N2_marque_gamme,TCL::Économique::c1,TCL,Économique,1,3,1128.21
-televiseurs,N2_marque_gamme,TCL::Économique::c1,TCL,Économique,2,3,1128.21
-televiseurs,N2_marque_gamme,TCL::Économique::c1,TCL,Économique,3,3,1128.21
-televiseurs,N2_marque_gamme,TCL::Économique::c1,TCL,Économique,4,2,947.68
-televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c0,TELEFUNKEN,Milieu de gamme,1,4,1415.68
-televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c0,TELEFUNKEN,Milieu de gamme,2,4,1415.68
-televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c0,TELEFUNKEN,Milieu de gamme,3,4,1415.68
-televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c0,TELEFUNKEN,Milieu de gamme,4,4,1370.22
-televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c1,TELEFUNKEN,Milieu de gamme,1,2,1347.68
-televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c1,TELEFUNKEN,Milieu de gamme,2,2,1347.68
-televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c1,TELEFUNKEN,Milieu de gamme,3,2,1347.68
-televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c1,TELEFUNKEN,Milieu de gamme,4,3,1361.31
-televiseurs,N2_marque_gamme,TELEFUNKEN::Premium::c0,TELEFUNKEN,Premium,1,5,4191.93
-televiseurs,N2_marque_gamme,TELEFUNKEN::Premium::c0,TELEFUNKEN,Premium,2,6,4073.37
-televiseurs,N2_marque_gamme,TELEFUNKEN::Premium::c0,TELEFUNKEN,Premium,3,6,4073.37
-televiseurs,N2_marque_gamme,TELEFUNKEN::Premium::c0,TELEFUNKEN,Premium,4,7,3809.52
-televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c0,TELEFUNKEN,Économique,1,4,562.41
-televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c0,TELEFUNKEN,Économique,2,4,562.41
-televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c0,TELEFUNKEN,Économique,3,4,562.41
-televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c0,TELEFUNKEN,Économique,4,4,562.41
-televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c1,TELEFUNKEN,Économique,1,3,700.31
-televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c1,TELEFUNKEN,Économique,2,3,700.31
-televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c1,TELEFUNKEN,Économique,3,3,700.31
-televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c1,TELEFUNKEN,Économique,4,3,700.31
-televiseurs,N2_marque_gamme,THOMSON::Milieu de gamme::c0,THOMSON,Milieu de gamme,1,3,2141.43
-televiseurs,N2_marque_gamme,THOMSON::Milieu de gamme::c0,THOMSON,Milieu de gamme,2,3,2141.43
-televiseurs,N2_marque_gamme,THOMSON::Milieu de gamme::c0,THOMSON,Milieu de gamme,3,3,2141.43
-televiseurs,N2_marque_gamme,THOMSON::Milieu de gamme::c0,THOMSON,Milieu de gamme,4,3,2141.43
-televiseurs,N2_marque_gamme,THOMSON::Premium::c0,THOMSON,Premium,1,3,3614.21
-televiseurs,N2_marque_gamme,THOMSON::Premium::c0,THOMSON,Premium,2,3,3614.21
-televiseurs,N2_marque_gamme,THOMSON::Premium::c0,THOMSON,Premium,3,3,3614.21
-televiseurs,N2_marque_gamme,THOMSON::Premium::c0,THOMSON,Premium,4,3,3614.21
-televiseurs,N2_marque_gamme,THOMSON::Économique::c0,THOMSON,Économique,1,2,1477.14
-televiseurs,N2_marque_gamme,THOMSON::Économique::c0,THOMSON,Économique,2,2,1477.14
-televiseurs,N2_marque_gamme,THOMSON::Économique::c0,THOMSON,Économique,3,2,1477.14
-televiseurs,N2_marque_gamme,THOMSON::Économique::c0,THOMSON,Économique,4,2,1477.14
-televiseurs,N2_marque_gamme,THOMSON::Économique::c1,THOMSON,Économique,1,2,1463.57
-televiseurs,N2_marque_gamme,THOMSON::Économique::c1,THOMSON,Économique,2,2,1463.57
-televiseurs,N2_marque_gamme,THOMSON::Économique::c1,THOMSON,Économique,3,2,1463.57
-televiseurs,N2_marque_gamme,THOMSON::Économique::c1,THOMSON,Économique,4,2,1463.57
-televiseurs,N2_marque_gamme,VEGA::Milieu de gamme::c0,VEGA,Milieu de gamme,1,2,1055.4
-televiseurs,N2_marque_gamme,VEGA::Milieu de gamme::c0,VEGA,Milieu de gamme,2,2,1055.4
-televiseurs,N2_marque_gamme,VEGA::Milieu de gamme::c0,VEGA,Milieu de gamme,3,2,1055.4
-televiseurs,N2_marque_gamme,VEGA::Milieu de gamme::c0,VEGA,Milieu de gamme,4,2,1055.4
-televiseurs,N2_marque_gamme,VEGA::Premium::c0,VEGA,Premium,1,2,2044.9
-televiseurs,N2_marque_gamme,VEGA::Premium::c0,VEGA,Premium,2,2,2044.9
-televiseurs,N2_marque_gamme,VEGA::Premium::c0,VEGA,Premium,3,2,2044.9
-televiseurs,N2_marque_gamme,VEGA::Premium::c0,VEGA,Premium,4,2,2044.9
-televiseurs,N2_marque_gamme,VEGA::Économique::c0,VEGA,Économique,1,2,650.88
-televiseurs,N2_marque_gamme,VEGA::Économique::c0,VEGA,Économique,2,2,650.88
-televiseurs,N2_marque_gamme,VEGA::Économique::c0,VEGA,Économique,3,2,650.88
-televiseurs,N2_marque_gamme,VEGA::Économique::c0,VEGA,Économique,4,2,650.88
+televiseurs,N2_marque_gamme,MAXWELL::Gamme unique::c0,MAXWELL,Gamme unique,1,7,1029.56
+televiseurs,N2_marque_gamme,MAXWELL::Gamme unique::c0,MAXWELL,Gamme unique,2,6,928.26
+televiseurs,N2_marque_gamme,MAXWELL::Gamme unique::c0,MAXWELL,Gamme unique,3,6,928.26
+televiseurs,N2_marque_gamme,MAXWELL::Gamme unique::c0,MAXWELL,Gamme unique,4,6,928.26
+televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,1,6,2817.87
+televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,2,6,2817.87
+televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,3,6,2817.87
+televiseurs,N2_marque_gamme,SAMSUNG::Milieu de gamme::c0,SAMSUNG,Milieu de gamme,4,5,2764.79
+televiseurs,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,1,7,5004.75
+televiseurs,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,2,7,5004.75
+televiseurs,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,3,7,5004.75
+televiseurs,N2_marque_gamme,SAMSUNG::Premium::c0,SAMSUNG,Premium,4,7,5004.75
+televiseurs,N2_marque_gamme,SAMSUNG::Économique::c0,SAMSUNG,Économique,1,8,1444.41
+televiseurs,N2_marque_gamme,SAMSUNG::Économique::c0,SAMSUNG,Économique,2,8,1444.41
+televiseurs,N2_marque_gamme,SAMSUNG::Économique::c0,SAMSUNG,Économique,3,8,1444.41
+televiseurs,N2_marque_gamme,SAMSUNG::Économique::c0,SAMSUNG,Économique,4,8,1444.41
+televiseurs,N2_marque_gamme,TCL::Milieu de gamme::c0,TCL,Milieu de gamme,1,6,2797.49
+televiseurs,N2_marque_gamme,TCL::Milieu de gamme::c0,TCL,Milieu de gamme,2,6,2797.49
+televiseurs,N2_marque_gamme,TCL::Milieu de gamme::c0,TCL,Milieu de gamme,3,6,2797.49
+televiseurs,N2_marque_gamme,TCL::Milieu de gamme::c0,TCL,Milieu de gamme,4,6,2797.49
+televiseurs,N2_marque_gamme,TCL::Premium::c0,TCL,Premium,1,6,6610.5
+televiseurs,N2_marque_gamme,TCL::Premium::c0,TCL,Premium,2,6,6610.5
+televiseurs,N2_marque_gamme,TCL::Premium::c0,TCL,Premium,3,6,6610.5
+televiseurs,N2_marque_gamme,TCL::Premium::c0,TCL,Premium,4,6,6562.2
+televiseurs,N2_marque_gamme,TCL::Économique::c0,TCL,Économique,1,6,1316.98
+televiseurs,N2_marque_gamme,TCL::Économique::c0,TCL,Économique,2,6,1316.98
+televiseurs,N2_marque_gamme,TCL::Économique::c0,TCL,Économique,3,6,1316.98
+televiseurs,N2_marque_gamme,TCL::Économique::c0,TCL,Économique,4,5,1266.85
+televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c0,TELEFUNKEN,Milieu de gamme,1,6,1214.41
+televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c0,TELEFUNKEN,Milieu de gamme,2,6,1214.41
+televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c0,TELEFUNKEN,Milieu de gamme,3,6,1214.41
+televiseurs,N2_marque_gamme,TELEFUNKEN::Milieu de gamme::c0,TELEFUNKEN,Milieu de gamme,4,6,1214.41
+televiseurs,N2_marque_gamme,TELEFUNKEN::Premium::c0,TELEFUNKEN,Premium,1,6,3705.22
+televiseurs,N2_marque_gamme,TELEFUNKEN::Premium::c0,TELEFUNKEN,Premium,2,6,3705.22
+televiseurs,N2_marque_gamme,TELEFUNKEN::Premium::c0,TELEFUNKEN,Premium,3,6,3705.22
+televiseurs,N2_marque_gamme,TELEFUNKEN::Premium::c0,TELEFUNKEN,Premium,4,6,3705.22
+televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c0,TELEFUNKEN,Économique,1,6,582.57
+televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c0,TELEFUNKEN,Économique,2,6,582.57
+televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c0,TELEFUNKEN,Économique,3,6,582.57
+televiseurs,N2_marque_gamme,TELEFUNKEN::Économique::c0,TELEFUNKEN,Économique,4,6,582.57
+televiseurs,N2_marque_gamme,THOMSON::Premium::c0,THOMSON,Premium,1,4,3241.66
+televiseurs,N2_marque_gamme,THOMSON::Premium::c0,THOMSON,Premium,2,4,3241.66
+televiseurs,N2_marque_gamme,THOMSON::Premium::c0,THOMSON,Premium,3,4,3241.66
+televiseurs,N2_marque_gamme,THOMSON::Premium::c0,THOMSON,Premium,4,4,3241.66
+televiseurs,N2_marque_gamme,THOMSON::Économique::c0,THOMSON,Économique,1,6,1642.33
+televiseurs,N2_marque_gamme,THOMSON::Économique::c0,THOMSON,Économique,2,6,1642.33
+televiseurs,N2_marque_gamme,THOMSON::Économique::c0,THOMSON,Économique,3,6,1642.33
+televiseurs,N2_marque_gamme,THOMSON::Économique::c0,THOMSON,Économique,4,6,1642.33
+televiseurs,N2_marque_gamme,VEGA::Gamme unique::c0,VEGA,Gamme unique,1,6,1119.95
+televiseurs,N2_marque_gamme,VEGA::Gamme unique::c0,VEGA,Gamme unique,2,6,1119.95
+televiseurs,N2_marque_gamme,VEGA::Gamme unique::c0,VEGA,Gamme unique,3,6,1119.95
+televiseurs,N2_marque_gamme,VEGA::Gamme unique::c0,VEGA,Gamme unique,4,6,1119.95

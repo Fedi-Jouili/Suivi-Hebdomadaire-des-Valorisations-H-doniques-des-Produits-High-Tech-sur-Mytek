@@ -1,0 +1,65 @@
+{
+  "segment": "0",
+  "continuous_features": [
+    "taille_ecran",
+    "taux_rafraichissement"
+  ],
+  "categorical_features": [
+    "resolution_affichage",
+    "technologie_dalle",
+    "hdr",
+    "smart_tv",
+    "os_platform",
+    "has_4g",
+    "has_wifi6",
+    "has_wifi",
+    "has_bluetooth",
+    "has_ethernet",
+    "marque"
+  ],
+  "design_matrix_columns": [
+    "taille_ecran",
+    "taux_rafraichissement",
+    "hdr",
+    "smart_tv",
+    "has_4g",
+    "has_wifi6",
+    "has_wifi",
+    "has_bluetooth",
+    "has_ethernet",
+    "resolution_affichage_Full HD",
+    "technologie_dalle_Mini-LED",
+    "technologie_dalle_OLED",
+    "technologie_dalle_QLED",
+    "technologie_dalle_QNED",
+    "os_platform_Autre",
+    "os_platform_Google TV",
+    "os_platform_Inconnu",
+    "os_platform_Tizen",
+    "os_platform_VIDAA",
+    "os_platform_webOS",
+    "marque_BIOLUX",
+    "marque_ECOSAT",
+    "marque_HAIER",
+    "marque_HISENSE",
+    "marque_IFFALCON",
+    "marque_IRIS",
+    "marque_LG",
+    "marque_MAXWELL",
+    "marque_SAMSUNG",
+    "marque_TCL",
+    "marque_TELEFUNKEN",
+    "marque_THOMSON",
+    "marque_VEGA"
+  ],
+  "n_train": 308,
+  "n_test": 80,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": true,
+    "random_forest": true
+  }
+}

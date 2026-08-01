@@ -1,0 +1,33 @@
+{
+  "segment": "3",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_brand",
+    "has_wifi",
+    "marque"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "has_wifi",
+    "cpu_brand_Qualcomm",
+    "cpu_brand_Samsung Exynos",
+    "marque_SAMSUNG",
+    "marque_XIAOMI"
+  ],
+  "n_train": 76,
+  "n_test": 16,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": true,
+    "random_forest": false
+  }
+}

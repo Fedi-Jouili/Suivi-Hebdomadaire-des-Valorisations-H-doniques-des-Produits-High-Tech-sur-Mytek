@@ -1,0 +1,43 @@
+{
+  "segment": "1",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_brand",
+    "has_5g",
+    "has_wifi",
+    "marque"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "has_5g",
+    "has_wifi",
+    "cpu_brand_MediaTek",
+    "cpu_brand_Qualcomm",
+    "marque_INFINIX",
+    "marque_OPPO",
+    "marque_OSCAL",
+    "marque_SAMSUNG",
+    "marque_TECNO",
+    "marque_UNIWA",
+    "marque_VIVO",
+    "marque_XIAOMI"
+  ],
+  "n_train": 346,
+  "n_test": 63,
+  "familles_ajustees": [
+    "hedonic_ols",
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "hedonic_ols": true,
+    "ridge": true,
+    "random_forest": true
+  }
+}

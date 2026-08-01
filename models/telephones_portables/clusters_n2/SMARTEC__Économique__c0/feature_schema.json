@@ -1,0 +1,29 @@
+{
+  "segment": "SMARTEC::Économique::c0",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "os_platform",
+    "has_bluetooth"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "has_bluetooth",
+    "os_platform_Inconnu"
+  ],
+  "n_train": 42,
+  "n_test": 12,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": false,
+    "random_forest": true
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "segment": "LENOVO::Milieu de gamme::c0",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "n_train": 36,
+  "n_test": 8,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": true,
+    "random_forest": true
+  }
+}

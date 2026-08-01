@@ -82,9 +82,26 @@ class RandomForestModel:
             complexes (max_depth/n_estimators plus eleves) que ce que la
             vraie capacite de generalisation justifie. None (par defaut) :
             KFold ordinaire, comportement inchange.
+
+            NOMBRE DE PLIS ADAPTATIF (correctif du 2026-08-01, modelisation
+            par cluster) : meme correctif que RidgeModel.fit -- min(5,
+            n_groupes) au lieu de 5 fixe (qui plantait sur un cluster de
+            moins de 5 produits distincts), ValueError explicite si moins de
+            2 groupes (aucun pli de validation possible ; l'appelant doit
+            garder cette unite hors de tout ajustement via
+            _min_rows_required AVANT d'appeler fit()).
         """
         rf = RandomForestRegressor(random_state=42)
-        cv = GroupKFold(n_splits=5) if groups is not None else 5
+        if groups is not None:
+            n_groups = pd.Series(groups).nunique()
+            if n_groups < 2:
+                raise ValueError(
+                    f"RandomForestModel.fit : {n_groups} groupe(s) distinct(s) dans `groups` -- "
+                    f"GroupKFold exige au moins 2 groupes pour former un pli de validation."
+                )
+            cv = GroupKFold(n_splits=min(5, n_groups))
+        else:
+            cv = 5
         grid_search = GridSearchCV(rf, self.param_grid, cv=cv, n_jobs=-1)
         grid_search.fit(X, y, groups=groups)
 

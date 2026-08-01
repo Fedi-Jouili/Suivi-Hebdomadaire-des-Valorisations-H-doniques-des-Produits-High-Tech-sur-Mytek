@@ -20,6 +20,7 @@ from src.dashboard.data_loader import (
     artifacts_available,
     available_weeks,
     category_label,
+    load_cluster_models_summary,
     load_cluster_stability_n2,
     load_coefficients,
     load_k_selection_justification,
@@ -222,6 +223,50 @@ def _n1_cluster_profile(category: str) -> pd.DataFrame:
     return profile
 
 
+def _cluster_models_summary_grid(summary: pd.DataFrame) -> dag.AgGrid | dmc.Alert:
+    """Table d'audit (cf. save_artifacts.fit_models_per_segment) -- une
+    ligne par (segment, famille), colonne retenu_pour_prediction TOUJOURS
+    lue plutot que ajuste seule (bat le modele categorie sur son propre
+    test, pas seulement "estimable", cf. sa docstring)."""
+    if summary.empty:
+        return dmc.Alert(
+            "Modèles par cluster non disponibles pour cette catégorie -- exécuter "
+            "`python -m src.models.save_artifacts` (version 2026-08-01 ou plus récente).",
+            color="gray", variant="light", icon=DashIconify(icon="tabler:info-circle"),
+        )
+    display = summary.copy()
+    display["famille"] = display["famille"].map({
+        "hedonic_ols": "Hedonic OLS", "ridge": "Ridge", "random_forest": "Random Forest",
+    })
+    display["statut"] = display.apply(
+        lambda r: "Retenu (bat le modèle catégorie)" if r["retenu_pour_prediction"]
+        else ("Ajusté mais pas meilleur" if r["ajuste"] else "Écarté"), axis=1,
+    )
+    for c in ("r2_test", "r2_test_categorie"):
+        display[c] = display[c].map(lambda v: f"{v:.3f}" if pd.notna(v) else "—")
+    display["raison_rejet"] = display["raison_rejet"].fillna("—")
+
+    return dag.AgGrid(
+        className="ag-theme-quartz-dark",
+        rowData=display.to_dict("records"),
+        columnDefs=[
+            {"field": "segment", "headerName": "Segment", "flex": 2},
+            {"field": "famille", "headerName": "Famille", "flex": 2},
+            {"field": "n_lignes", "headerName": "n (train)", "type": "rightAligned", "flex": 1},
+            {
+                "field": "statut", "headerName": "Statut", "flex": 2,
+                "cellClassRules": {"ag-status-positive": "value.indexOf('Retenu') === 0"},
+            },
+            {"field": "r2_test", "headerName": "R² test (cluster)", "type": "rightAligned", "flex": 1},
+            {"field": "r2_test_categorie", "headerName": "R² test (catégorie)", "type": "rightAligned", "flex": 1},
+            {"field": "raison_rejet", "headerName": "Raison si écarté", "flex": 3},
+        ],
+        defaultColDef={"sortable": True, "resizable": True, "filter": True},
+        style={"height": "420px"}, columnSize="sizeToFit",
+        dashGridOptions={"theme": "legacy"},
+    )
+
+
 def _n2_summary_with_diagnostics(n2_summary: pd.DataFrame, stability: pd.DataFrame,
                                   k_justification: pd.DataFrame) -> pd.DataFrame:
     """Enrichit le tableau des unites N2 (marque x gamme) avec 2 diagnostics
@@ -304,6 +349,12 @@ def render_models(category):
     except ArtifactsMissingError:
         agreement = pd.DataFrame(columns=["feature", "ols_coefficient", "ridge_coefficient",
                                            "ols_ridge_signes_accordent", "rf_importance"])
+
+    # Modeles PAR CLUSTER (N1/N2), ajoutes le 2026-08-01 -- DataFrame vide
+    # (jamais une erreur) tant que save_artifacts.py n'a pas ete rejoue avec
+    # ce correctif, meme logique de resilience que stability/k_justification.
+    n1_models_summary = load_cluster_models_summary(category, "clusters_n1")
+    n2_models_summary = load_cluster_models_summary(category, "clusters_n2")
 
     color = CATEGORY_COLORS.get(category, "#2a78d6")
 
@@ -488,6 +539,41 @@ def render_models(category):
         ),
     ])
 
+    n1_retenus = int(n1_models_summary["retenu_pour_prediction"].sum()) if not n1_models_summary.empty else 0
+    n1_segments = int(n1_models_summary["segment"].nunique()) if not n1_models_summary.empty else 0
+    n2_retenus_count = (
+        n2_models_summary.loc[n2_models_summary["retenu_pour_prediction"], "segment"].nunique()
+        if not n2_models_summary.empty else 0
+    )
+    n2_segments = int(n2_models_summary["segment"].nunique()) if not n2_models_summary.empty else 0
+
+    cluster_models_tab = dmc.Stack([
+        dmc.Alert(
+            dmc.Text([
+                "Décision du 2026-08-01 : en plus du modèle catégorie entière (onglet précédent), un OLS/Ridge/"
+                "Random Forest est ajusté ", dmc.Text("par cluster", span=True, fw=600),
+                " (N1 technique et N2 marque × gamme séparément) quand l'effectif le permet — ", dmc.Text("et", span=True, fw=600, fs="italic"),
+                " seulement s'il bat démontrablement le modèle catégorie sur son propre test hors-échantillon "
+                "(colonne « Statut » ci-dessous). Passer le seuil d'effectif ne suffit pas : mesuré empiriquement "
+                "sur ce projet, plusieurs clusters ajustables produisaient un R² hors-échantillon fortement "
+                "négatif (surapprentissage sur petit échantillon) — jamais utilisés pour une prédiction malgré "
+                "un ajustement techniquement réussi.",
+            ], size="sm"),
+            color="blue", variant="light", icon=DashIconify(icon="tabler:info-circle"), mb="sm",
+        ),
+        kpi_row([
+            kpi_card("Clusters N1 avec modèle retenu", f"{n1_retenus}/{n1_segments}" if n1_segments else "n/d",
+                      "tabler:chart-dots", color=color),
+            kpi_card("Clusters N2 avec modèle retenu", f"{n2_retenus_count}/{n2_segments}" if n2_segments else "n/d",
+                      "tabler:layout-grid", color=color),
+        ]),
+        section_header("Clusters N2 (marque × gamme × profil technique)", order=5,
+                        subtitle="Une ligne par (segment, famille) — le modèle catégorie reste utilisé pour toute ligne non « Retenu »."),
+        _cluster_models_summary_grid(n2_models_summary),
+        section_header("Clusters N1 (technique, toute la catégorie)", order=5),
+        _cluster_models_summary_grid(n1_models_summary),
+    ])
+
     content = dmc.Stack([
         provenance_strip(weeks, extra=f"catégorie : {category_label(category)} · modèles entraînés sur {metrics['n_pooled']} produits poolés"),
         dmc.Paper(_METHOD_TEXT, p="md", withBorder=True, mb="sm"),
@@ -497,9 +583,11 @@ def render_models(category):
                 dmc.TabsList([
                     dmc.TabsTab("Décomposition hédonique", value="hedonic", leftSection=DashIconify(icon="tabler:chart-line")),
                     dmc.TabsTab("Clustering & segmentation", value="clustering", leftSection=DashIconify(icon="tabler:chart-dots-3")),
+                    dmc.TabsTab("Modèles par cluster", value="cluster_models", leftSection=DashIconify(icon="tabler:apps")),
                 ]),
                 dmc.TabsPanel(hedonic_tab, value="hedonic", pt="md"),
                 dmc.TabsPanel(clustering_tab, value="clustering", pt="md"),
+                dmc.TabsPanel(cluster_models_tab, value="cluster_models", pt="md"),
             ],
             value="hedonic", mt="md",
         ),

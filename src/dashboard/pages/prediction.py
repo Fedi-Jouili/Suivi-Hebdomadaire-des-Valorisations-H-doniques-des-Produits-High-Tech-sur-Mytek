@@ -22,7 +22,9 @@ from src.dashboard.data_loader import (
     load_unit_summary,
 )
 from src.dashboard.format_utils import fmt_number, fmt_pct_effect, fmt_price
-from src.dashboard.prediction_utils import assign_n1_cluster, assign_n2_segment, find_similar_products, predict_price
+from src.dashboard.prediction_utils import (
+    assign_n1_cluster, assign_n2_segment, find_similar_products, predict_price_cluster_aware,
+)
 from src.dashboard.theme import CATEGORY_COLORS, GRAPH_CONFIG
 from src.utils.cluster_names import n1_cluster_name
 
@@ -187,8 +189,19 @@ def render_form(category):
     return dmc.Paper(dmc.Grid(fields), p="md", withBorder=True)
 
 
+_PRICE_SOURCE_BADGE = {
+    "n2": ("modèle du cluster marque × gamme", "teal"),
+    "n1": ("modèle du cluster technique", "blue"),
+    "categorie": ("modèle catégorie", "gray"),
+}
+
+
 def _price_result_card(pred: dict, color: str):
     header = [dmc.Text("Prix prédit", size="xs", tt="uppercase", c="dimmed", fw=500)]
+    source = pred.get("price_source")
+    if source in _PRICE_SOURCE_BADGE:
+        label, badge_color = _PRICE_SOURCE_BADGE[source]
+        header.append(dmc.Badge(label, color=badge_color, variant="light", size="sm"))
     if pred.get("week_adjustment_pct") is not None:
         adj = pred["week_adjustment_pct"]
         header.append(dmc.Badge(
@@ -258,7 +271,7 @@ def on_predict(n_clicks, values, ids, category, model_name, segmentation, week):
             form_values[field] = val
 
     try:
-        pred = predict_price(category, model_name, form_values, week=week)
+        pred = predict_price_cluster_aware(category, model_name, form_values, week=week)
     except ArtifactsMissingError as exc:
         return dmc.Alert(str(exc), color="yellow", title="Artefacts manquants"), False
 

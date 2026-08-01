@@ -1,0 +1,34 @@
+{
+  "segment": "0",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go"
+  ],
+  "categorical_features": [
+    "cpu_serie",
+    "has_wifi",
+    "marque"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "has_wifi",
+    "cpu_serie_5.0",
+    "cpu_serie_7.0",
+    "cpu_serie_9.0",
+    "marque_MSI",
+    "marque_MYTEK"
+  ],
+  "n_train": 236,
+  "n_test": 49,
+  "familles_ajustees": [
+    "hedonic_ols",
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "hedonic_ols": false,
+    "ridge": true,
+    "random_forest": true
+  }
+}

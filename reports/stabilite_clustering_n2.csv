@@ -1,113 +1,83 @@
-﻿categorie,marque,gamme,n,k,outcome,ari_moyen,ari_ecart_type,n_repliques_valides
-pc_bureau,ASUS,Milieu de gamme,19,2,clustered,0.917,0.281,100
-pc_bureau,ASUS,Premium,23,2,clustered,1.0,0.0,100
-pc_bureau,ASUS,Économique,26,2,clustered,0.805,0.402,100
-pc_bureau,BMAX,Gamme unique,5,1,too_small,,,0
-pc_bureau,DELL,Milieu de gamme,29,2,clustered,0.551,0.368,100
-pc_bureau,DELL,Premium,30,3,clustered,0.708,0.292,100
-pc_bureau,DELL,Économique,31,3,clustered,0.578,0.298,100
-pc_bureau,HP,Milieu de gamme,19,1,no_structure,,,0
-pc_bureau,HP,Premium,21,2,clustered,0.568,0.517,98
-pc_bureau,HP,Économique,28,2,clustered,0.628,0.518,100
-pc_bureau,LENOVO,Milieu de gamme,29,1,no_structure,,,0
-pc_bureau,LENOVO,Premium,28,1,no_structure,,,0
-pc_bureau,LENOVO,Économique,30,2,clustered,0.817,0.315,100
-pc_bureau,MSI,Milieu de gamme,104,1,no_structure,,,0
-pc_bureau,MSI,Premium,107,3,clustered,0.722,0.307,100
-pc_bureau,MSI,Économique,110,7,clustered,0.96,0.063,100
-pc_bureau,MYTEK,Milieu de gamme,78,2,clustered,0.542,0.464,100
-pc_bureau,MYTEK,Premium,74,3,clustered,0.446,0.323,100
-pc_bureau,MYTEK,Économique,78,3,clustered,0.947,0.145,100
-pc_portables,ASUS,Milieu de gamme,185,5,clustered,0.548,0.267,100
-pc_portables,ASUS,Premium,176,7,clustered,0.822,0.085,100
-pc_portables,ASUS,Économique,183,7,clustered,0.886,0.096,100
-pc_portables,BMAX,Gamme unique,9,1,too_small,,,0
-pc_portables,CHUWI,Milieu de gamme,8,1,too_small,,,0
-pc_portables,CHUWI,Premium,8,1,too_small,,,0
-pc_portables,CHUWI,Économique,8,1,too_small,,,0
-pc_portables,DELL,Milieu de gamme,98,8,clustered,0.934,0.092,100
-pc_portables,DELL,Premium,101,4,clustered,0.694,0.194,100
-pc_portables,DELL,Économique,105,8,clustered,0.888,0.087,100
-pc_portables,GIGABYTE,Milieu de gamme,28,2,clustered,0.919,0.273,100
-pc_portables,GIGABYTE,Premium,28,2,clustered,0.662,0.414,100
-pc_portables,GIGABYTE,Économique,30,1,no_structure,,,0
-pc_portables,HP,Milieu de gamme,135,4,clustered,0.608,0.154,100
-pc_portables,HP,Premium,134,8,clustered,0.834,0.058,100
-pc_portables,HP,Économique,135,8,clustered,0.842,0.088,100
-pc_portables,LENOVO,Milieu de gamme,173,4,clustered,0.728,0.214,100
-pc_portables,LENOVO,Premium,175,8,clustered,0.836,0.103,100
-pc_portables,LENOVO,Économique,177,8,clustered,0.873,0.073,100
-pc_portables,MSI,Milieu de gamme,87,8,clustered,0.885,0.089,100
-pc_portables,MSI,Premium,84,1,no_structure,,,0
-pc_portables,MSI,Économique,88,8,clustered,0.827,0.115,100
-smartphones,HONOR,Milieu de gamme,28,2,clustered,0.51,0.531,100
-smartphones,HONOR,Premium,36,3,clustered,1.0,0.0,100
-smartphones,HONOR,Économique,54,5,clustered,0.861,0.128,100
-smartphones,HUAWEI,Gamme unique,8,1,too_small,,,0
-smartphones,INFINIX,Milieu de gamme,33,2,clustered,1.0,0.0,100
-smartphones,INFINIX,Premium,20,2,clustered,1.0,0.0,100
-smartphones,INFINIX,Économique,32,2,clustered,1.0,0.0,100
-smartphones,LESIA,Milieu de gamme,12,1,no_structure,,,0
-smartphones,LESIA,Premium,18,2,clustered,1.0,0.0,100
-smartphones,LESIA,Économique,24,1,no_structure,,,0
-smartphones,OPPO,Milieu de gamme,28,3,clustered,0.88,0.225,100
-smartphones,OPPO,Premium,27,3,clustered,1.0,0.0,100
-smartphones,OPPO,Économique,29,2,clustered,1.0,0.0,100
-smartphones,OSCAL,Milieu de gamme,4,1,too_small,,,0
-smartphones,OSCAL,Premium,8,1,too_small,,,0
-smartphones,OSCAL,Économique,16,2,clustered,1.0,0.0,100
-smartphones,SAMSUNG,Milieu de gamme,108,6,clustered,1.0,0.0,100
-smartphones,SAMSUNG,Premium,96,3,clustered,0.826,0.189,100
-smartphones,SAMSUNG,Économique,105,3,clustered,0.972,0.058,100
-smartphones,TECNO,Milieu de gamme,5,1,too_small,,,0
-smartphones,TECNO,Économique,13,1,no_structure,,,0
-smartphones,VIVO,Milieu de gamme,32,3,clustered,1.0,0.0,100
-smartphones,VIVO,Premium,24,2,clustered,0.768,0.439,100
-smartphones,VIVO,Économique,35,3,clustered,0.882,0.148,100
-smartphones,XIAOMI,Milieu de gamme,63,4,clustered,0.996,0.039,100
-smartphones,XIAOMI,Premium,60,1,no_structure,,,0
-smartphones,XIAOMI,Économique,90,6,clustered,0.983,0.065,100
-telephones_portables,AMI,Économique,64,2,clustered,0.905,0.304,100
-telephones_portables,CLEVER,Économique,42,2,clustered,1.0,0.0,100
-telephones_portables,EVERTEK,Milieu de gamme,2,1,too_small,,,0
-telephones_portables,EVERTEK,Économique,18,1,no_structure,,,0
-telephones_portables,ITEL,Gamme unique,6,1,too_small,,,0
-telephones_portables,MAXFONE,Gamme unique,8,1,too_small,,,0
-telephones_portables,NOKIA,Milieu de gamme,9,1,too_small,,,0
-telephones_portables,NOKIA,Premium,3,1,too_small,,,0
-telephones_portables,NOKIA,Économique,13,2,clustered,1.0,0.0,100
-telephones_portables,PHILIPS,Milieu de gamme,6,1,too_small,,,0
-telephones_portables,PHILIPS,Économique,20,1,no_structure,,,0
-telephones_portables,SMARTEC,Milieu de gamme,16,2,clustered,0.411,0.523,100
-telephones_portables,SMARTEC,Économique,38,2,clustered,0.92,0.261,100
-telephones_portables,UNIWA,Milieu de gamme,12,1,no_structure,,,0
-telephones_portables,UNIWA,Économique,24,1,no_structure,,,0
-televiseurs,ALMATV,Gamme unique,8,1,too_small,,,0
-televiseurs,ECOSAT,Milieu de gamme,8,1,too_small,,,0
-televiseurs,ECOSAT,Premium,4,1,too_small,,,0
-televiseurs,ECOSAT,Économique,8,1,too_small,,,0
-televiseurs,HISENSE,Milieu de gamme,12,1,no_structure,,,0
-televiseurs,HISENSE,Premium,12,1,no_structure,,,0
-televiseurs,HISENSE,Économique,12,1,no_structure,,,0
-televiseurs,IFFALCON,Gamme unique,8,1,too_small,,,0
-televiseurs,LG,Milieu de gamme,11,1,no_structure,,,0
-televiseurs,LG,Premium,12,1,no_structure,,,0
-televiseurs,LG,Économique,17,1,no_structure,,,0
-televiseurs,MAXWELL,Milieu de gamme,11,1,no_structure,,,0
-televiseurs,MAXWELL,Premium,5,1,too_small,,,0
-televiseurs,MAXWELL,Économique,9,1,too_small,,,0
-televiseurs,SAMSUNG,Milieu de gamme,23,2,clustered,0.565,0.435,100
-televiseurs,SAMSUNG,Premium,28,2,clustered,0.475,0.388,100
-televiseurs,SAMSUNG,Économique,32,2,clustered,0.828,0.333,100
-televiseurs,TCL,Milieu de gamme,20,1,no_structure,,,0
-televiseurs,TCL,Premium,24,2,clustered,0.659,0.296,100
-televiseurs,TCL,Économique,27,2,clustered,0.882,0.229,100
-televiseurs,TELEFUNKEN,Milieu de gamme,25,2,clustered,0.537,0.362,100
-televiseurs,TELEFUNKEN,Premium,24,1,no_structure,,,0
-televiseurs,TELEFUNKEN,Économique,28,2,clustered,1.0,0.0,100
-televiseurs,THOMSON,Milieu de gamme,12,1,no_structure,,,0
-televiseurs,THOMSON,Premium,12,1,no_structure,,,0
-televiseurs,THOMSON,Économique,16,2,clustered,0.479,0.374,100
-televiseurs,VEGA,Milieu de gamme,8,1,too_small,,,0
-televiseurs,VEGA,Premium,8,1,too_small,,,0
-televiseurs,VEGA,Économique,8,1,too_small,,,0
+﻿categorie,marque,gamme,semaine_reference,n,k,outcome,ari_moyen,ari_ecart_type,n_repliques_valides
+pc_bureau,ASUS,Milieu de gamme,1,6,1,too_small,,,0
+pc_bureau,ASUS,Premium,1,6,1,too_small,,,0
+pc_bureau,ASUS,Économique,1,6,1,too_small,,,0
+pc_bureau,DELL,Milieu de gamme,1,7,1,too_small,,,0
+pc_bureau,DELL,Premium,1,7,1,too_small,,,0
+pc_bureau,DELL,Économique,1,7,1,too_small,,,0
+pc_bureau,HP,Milieu de gamme,1,5,1,too_small,,,0
+pc_bureau,HP,Premium,1,6,1,too_small,,,0
+pc_bureau,HP,Économique,1,7,1,too_small,,,0
+pc_bureau,LENOVO,Milieu de gamme,1,6,1,too_small,,,0
+pc_bureau,LENOVO,Premium,1,7,1,too_small,,,0
+pc_bureau,LENOVO,Économique,1,7,1,too_small,,,0
+pc_bureau,MSI,Milieu de gamme,1,25,1,no_structure,,,0
+pc_bureau,MSI,Premium,1,27,2,clustered,0.384,0.332,100
+pc_bureau,MSI,Économique,1,30,2,clustered,0.781,0.329,100
+pc_bureau,MYTEK,Milieu de gamme,1,18,1,no_structure,,,0
+pc_bureau,MYTEK,Premium,1,18,2,clustered,0.174,0.326,100
+pc_bureau,MYTEK,Économique,1,19,2,clustered,0.421,0.348,100
+pc_portables,ASUS,Milieu de gamme,1,46,2,clustered,0.56,0.446,100
+pc_portables,ASUS,Premium,1,47,4,clustered,0.597,0.196,100
+pc_portables,ASUS,Économique,1,47,4,clustered,0.569,0.126,100
+pc_portables,CHUWI,Gamme unique,1,6,1,too_small,,,0
+pc_portables,DELL,Milieu de gamme,1,26,2,clustered,0.566,0.357,100
+pc_portables,DELL,Premium,1,24,2,clustered,0.373,0.378,100
+pc_portables,DELL,Économique,1,25,3,clustered,0.609,0.283,100
+pc_portables,GIGABYTE,Milieu de gamme,1,7,1,too_small,,,0
+pc_portables,GIGABYTE,Premium,1,7,1,too_small,,,0
+pc_portables,GIGABYTE,Économique,1,8,1,too_small,,,0
+pc_portables,HP,Milieu de gamme,1,29,1,no_structure,,,0
+pc_portables,HP,Premium,1,30,3,clustered,0.5,0.244,100
+pc_portables,HP,Économique,1,32,3,clustered,0.722,0.119,100
+pc_portables,LENOVO,Milieu de gamme,1,41,4,clustered,0.634,0.225,100
+pc_portables,LENOVO,Premium,1,42,2,clustered,0.386,0.287,100
+pc_portables,LENOVO,Économique,1,42,4,clustered,0.754,0.169,100
+pc_portables,MSI,Milieu de gamme,1,21,3,clustered,0.647,0.281,100
+pc_portables,MSI,Premium,1,22,1,no_structure,,,0
+pc_portables,MSI,Économique,1,24,3,clustered,0.973,0.119,100
+smartphones,HONOR,Milieu de gamme,1,10,1,no_structure,,,0
+smartphones,HONOR,Premium,1,10,1,no_structure,,,0
+smartphones,HONOR,Économique,1,10,1,no_structure,,,0
+smartphones,INFINIX,Milieu de gamme,1,9,1,too_small,,,0
+smartphones,INFINIX,Premium,1,5,1,too_small,,,0
+smartphones,INFINIX,Économique,1,8,1,too_small,,,0
+smartphones,LESIA,Premium,1,6,1,too_small,,,0
+smartphones,LESIA,Économique,1,6,1,too_small,,,0
+smartphones,OPPO,Milieu de gamme,1,7,1,too_small,,,0
+smartphones,OPPO,Premium,1,7,1,too_small,,,0
+smartphones,OPPO,Économique,1,8,1,too_small,,,0
+smartphones,OSCAL,Gamme unique,1,7,1,too_small,,,0
+smartphones,SAMSUNG,Milieu de gamme,1,27,3,clustered,0.911,0.138,100
+smartphones,SAMSUNG,Premium,1,25,2,clustered,0.448,0.389,100
+smartphones,SAMSUNG,Économique,1,27,3,clustered,0.93,0.087,100
+smartphones,TECNO,Gamme unique,1,6,1,too_small,,,0
+smartphones,VIVO,Milieu de gamme,1,9,1,too_small,,,0
+smartphones,VIVO,Premium,1,7,1,too_small,,,0
+smartphones,VIVO,Économique,1,8,1,too_small,,,0
+smartphones,XIAOMI,Milieu de gamme,1,14,1,no_structure,,,0
+smartphones,XIAOMI,Premium,1,15,1,no_structure,,,0
+smartphones,XIAOMI,Économique,1,20,1,no_structure,,,0
+telephones_portables,AMI,Économique,1,16,2,clustered,1.0,0.0,100
+telephones_portables,CLEVER,Gamme unique,1,6,1,too_small,,,0
+telephones_portables,EVERTEK,Gamme unique,1,8,1,too_small,,,0
+telephones_portables,PHILIPS,Gamme unique,1,5,1,too_small,,,0
+telephones_portables,SMARTEC,Économique,1,14,1,no_structure,,,0
+telephones_portables,UNIWA,Gamme unique,1,9,1,too_small,,,0
+televiseurs,ECOSAT,Gamme unique,1,5,1,too_small,,,0
+televiseurs,HISENSE,Gamme unique,1,9,1,too_small,,,0
+televiseurs,LG,Premium,1,5,1,too_small,,,0
+televiseurs,LG,Économique,1,6,1,too_small,,,0
+televiseurs,MAXWELL,Gamme unique,1,7,1,too_small,,,0
+televiseurs,SAMSUNG,Milieu de gamme,1,6,1,too_small,,,0
+televiseurs,SAMSUNG,Premium,1,7,1,too_small,,,0
+televiseurs,SAMSUNG,Économique,1,8,1,too_small,,,0
+televiseurs,TCL,Milieu de gamme,1,6,1,too_small,,,0
+televiseurs,TCL,Premium,1,6,1,too_small,,,0
+televiseurs,TCL,Économique,1,6,1,too_small,,,0
+televiseurs,TELEFUNKEN,Milieu de gamme,1,6,1,too_small,,,0
+televiseurs,TELEFUNKEN,Premium,1,6,1,too_small,,,0
+televiseurs,TELEFUNKEN,Économique,1,6,1,too_small,,,0
+televiseurs,THOMSON,Premium,1,4,1,too_small,,,0
+televiseurs,THOMSON,Économique,1,6,1,too_small,,,0
+televiseurs,VEGA,Gamme unique,1,6,1,too_small,,,0

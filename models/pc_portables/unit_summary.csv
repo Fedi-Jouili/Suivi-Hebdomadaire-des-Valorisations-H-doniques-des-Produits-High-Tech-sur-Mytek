@@ -1,23 +1,20 @@
-﻿marque,gamme_prix,n,k,outcome
-ASUS,Milieu de gamme,185,5,clustered
-ASUS,Premium,176,7,clustered
-ASUS,Économique,183,7,clustered
-BMAX,Gamme unique,9,1,too_small
-CHUWI,Milieu de gamme,8,1,too_small
-CHUWI,Premium,8,1,too_small
-CHUWI,Économique,8,1,too_small
-DELL,Milieu de gamme,102,8,clustered
-DELL,Premium,101,4,clustered
-DELL,Économique,101,8,clustered
-GIGABYTE,Milieu de gamme,28,2,clustered
-GIGABYTE,Premium,28,2,clustered
-GIGABYTE,Économique,30,1,no_structure
-HP,Milieu de gamme,135,4,clustered
-HP,Premium,134,8,clustered
-HP,Économique,135,8,clustered
-LENOVO,Milieu de gamme,173,4,clustered
-LENOVO,Premium,175,8,clustered
-LENOVO,Économique,177,8,clustered
-MSI,Milieu de gamme,84,8,clustered
-MSI,Premium,87,1,no_structure
-MSI,Économique,88,8,clustered
+﻿semaine_reference,marque,gamme_prix,n,k,outcome
+1,ASUS,Milieu de gamme,46,2,clustered
+1,ASUS,Premium,47,4,clustered
+1,ASUS,Économique,47,4,clustered
+1,CHUWI,Gamme unique,6,1,too_small
+1,DELL,Milieu de gamme,26,2,clustered
+1,DELL,Premium,24,2,clustered
+1,DELL,Économique,25,3,clustered
+1,GIGABYTE,Milieu de gamme,7,1,too_small
+1,GIGABYTE,Premium,7,1,too_small
+1,GIGABYTE,Économique,8,1,too_small
+1,HP,Milieu de gamme,29,1,no_structure
+1,HP,Premium,30,3,clustered
+1,HP,Économique,32,3,clustered
+1,LENOVO,Milieu de gamme,41,4,clustered
+1,LENOVO,Premium,42,2,clustered
+1,LENOVO,Économique,42,4,clustered
+1,MSI,Milieu de gamme,21,3,clustered
+1,MSI,Premium,22,1,no_structure
+1,MSI,Économique,24,3,clustered

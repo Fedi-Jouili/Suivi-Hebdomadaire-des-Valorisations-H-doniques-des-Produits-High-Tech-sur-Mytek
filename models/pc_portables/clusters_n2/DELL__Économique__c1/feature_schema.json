@@ -1,0 +1,27 @@
+{
+  "segment": "DELL::Économique::c1",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_serie"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "cpu_serie"
+  ],
+  "n_train": 31,
+  "n_test": 8,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": true,
+    "random_forest": true
+  }
+}

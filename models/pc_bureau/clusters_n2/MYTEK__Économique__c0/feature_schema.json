@@ -1,0 +1,25 @@
+{
+  "segment": "MYTEK::Économique::c0",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go"
+  ],
+  "categorical_features": [
+    "cpu_serie"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "cpu_serie"
+  ],
+  "n_train": 28,
+  "n_test": 8,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": false,
+    "random_forest": false
+  }
+}

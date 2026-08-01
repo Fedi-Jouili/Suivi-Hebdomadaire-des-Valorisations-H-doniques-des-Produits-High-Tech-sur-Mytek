@@ -6,69 +6,18 @@ pc_bureau,N1_technique,,,5,5,60,0.3366928388378525,True,True
 pc_bureau,N1_technique,,,6,6,5,0.3419512205297819,False,False
 pc_bureau,N1_technique,,,7,7,5,0.36069729083471186,False,False
 pc_bureau,N1_technique,,,8,8,4,0.37624328109224126,False,False
-pc_bureau,N2_marque_gamme,ASUS,Milieu de gamme,2,2,7,0.7456995036388214,True,True
-pc_bureau,N2_marque_gamme,ASUS,Milieu de gamme,3,3,4,1.0,False,False
-pc_bureau,N2_marque_gamme,ASUS,Premium,2,2,11,0.7347083831825774,True,True
-pc_bureau,N2_marque_gamme,ASUS,Premium,3,3,4,0.9023775478359978,False,False
-pc_bureau,N2_marque_gamme,ASUS,Économique,2,2,11,0.517982915174502,True,True
-pc_bureau,N2_marque_gamme,ASUS,Économique,3,3,3,0.6647661392948194,False,False
-pc_bureau,N2_marque_gamme,DELL,Milieu de gamme,2,2,12,0.4231865204743047,True,True
-pc_bureau,N2_marque_gamme,DELL,Milieu de gamme,3,3,4,0.5512897716559318,False,False
-pc_bureau,N2_marque_gamme,DELL,Premium,2,2,15,0.44869772192770463,True,False
-pc_bureau,N2_marque_gamme,DELL,Premium,3,3,6,0.558263529141186,True,True
-pc_bureau,N2_marque_gamme,DELL,Économique,2,2,8,0.4863418550343781,True,False
-pc_bureau,N2_marque_gamme,DELL,Économique,3,3,7,0.713241658836087,True,True
-pc_bureau,N2_marque_gamme,HP,Milieu de gamme,2,2,4,0.7018422559428839,False,False
-pc_bureau,N2_marque_gamme,HP,Milieu de gamme,3,3,4,0.761453886557039,False,False
-pc_bureau,N2_marque_gamme,HP,Premium,2,2,5,0.5730325910551096,True,True
-pc_bureau,N2_marque_gamme,HP,Premium,3,3,4,0.7445597781897676,False,False
-pc_bureau,N2_marque_gamme,HP,Économique,2,2,8,0.5366122457315595,True,True
-pc_bureau,N2_marque_gamme,HP,Économique,3,3,4,0.7222852570775834,False,False
-pc_bureau,N2_marque_gamme,LENOVO,Milieu de gamme,2,2,3,0.5385518422938621,False,False
-pc_bureau,N2_marque_gamme,LENOVO,Milieu de gamme,3,3,3,0.5125311499481272,False,False
-pc_bureau,N2_marque_gamme,LENOVO,Premium,2,2,4,0.5336365948727607,False,False
-pc_bureau,N2_marque_gamme,LENOVO,Premium,3,3,4,0.6605314959729556,False,False
-pc_bureau,N2_marque_gamme,LENOVO,Économique,2,2,14,0.4713802296340945,True,True
-pc_bureau,N2_marque_gamme,LENOVO,Économique,3,3,4,0.5992169772114783,False,False
-pc_bureau,N2_marque_gamme,MSI,Milieu de gamme,2,2,4,0.670721411407354,False,False
-pc_bureau,N2_marque_gamme,MSI,Milieu de gamme,3,3,4,0.4936902457600507,False,False
-pc_bureau,N2_marque_gamme,MSI,Milieu de gamme,4,4,4,0.6955566949589809,False,False
-pc_bureau,N2_marque_gamme,MSI,Milieu de gamme,5,5,2,0.7360750260730361,False,False
-pc_bureau,N2_marque_gamme,MSI,Milieu de gamme,6,6,2,0.8327221660393699,False,False
-pc_bureau,N2_marque_gamme,MSI,Milieu de gamme,7,7,2,0.9209560511870881,False,False
-pc_bureau,N2_marque_gamme,MSI,Milieu de gamme,8,8,2,0.9902830657809081,False,False
-pc_bureau,N2_marque_gamme,MSI,Premium,2,2,40,0.39865535505333166,True,False
-pc_bureau,N2_marque_gamme,MSI,Premium,3,3,16,0.4815323228533241,True,True
-pc_bureau,N2_marque_gamme,MSI,Premium,4,4,4,0.5384280287092271,False,False
-pc_bureau,N2_marque_gamme,MSI,Premium,5,5,4,0.6418805410539141,False,False
-pc_bureau,N2_marque_gamme,MSI,Premium,6,6,4,0.75269496076993,False,False
-pc_bureau,N2_marque_gamme,MSI,Premium,7,7,4,0.8171800718677414,False,False
-pc_bureau,N2_marque_gamme,MSI,Premium,8,8,4,0.8581149764474456,False,False
-pc_bureau,N2_marque_gamme,MSI,Économique,2,2,48,0.502135576948781,True,False
-pc_bureau,N2_marque_gamme,MSI,Économique,3,3,8,0.5879382269024888,True,False
-pc_bureau,N2_marque_gamme,MSI,Économique,4,4,8,0.6610831469294448,True,False
-pc_bureau,N2_marque_gamme,MSI,Économique,5,5,8,0.7387695414639313,True,False
-pc_bureau,N2_marque_gamme,MSI,Économique,6,6,8,0.8192291383762408,True,False
-pc_bureau,N2_marque_gamme,MSI,Économique,7,7,8,0.8871114459996006,True,True
-pc_bureau,N2_marque_gamme,MSI,Économique,8,8,4,0.9414264499940405,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Milieu de gamme,2,2,36,0.37602185366027224,True,True
-pc_bureau,N2_marque_gamme,MYTEK,Milieu de gamme,3,3,4,0.45274411690961064,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Milieu de gamme,4,4,4,0.5279093281319958,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Milieu de gamme,5,5,4,0.6059347841413283,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Milieu de gamme,6,6,4,0.6370555133548002,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Milieu de gamme,7,7,4,0.6645932729008817,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Premium,2,2,31,0.28510056707711373,True,False
-pc_bureau,N2_marque_gamme,MYTEK,Premium,3,3,11,0.38122429934712143,True,True
-pc_bureau,N2_marque_gamme,MYTEK,Premium,4,4,4,0.4477035403429047,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Premium,5,5,4,0.5248436940877526,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Premium,6,6,4,0.5940603217651108,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Premium,7,7,4,0.6612995714378692,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Économique,2,2,35,0.4663500362730348,True,False
-pc_bureau,N2_marque_gamme,MYTEK,Économique,3,3,14,0.6074732735873462,True,True
-pc_bureau,N2_marque_gamme,MYTEK,Économique,4,4,4,0.6637135851781577,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Économique,5,5,4,0.6917125542336071,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Économique,6,6,4,0.7437857979334266,False,False
-pc_bureau,N2_marque_gamme,MYTEK,Économique,7,7,4,0.7916285670162346,False,False
+pc_bureau,N2_marque_gamme,MSI,Milieu de gamme,2,2,1,0.6038330228549613,False,False
+pc_bureau,N2_marque_gamme,MSI,Milieu de gamme,3,3,1,0.37405396943009633,False,False
+pc_bureau,N2_marque_gamme,MSI,Premium,2,2,8,0.38235085945852837,True,True
+pc_bureau,N2_marque_gamme,MSI,Premium,3,3,4,0.4288399985867987,False,False
+pc_bureau,N2_marque_gamme,MSI,Économique,2,2,15,0.44807580876380826,True,True
+pc_bureau,N2_marque_gamme,MSI,Économique,3,3,2,0.5242402538055962,False,False
+pc_bureau,N2_marque_gamme,MYTEK,Milieu de gamme,2,2,1,0.4880679926314161,False,False
+pc_bureau,N2_marque_gamme,MYTEK,Milieu de gamme,3,3,1,0.3322552802299415,False,False
+pc_bureau,N2_marque_gamme,MYTEK,Premium,2,2,8,0.20636114354784502,True,True
+pc_bureau,N2_marque_gamme,MYTEK,Premium,3,3,1,0.26964268516056095,False,False
+pc_bureau,N2_marque_gamme,MYTEK,Économique,2,2,9,0.4083886192047762,True,True
+pc_bureau,N2_marque_gamme,MYTEK,Économique,3,3,3,0.5385177097784934,False,False
 pc_portables,N1_technique,,,2,2,370,0.2950518077024118,True,True
 pc_portables,N1_technique,,,3,3,370,0.20934020462817193,True,False
 pc_portables,N1_technique,,,4,4,362,0.2662824101433844,True,False
@@ -76,117 +25,42 @@ pc_portables,N1_technique,,,5,5,146,0.2926025569314075,True,False
 pc_portables,N1_technique,,,6,6,48,0.3254426961782455,False,False
 pc_portables,N1_technique,,,7,7,1,0.271391288147681,False,False
 pc_portables,N1_technique,,,8,8,8,0.35017804973247973,False,False
-pc_portables,N2_marque_gamme,ASUS,Milieu de gamme,2,2,40,0.35139867112578715,True,False
-pc_portables,N2_marque_gamme,ASUS,Milieu de gamme,3,3,36,0.2555477376846258,True,False
-pc_portables,N2_marque_gamme,ASUS,Milieu de gamme,4,4,27,0.33147824363585904,True,False
-pc_portables,N2_marque_gamme,ASUS,Milieu de gamme,5,5,8,0.38665403252876474,True,True
-pc_portables,N2_marque_gamme,ASUS,Milieu de gamme,6,6,4,0.4150292890121896,False,False
-pc_portables,N2_marque_gamme,ASUS,Milieu de gamme,7,7,4,0.46857679703410066,False,False
-pc_portables,N2_marque_gamme,ASUS,Milieu de gamme,8,8,4,0.5252153617875623,False,False
-pc_portables,N2_marque_gamme,ASUS,Premium,2,2,66,0.31107016838028867,True,False
-pc_portables,N2_marque_gamme,ASUS,Premium,3,3,39,0.3301701130762373,True,False
-pc_portables,N2_marque_gamme,ASUS,Premium,4,4,26,0.3853737790861084,True,False
-pc_portables,N2_marque_gamme,ASUS,Premium,5,5,7,0.42123214886199034,True,False
-pc_portables,N2_marque_gamme,ASUS,Premium,6,6,16,0.4698634172195328,True,False
-pc_portables,N2_marque_gamme,ASUS,Premium,7,7,7,0.5150269627738693,True,True
-pc_portables,N2_marque_gamme,ASUS,Premium,8,8,4,0.548918717825834,False,False
-pc_portables,N2_marque_gamme,ASUS,Économique,2,2,51,0.3331575219798356,True,False
-pc_portables,N2_marque_gamme,ASUS,Économique,3,3,20,0.3841986804266759,True,False
-pc_portables,N2_marque_gamme,ASUS,Économique,4,4,20,0.4496103824227483,True,False
-pc_portables,N2_marque_gamme,ASUS,Économique,5,5,14,0.508539398108935,True,False
-pc_portables,N2_marque_gamme,ASUS,Économique,6,6,14,0.5479101511349792,True,False
-pc_portables,N2_marque_gamme,ASUS,Économique,7,7,8,0.6108692334352204,True,True
-pc_portables,N2_marque_gamme,ASUS,Économique,8,8,4,0.6500690671872253,False,False
-pc_portables,N2_marque_gamme,DELL,Milieu de gamme,2,2,10,0.46272957406950166,True,False
-pc_portables,N2_marque_gamme,DELL,Milieu de gamme,3,3,10,0.3584487490945889,True,False
-pc_portables,N2_marque_gamme,DELL,Milieu de gamme,4,4,10,0.4410910635097792,True,False
-pc_portables,N2_marque_gamme,DELL,Milieu de gamme,5,5,8,0.5151831624136871,True,False
-pc_portables,N2_marque_gamme,DELL,Milieu de gamme,6,6,6,0.5681713799829037,True,False
-pc_portables,N2_marque_gamme,DELL,Milieu de gamme,7,7,6,0.6120963511233253,True,False
-pc_portables,N2_marque_gamme,DELL,Milieu de gamme,8,8,6,0.6842380373900271,True,True
-pc_portables,N2_marque_gamme,DELL,Premium,2,2,28,0.3214359292704885,True,False
-pc_portables,N2_marque_gamme,DELL,Premium,3,3,17,0.4032312237067148,True,False
-pc_portables,N2_marque_gamme,DELL,Premium,4,4,16,0.46623415898860565,True,True
-pc_portables,N2_marque_gamme,DELL,Premium,5,5,4,0.5104000461894846,False,False
-pc_portables,N2_marque_gamme,DELL,Premium,6,6,4,0.5613394214025541,False,False
-pc_portables,N2_marque_gamme,DELL,Premium,7,7,4,0.6180237530367364,False,False
-pc_portables,N2_marque_gamme,DELL,Premium,8,8,1,0.6407978745972569,False,False
-pc_portables,N2_marque_gamme,DELL,Économique,2,2,11,0.5374465208820502,True,False
-pc_portables,N2_marque_gamme,DELL,Économique,3,3,11,0.42887698598199847,True,False
-pc_portables,N2_marque_gamme,DELL,Économique,4,4,11,0.4969433432134489,True,False
-pc_portables,N2_marque_gamme,DELL,Économique,5,5,7,0.567216474716354,True,False
-pc_portables,N2_marque_gamme,DELL,Économique,6,6,7,0.6714382414942156,True,False
-pc_portables,N2_marque_gamme,DELL,Économique,7,7,7,0.6996884378899967,True,False
-pc_portables,N2_marque_gamme,DELL,Économique,8,8,5,0.7269684654251937,True,True
-pc_portables,N2_marque_gamme,GIGABYTE,Milieu de gamme,2,2,12,0.6089527523884922,True,True
-pc_portables,N2_marque_gamme,GIGABYTE,Milieu de gamme,3,3,4,0.7637708828797022,False,False
-pc_portables,N2_marque_gamme,GIGABYTE,Premium,2,2,12,0.5338755082725084,True,True
-pc_portables,N2_marque_gamme,GIGABYTE,Premium,3,3,4,0.7000081441073701,False,False
-pc_portables,N2_marque_gamme,GIGABYTE,Économique,2,2,4,0.7264840914268806,False,False
-pc_portables,N2_marque_gamme,GIGABYTE,Économique,3,3,4,0.6858471377279588,False,False
-pc_portables,N2_marque_gamme,HP,Milieu de gamme,2,2,24,0.4007795670738514,True,False
-pc_portables,N2_marque_gamme,HP,Milieu de gamme,3,3,24,0.3798863485471715,True,False
-pc_portables,N2_marque_gamme,HP,Milieu de gamme,4,4,24,0.4459397005298294,True,True
-pc_portables,N2_marque_gamme,HP,Milieu de gamme,5,5,4,0.4834107497610025,False,False
-pc_portables,N2_marque_gamme,HP,Milieu de gamme,6,6,4,0.5148427015893079,False,False
-pc_portables,N2_marque_gamme,HP,Milieu de gamme,7,7,4,0.5809227993811069,False,False
-pc_portables,N2_marque_gamme,HP,Milieu de gamme,8,8,4,0.6240239588318488,False,False
-pc_portables,N2_marque_gamme,HP,Premium,2,2,37,0.3032779544861374,True,False
-pc_portables,N2_marque_gamme,HP,Premium,3,3,36,0.35662343099800314,True,False
-pc_portables,N2_marque_gamme,HP,Premium,4,4,25,0.4057693934198873,True,False
-pc_portables,N2_marque_gamme,HP,Premium,5,5,16,0.47904930964603826,True,False
-pc_portables,N2_marque_gamme,HP,Premium,6,6,12,0.5218321324517133,True,False
-pc_portables,N2_marque_gamme,HP,Premium,7,7,12,0.5237973665545487,True,False
-pc_portables,N2_marque_gamme,HP,Premium,8,8,8,0.5607861107533424,True,True
-pc_portables,N2_marque_gamme,HP,Économique,2,2,54,0.3609024819211558,True,False
-pc_portables,N2_marque_gamme,HP,Économique,3,3,26,0.39856087519348804,True,False
-pc_portables,N2_marque_gamme,HP,Économique,4,4,9,0.464233402369772,True,False
-pc_portables,N2_marque_gamme,HP,Économique,5,5,8,0.5005938723489911,True,False
-pc_portables,N2_marque_gamme,HP,Économique,6,6,8,0.5574624265048299,True,False
-pc_portables,N2_marque_gamme,HP,Économique,7,7,8,0.6133042305359733,True,False
-pc_portables,N2_marque_gamme,HP,Économique,8,8,8,0.6374349457949768,True,True
-pc_portables,N2_marque_gamme,LENOVO,Milieu de gamme,2,2,86,0.2784661030201141,True,False
-pc_portables,N2_marque_gamme,LENOVO,Milieu de gamme,3,3,36,0.31352632228837235,True,False
-pc_portables,N2_marque_gamme,LENOVO,Milieu de gamme,4,4,36,0.3887181919926512,True,True
-pc_portables,N2_marque_gamme,LENOVO,Milieu de gamme,5,5,4,0.40610347165408295,False,False
-pc_portables,N2_marque_gamme,LENOVO,Milieu de gamme,6,6,4,0.4293873363873866,False,False
-pc_portables,N2_marque_gamme,LENOVO,Milieu de gamme,7,7,4,0.4831334413815781,False,False
-pc_portables,N2_marque_gamme,LENOVO,Milieu de gamme,8,8,4,0.5184934301155035,False,False
-pc_portables,N2_marque_gamme,LENOVO,Premium,2,2,80,0.2515811357983484,True,False
-pc_portables,N2_marque_gamme,LENOVO,Premium,3,3,16,0.3233980903824748,True,False
-pc_portables,N2_marque_gamme,LENOVO,Premium,4,4,8,0.3669858912289614,True,False
-pc_portables,N2_marque_gamme,LENOVO,Premium,5,5,6,0.40605197141598526,True,False
-pc_portables,N2_marque_gamme,LENOVO,Premium,6,6,6,0.408250403392474,True,False
-pc_portables,N2_marque_gamme,LENOVO,Premium,7,7,6,0.4449942836507226,True,False
-pc_portables,N2_marque_gamme,LENOVO,Premium,8,8,6,0.5129632077856316,True,True
-pc_portables,N2_marque_gamme,LENOVO,Économique,2,2,88,0.2962898813502259,True,False
-pc_portables,N2_marque_gamme,LENOVO,Économique,3,3,23,0.34259500185039954,True,False
-pc_portables,N2_marque_gamme,LENOVO,Économique,4,4,22,0.4247425613126075,True,False
-pc_portables,N2_marque_gamme,LENOVO,Économique,5,5,22,0.48039147863211085,True,False
-pc_portables,N2_marque_gamme,LENOVO,Économique,6,6,22,0.4942708619652761,True,False
-pc_portables,N2_marque_gamme,LENOVO,Économique,7,7,15,0.5707652864059384,True,False
-pc_portables,N2_marque_gamme,LENOVO,Économique,8,8,15,0.5756516148354782,True,True
-pc_portables,N2_marque_gamme,MSI,Milieu de gamme,2,2,42,0.44929018147061855,True,False
-pc_portables,N2_marque_gamme,MSI,Milieu de gamme,3,3,26,0.5503178580673731,True,False
-pc_portables,N2_marque_gamme,MSI,Milieu de gamme,4,4,16,0.6873738218762562,True,False
-pc_portables,N2_marque_gamme,MSI,Milieu de gamme,5,5,11,0.7712679069700465,True,False
-pc_portables,N2_marque_gamme,MSI,Milieu de gamme,6,6,8,0.8294793392991018,True,False
-pc_portables,N2_marque_gamme,MSI,Milieu de gamme,7,7,8,0.8498936583720016,True,False
-pc_portables,N2_marque_gamme,MSI,Milieu de gamme,8,8,8,0.8927378367807641,True,True
-pc_portables,N2_marque_gamme,MSI,Premium,2,2,4,0.6768966151100267,False,False
-pc_portables,N2_marque_gamme,MSI,Premium,3,3,4,0.45449711561879447,False,False
-pc_portables,N2_marque_gamme,MSI,Premium,4,4,4,0.5553044171060963,False,False
-pc_portables,N2_marque_gamme,MSI,Premium,5,5,4,0.572473206866027,False,False
-pc_portables,N2_marque_gamme,MSI,Premium,6,6,4,0.6242589104141245,False,False
-pc_portables,N2_marque_gamme,MSI,Premium,7,7,4,0.7022870683794148,False,False
-pc_portables,N2_marque_gamme,MSI,Premium,8,8,4,0.7621207599247102,False,False
-pc_portables,N2_marque_gamme,MSI,Économique,2,2,29,0.4636959380947836,True,False
-pc_portables,N2_marque_gamme,MSI,Économique,3,3,28,0.577098024819549,True,False
-pc_portables,N2_marque_gamme,MSI,Économique,4,4,9,0.6754847335607205,True,False
-pc_portables,N2_marque_gamme,MSI,Économique,5,5,9,0.7012799816023455,True,False
-pc_portables,N2_marque_gamme,MSI,Économique,6,6,8,0.7268179102096544,True,False
-pc_portables,N2_marque_gamme,MSI,Économique,7,7,8,0.7568422658588294,True,False
-pc_portables,N2_marque_gamme,MSI,Économique,8,8,8,0.8374364015528218,True,True
+pc_portables,N2_marque_gamme,ASUS,Milieu de gamme,2,2,8,0.3661803888861053,True,True
+pc_portables,N2_marque_gamme,ASUS,Milieu de gamme,3,3,9,0.24729453829823425,True,False
+pc_portables,N2_marque_gamme,ASUS,Milieu de gamme,4,4,8,0.2982449099991625,True,False
+pc_portables,N2_marque_gamme,ASUS,Premium,2,2,18,0.30779147680917646,True,False
+pc_portables,N2_marque_gamme,ASUS,Premium,3,3,9,0.3243190356051402,True,False
+pc_portables,N2_marque_gamme,ASUS,Premium,4,4,8,0.3566726656330636,True,True
+pc_portables,N2_marque_gamme,ASUS,Économique,2,2,14,0.3241799949503556,True,False
+pc_portables,N2_marque_gamme,ASUS,Économique,3,3,7,0.3838579391122794,True,False
+pc_portables,N2_marque_gamme,ASUS,Économique,4,4,5,0.4253896870708103,True,True
+pc_portables,N2_marque_gamme,DELL,Milieu de gamme,2,2,6,0.32216344847013634,True,True
+pc_portables,N2_marque_gamme,DELL,Milieu de gamme,3,3,4,0.3011577596768562,False,False
+pc_portables,N2_marque_gamme,DELL,Premium,2,2,8,0.2948327398653315,True,True
+pc_portables,N2_marque_gamme,DELL,Premium,3,3,4,0.3532588265510868,False,False
+pc_portables,N2_marque_gamme,DELL,Économique,2,2,11,0.35674982572395336,True,False
+pc_portables,N2_marque_gamme,DELL,Économique,3,3,7,0.43181150889304637,True,True
+pc_portables,N2_marque_gamme,HP,Milieu de gamme,2,2,4,0.40414084574801484,False,False
+pc_portables,N2_marque_gamme,HP,Milieu de gamme,3,3,4,0.31867768912986366,False,False
+pc_portables,N2_marque_gamme,HP,Premium,2,2,13,0.2626418319574276,True,False
+pc_portables,N2_marque_gamme,HP,Premium,3,3,6,0.313935177053306,True,True
+pc_portables,N2_marque_gamme,HP,Économique,2,2,15,0.41059008790464346,True,False
+pc_portables,N2_marque_gamme,HP,Économique,3,3,6,0.41755475568561473,True,True
+pc_portables,N2_marque_gamme,LENOVO,Milieu de gamme,2,2,18,0.2730639469212081,True,False
+pc_portables,N2_marque_gamme,LENOVO,Milieu de gamme,3,3,7,0.3140807707755315,True,False
+pc_portables,N2_marque_gamme,LENOVO,Milieu de gamme,4,4,7,0.3785182008137367,True,True
+pc_portables,N2_marque_gamme,LENOVO,Premium,2,2,10,0.3065833531850978,True,True
+pc_portables,N2_marque_gamme,LENOVO,Premium,3,3,2,0.31043134617150464,False,False
+pc_portables,N2_marque_gamme,LENOVO,Premium,4,4,2,0.30591130699528646,False,False
+pc_portables,N2_marque_gamme,LENOVO,Économique,2,2,19,0.28160997572382074,True,False
+pc_portables,N2_marque_gamme,LENOVO,Économique,3,3,5,0.32461710816837497,True,False
+pc_portables,N2_marque_gamme,LENOVO,Économique,4,4,5,0.4024256203998557,True,True
+pc_portables,N2_marque_gamme,MSI,Milieu de gamme,2,2,10,0.40705601014548654,True,False
+pc_portables,N2_marque_gamme,MSI,Milieu de gamme,3,3,5,0.48176831170170537,True,True
+pc_portables,N2_marque_gamme,MSI,Premium,2,2,1,0.625353915591516,False,False
+pc_portables,N2_marque_gamme,MSI,Premium,3,3,1,0.3673149331482308,False,False
+pc_portables,N2_marque_gamme,MSI,Économique,2,2,7,0.44214369625365774,True,False
+pc_portables,N2_marque_gamme,MSI,Économique,3,3,7,0.5442065984502111,True,True
 smartphones,N1_technique,,,2,2,499,0.2870544853561273,True,False
 smartphones,N1_technique,,,3,3,116,0.3426287559264892,True,False
 smartphones,N1_technique,,,4,4,92,0.3928591847799304,True,True
@@ -194,80 +68,24 @@ smartphones,N1_technique,,,5,5,25,0.4152979388232054,False,False
 smartphones,N1_technique,,,6,6,4,0.40026908712054804,False,False
 smartphones,N1_technique,,,7,7,4,0.41298621304193217,False,False
 smartphones,N1_technique,,,8,8,4,0.43483426850838314,False,False
-smartphones,N2_marque_gamme,HONOR,Milieu de gamme,2,2,5,0.5632238332311138,True,True
-smartphones,N2_marque_gamme,HONOR,Milieu de gamme,3,3,2,0.6859260840489912,False,False
-smartphones,N2_marque_gamme,HONOR,Premium,2,2,12,0.704207700975068,True,False
-smartphones,N2_marque_gamme,HONOR,Premium,3,3,12,0.9999999961897219,True,True
-smartphones,N2_marque_gamme,HONOR,Économique,2,2,17,0.5754141974811305,True,False
-smartphones,N2_marque_gamme,HONOR,Économique,3,3,12,0.6708865505970947,True,False
-smartphones,N2_marque_gamme,HONOR,Économique,4,4,12,0.7323350622613441,True,False
-smartphones,N2_marque_gamme,HONOR,Économique,5,5,8,0.8227874869722058,True,True
-smartphones,N2_marque_gamme,INFINIX,Milieu de gamme,2,2,13,0.9542086955054722,True,True
-smartphones,N2_marque_gamme,INFINIX,Milieu de gamme,3,3,1,0.9696969696969697,False,False
-smartphones,N2_marque_gamme,INFINIX,Premium,2,2,8,1.0,True,True
-smartphones,N2_marque_gamme,INFINIX,Premium,3,2,8,1.0,True,False
-smartphones,N2_marque_gamme,INFINIX,Économique,2,2,16,1.0,True,True
-smartphones,N2_marque_gamme,INFINIX,Économique,3,2,16,1.0,True,False
-smartphones,N2_marque_gamme,LESIA,Milieu de gamme,2,1,0,,False,False
-smartphones,N2_marque_gamme,LESIA,Milieu de gamme,3,1,0,,False,False
-smartphones,N2_marque_gamme,LESIA,Premium,2,2,6,0.9999999961763604,True,True
-smartphones,N2_marque_gamme,LESIA,Premium,3,2,6,0.9999999961763604,True,False
-smartphones,N2_marque_gamme,LESIA,Économique,2,2,4,0.8083100683867565,False,False
-smartphones,N2_marque_gamme,LESIA,Économique,3,3,4,0.9999999973946286,False,False
-smartphones,N2_marque_gamme,OPPO,Milieu de gamme,2,2,8,0.6967199372464963,True,False
-smartphones,N2_marque_gamme,OPPO,Milieu de gamme,3,3,8,0.8009044365243392,True,True
-smartphones,N2_marque_gamme,OPPO,Premium,2,2,11,0.8401056972270915,True,False
-smartphones,N2_marque_gamme,OPPO,Premium,3,3,8,0.9999999959678716,True,True
-smartphones,N2_marque_gamme,OPPO,Économique,2,2,8,0.6910518874755122,True,True
-smartphones,N2_marque_gamme,OPPO,Économique,3,3,4,0.8093548862903612,False,False
-smartphones,N2_marque_gamme,OSCAL,Économique,2,2,8,1.0,True,True
-smartphones,N2_marque_gamme,OSCAL,Économique,3,2,8,1.0,True,False
-smartphones,N2_marque_gamme,SAMSUNG,Milieu de gamme,2,2,48,0.6417357735320958,True,False
-smartphones,N2_marque_gamme,SAMSUNG,Milieu de gamme,3,3,24,0.7271026095069337,True,False
-smartphones,N2_marque_gamme,SAMSUNG,Milieu de gamme,4,4,8,0.8005078239086635,True,False
-smartphones,N2_marque_gamme,SAMSUNG,Milieu de gamme,5,5,8,0.8960502511931351,True,False
-smartphones,N2_marque_gamme,SAMSUNG,Milieu de gamme,6,6,8,1.0,True,True
-smartphones,N2_marque_gamme,SAMSUNG,Milieu de gamme,7,6,8,1.0,True,False
-smartphones,N2_marque_gamme,SAMSUNG,Milieu de gamme,8,6,8,1.0,True,False
-smartphones,N2_marque_gamme,SAMSUNG,Premium,2,2,35,0.3897781825887987,True,False
-smartphones,N2_marque_gamme,SAMSUNG,Premium,3,3,16,0.5428183678227239,True,True
-smartphones,N2_marque_gamme,SAMSUNG,Premium,4,4,4,0.6226136860571173,False,False
-smartphones,N2_marque_gamme,SAMSUNG,Premium,5,5,4,0.7037200199893189,False,False
-smartphones,N2_marque_gamme,SAMSUNG,Premium,6,6,4,0.8193782520950675,False,False
-smartphones,N2_marque_gamme,SAMSUNG,Premium,7,7,4,0.9129430550220162,False,False
-smartphones,N2_marque_gamme,SAMSUNG,Premium,8,8,3,0.9438424084956462,False,False
-smartphones,N2_marque_gamme,SAMSUNG,Économique,2,2,41,0.6660935419087008,True,False
-smartphones,N2_marque_gamme,SAMSUNG,Économique,3,3,21,0.716279414992661,True,True
-smartphones,N2_marque_gamme,SAMSUNG,Économique,4,4,4,0.7462685881725407,False,False
-smartphones,N2_marque_gamme,SAMSUNG,Économique,5,5,4,0.8368486540557081,False,False
-smartphones,N2_marque_gamme,SAMSUNG,Économique,6,6,4,0.8931339062294718,False,False
-smartphones,N2_marque_gamme,SAMSUNG,Économique,7,7,4,0.770664558606736,False,False
-smartphones,N2_marque_gamme,SAMSUNG,Économique,8,8,4,0.8637098938789758,False,False
-smartphones,N2_marque_gamme,TECNO,Économique,2,2,1,0.9230769230769231,False,False
-smartphones,N2_marque_gamme,TECNO,Économique,3,2,1,0.9230769230769231,False,False
-smartphones,N2_marque_gamme,VIVO,Milieu de gamme,2,2,16,0.6393246479724723,True,False
-smartphones,N2_marque_gamme,VIVO,Milieu de gamme,3,3,8,0.8781189718056702,True,True
-smartphones,N2_marque_gamme,VIVO,Premium,2,2,8,0.6357584306842629,True,True
-smartphones,N2_marque_gamme,VIVO,Premium,3,3,4,0.8698713516107235,False,False
-smartphones,N2_marque_gamme,VIVO,Économique,2,2,12,0.6062212321094785,True,False
-smartphones,N2_marque_gamme,VIVO,Économique,3,3,7,0.7629402261752644,True,True
-smartphones,N2_marque_gamme,XIAOMI,Milieu de gamme,2,2,23,0.5582044554254931,True,False
-smartphones,N2_marque_gamme,XIAOMI,Milieu de gamme,3,3,8,0.7396210779645548,True,False
-smartphones,N2_marque_gamme,XIAOMI,Milieu de gamme,4,4,8,0.8823486117184447,True,True
-smartphones,N2_marque_gamme,XIAOMI,Milieu de gamme,5,5,4,0.9115846862023985,False,False
-smartphones,N2_marque_gamme,XIAOMI,Milieu de gamme,6,6,4,1.0,False,False
-smartphones,N2_marque_gamme,XIAOMI,Premium,2,2,4,0.6774947576298029,False,False
-smartphones,N2_marque_gamme,XIAOMI,Premium,3,3,4,0.6076564546368647,False,False
-smartphones,N2_marque_gamme,XIAOMI,Premium,4,4,4,0.7713267330680569,False,False
-smartphones,N2_marque_gamme,XIAOMI,Premium,5,5,4,0.9085672547014357,False,False
-smartphones,N2_marque_gamme,XIAOMI,Premium,6,6,4,0.9999999938057037,False,False
-smartphones,N2_marque_gamme,XIAOMI,Économique,2,2,11,0.5627824294295188,True,False
-smartphones,N2_marque_gamme,XIAOMI,Économique,3,3,11,0.6139067608593142,True,False
-smartphones,N2_marque_gamme,XIAOMI,Économique,4,4,11,0.6612216472593768,True,False
-smartphones,N2_marque_gamme,XIAOMI,Économique,5,5,11,0.7494894317515884,True,False
-smartphones,N2_marque_gamme,XIAOMI,Économique,6,6,8,0.8397809653498736,True,True
-smartphones,N2_marque_gamme,XIAOMI,Économique,7,7,3,0.8655212757132329,False,False
-smartphones,N2_marque_gamme,XIAOMI,Économique,8,8,2,0.8915980078227138,False,False
+smartphones,N2_marque_gamme,HONOR,Milieu de gamme,2,2,4,0.7769289856699179,False,False
+smartphones,N2_marque_gamme,HONOR,Milieu de gamme,3,3,1,0.9,False,False
+smartphones,N2_marque_gamme,HONOR,Premium,2,2,3,0.622272458972226,False,False
+smartphones,N2_marque_gamme,HONOR,Premium,3,3,3,0.8764945560855674,False,False
+smartphones,N2_marque_gamme,HONOR,Économique,2,2,3,0.6770803667851809,False,False
+smartphones,N2_marque_gamme,HONOR,Économique,3,3,3,0.5371115083992039,False,False
+smartphones,N2_marque_gamme,SAMSUNG,Milieu de gamme,2,2,12,0.6213629858535421,True,False
+smartphones,N2_marque_gamme,SAMSUNG,Milieu de gamme,3,3,6,0.6981274244212798,True,True
+smartphones,N2_marque_gamme,SAMSUNG,Premium,2,2,9,0.35184524865502387,True,True
+smartphones,N2_marque_gamme,SAMSUNG,Premium,3,3,4,0.4981725252548439,False,False
+smartphones,N2_marque_gamme,SAMSUNG,Économique,2,2,11,0.644510564557706,True,False
+smartphones,N2_marque_gamme,SAMSUNG,Économique,3,3,6,0.6833446014509568,True,True
+smartphones,N2_marque_gamme,XIAOMI,Milieu de gamme,2,2,4,0.5340647418911547,False,False
+smartphones,N2_marque_gamme,XIAOMI,Milieu de gamme,3,3,2,0.7386361288667015,False,False
+smartphones,N2_marque_gamme,XIAOMI,Premium,2,2,1,0.5922220194655748,False,False
+smartphones,N2_marque_gamme,XIAOMI,Premium,3,3,1,0.49598618372576647,False,False
+smartphones,N2_marque_gamme,XIAOMI,Économique,2,2,2,0.5984568522059744,False,False
+smartphones,N2_marque_gamme,XIAOMI,Économique,3,3,2,0.6788314669702925,False,False
 telephones_portables,N1_technique,,,2,2,115,0.3387532849048183,True,False
 telephones_portables,N1_technique,,,3,3,12,0.3719842740762602,True,False
 telephones_portables,N1_technique,,,4,4,12,0.4308404647312275,True,False
@@ -275,28 +93,10 @@ telephones_portables,N1_technique,,,5,5,12,0.5015967199742463,True,False
 telephones_portables,N1_technique,,,6,6,12,0.5696645514095708,True,True
 telephones_portables,N1_technique,,,7,7,3,0.5844871687639256,False,False
 telephones_portables,N1_technique,,,8,8,3,0.5902849072070105,False,False
-telephones_portables,N2_marque_gamme,AMI,Économique,2,2,18,0.6965499733791125,True,True
-telephones_portables,N2_marque_gamme,AMI,Économique,3,3,4,0.8069185263852671,False,False
-telephones_portables,N2_marque_gamme,AMI,Économique,4,4,4,0.9005806340672518,False,False
-telephones_portables,N2_marque_gamme,AMI,Économique,5,5,4,0.9139546883886314,False,False
-telephones_portables,N2_marque_gamme,AMI,Économique,6,6,4,0.9432374793535887,False,False
-telephones_portables,N2_marque_gamme,CLEVER,Économique,2,2,21,0.756062773365039,True,True
-telephones_portables,N2_marque_gamme,CLEVER,Économique,3,3,3,0.8438003959395088,False,False
-telephones_portables,N2_marque_gamme,CLEVER,Économique,4,4,3,0.9617316162165677,False,False
-telephones_portables,N2_marque_gamme,EVERTEK,Économique,2,2,2,0.7586915192392909,False,False
-telephones_portables,N2_marque_gamme,EVERTEK,Économique,3,3,2,0.9493508549068276,False,False
-telephones_portables,N2_marque_gamme,NOKIA,Économique,2,2,6,0.9022778707326293,True,True
-telephones_portables,N2_marque_gamme,NOKIA,Économique,3,3,1,0.9230769230769231,False,False
-telephones_portables,N2_marque_gamme,PHILIPS,Économique,2,2,2,0.7586750504966522,False,False
-telephones_portables,N2_marque_gamme,PHILIPS,Économique,3,3,2,1.0,False,False
-telephones_portables,N2_marque_gamme,SMARTEC,Milieu de gamme,2,2,8,0.6040712189743049,True,True
-telephones_portables,N2_marque_gamme,SMARTEC,Milieu de gamme,3,3,4,0.8556125866586344,False,False
-telephones_portables,N2_marque_gamme,SMARTEC,Économique,2,2,16,0.5423300285556194,True,True
-telephones_portables,N2_marque_gamme,SMARTEC,Économique,3,3,2,0.6152735810499859,False,False
-telephones_portables,N2_marque_gamme,UNIWA,Milieu de gamme,2,2,3,0.999959526163751,False,False
-telephones_portables,N2_marque_gamme,UNIWA,Milieu de gamme,3,3,3,0.999968288589617,False,False
-telephones_portables,N2_marque_gamme,UNIWA,Économique,2,2,4,0.7735516467568962,False,False
-telephones_portables,N2_marque_gamme,UNIWA,Économique,3,3,2,0.807819542611016,False,False
+telephones_portables,N2_marque_gamme,AMI,Économique,2,2,6,0.9469550573563359,True,True
+telephones_portables,N2_marque_gamme,AMI,Économique,3,3,4,0.9999999825792505,False,False
+telephones_portables,N2_marque_gamme,SMARTEC,Économique,2,2,4,0.5241760270665383,False,False
+telephones_portables,N2_marque_gamme,SMARTEC,Économique,3,3,4,0.6336491786203354,False,False
 televiseurs,N1_technique,,,2,2,60,0.416867413968217,True,True
 televiseurs,N1_technique,,,3,3,12,0.4463724428117622,False,False
 televiseurs,N1_technique,,,4,4,12,0.395185123968338,False,False
@@ -304,41 +104,3 @@ televiseurs,N1_technique,,,5,5,12,0.2090098102823874,False,False
 televiseurs,N1_technique,,,6,6,8,0.38614629673259177,False,False
 televiseurs,N1_technique,,,7,7,8,0.2441746254470443,False,False
 televiseurs,N1_technique,,,8,8,8,0.2757130841235808,False,False
-televiseurs,N2_marque_gamme,HISENSE,Milieu de gamme,2,2,4,0.7424693074453942,False,False
-televiseurs,N2_marque_gamme,HISENSE,Milieu de gamme,3,3,4,0.9820823073018716,False,False
-televiseurs,N2_marque_gamme,HISENSE,Premium,2,2,4,0.687500557518872,False,False
-televiseurs,N2_marque_gamme,HISENSE,Premium,3,3,4,1.0,False,False
-televiseurs,N2_marque_gamme,HISENSE,Économique,2,2,4,0.7657189749922573,False,False
-televiseurs,N2_marque_gamme,HISENSE,Économique,3,3,1,0.7551010369776221,False,False
-televiseurs,N2_marque_gamme,LG,Milieu de gamme,2,2,4,1.0,False,False
-televiseurs,N2_marque_gamme,LG,Milieu de gamme,3,2,4,1.0,False,False
-televiseurs,N2_marque_gamme,LG,Premium,2,2,4,0.8300164259369661,False,False
-televiseurs,N2_marque_gamme,LG,Premium,3,3,4,0.9926415968695323,False,False
-televiseurs,N2_marque_gamme,LG,Économique,2,2,4,0.6107298183768101,False,False
-televiseurs,N2_marque_gamme,LG,Économique,3,3,4,0.7325211922549993,False,False
-televiseurs,N2_marque_gamme,MAXWELL,Milieu de gamme,2,2,3,0.7457354922874455,False,False
-televiseurs,N2_marque_gamme,MAXWELL,Milieu de gamme,3,3,3,0.9598319200057864,False,False
-televiseurs,N2_marque_gamme,SAMSUNG,Milieu de gamme,2,2,11,0.7101726054709034,True,True
-televiseurs,N2_marque_gamme,SAMSUNG,Milieu de gamme,3,3,4,0.9414907673226063,False,False
-televiseurs,N2_marque_gamme,SAMSUNG,Premium,2,2,8,0.5658399846972247,True,True
-televiseurs,N2_marque_gamme,SAMSUNG,Premium,3,3,4,0.7248014111642794,False,False
-televiseurs,N2_marque_gamme,SAMSUNG,Économique,2,2,8,0.5375441198512546,True,True
-televiseurs,N2_marque_gamme,SAMSUNG,Économique,3,3,4,0.6683822566286075,False,False
-televiseurs,N2_marque_gamme,TCL,Milieu de gamme,2,2,4,0.6413552358855521,False,False
-televiseurs,N2_marque_gamme,TCL,Milieu de gamme,3,3,4,0.6237276164731171,False,False
-televiseurs,N2_marque_gamme,TCL,Premium,2,2,8,0.6200642066997434,True,True
-televiseurs,N2_marque_gamme,TCL,Premium,3,3,4,0.8006764559534837,False,False
-televiseurs,N2_marque_gamme,TCL,Économique,2,2,11,0.5559869315972092,True,True
-televiseurs,N2_marque_gamme,TCL,Économique,3,3,4,0.6106439406835938,False,False
-televiseurs,N2_marque_gamme,TELEFUNKEN,Milieu de gamme,2,2,9,0.3997286337122417,True,True
-televiseurs,N2_marque_gamme,TELEFUNKEN,Milieu de gamme,3,3,4,0.54751969936055,False,False
-televiseurs,N2_marque_gamme,TELEFUNKEN,Premium,2,2,4,0.5560935983731169,False,False
-televiseurs,N2_marque_gamme,TELEFUNKEN,Premium,3,3,4,0.6301605134127494,False,False
-televiseurs,N2_marque_gamme,TELEFUNKEN,Économique,2,2,12,0.6877349892883535,True,True
-televiseurs,N2_marque_gamme,TELEFUNKEN,Économique,3,3,4,0.7681706723669807,False,False
-televiseurs,N2_marque_gamme,THOMSON,Milieu de gamme,2,2,4,0.6748368035835148,False,False
-televiseurs,N2_marque_gamme,THOMSON,Milieu de gamme,3,3,4,1.0,False,False
-televiseurs,N2_marque_gamme,THOMSON,Premium,2,2,4,0.7406170567819953,False,False
-televiseurs,N2_marque_gamme,THOMSON,Premium,3,3,4,1.0,False,False
-televiseurs,N2_marque_gamme,THOMSON,Économique,2,2,8,0.7270529308003277,True,True
-televiseurs,N2_marque_gamme,THOMSON,Économique,3,3,4,1.0,False,False

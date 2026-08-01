@@ -1,0 +1,22 @@
+{
+  "segment": "SAMSUNG::Premium::c0",
+  "continuous_features": [
+    "taille_ecran",
+    "taux_rafraichissement"
+  ],
+  "categorical_features": [],
+  "design_matrix_columns": [
+    "taille_ecran",
+    "taux_rafraichissement"
+  ],
+  "n_train": 24,
+  "n_test": 4,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": false,
+    "random_forest": false
+  }
+}

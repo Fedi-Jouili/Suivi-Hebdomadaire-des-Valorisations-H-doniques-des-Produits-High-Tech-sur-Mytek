@@ -1,0 +1,37 @@
+{
+  "segment": "2",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_brand",
+    "has_4g",
+    "has_5g",
+    "marque"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "has_4g",
+    "has_5g",
+    "cpu_brand_MediaTek",
+    "cpu_brand_Qualcomm",
+    "marque_HUAWEI",
+    "marque_INFINIX",
+    "marque_LESIA",
+    "marque_XIAOMI"
+  ],
+  "n_train": 92,
+  "n_test": 24,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": false,
+    "random_forest": false
+  }
+}

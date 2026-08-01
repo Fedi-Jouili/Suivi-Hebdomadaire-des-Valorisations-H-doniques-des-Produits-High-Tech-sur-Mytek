@@ -1,0 +1,52 @@
+﻿segment_col,segment,famille,n_lignes,n_produits_distincts,n_predicteurs,n_min_requis,ajuste,raison_rejet,n_test,r2_test,rmse_tnd_test,r2_test_categorie,rmse_tnd_test_categorie,comparaison_possible,retenu_pour_prediction
+cluster_id,ECOSAT::Gamme unique::c0,hedonic_ols,20,5,12,120,False,n_lignes=20 < n_min_requis=120 (ratio=10),0,,,,,False,False
+cluster_id,ECOSAT::Gamme unique::c0,ridge,20,5,12,60,False,n_lignes=20 < n_min_requis=60 (ratio=5),0,,,,,False,False
+cluster_id,ECOSAT::Gamme unique::c0,random_forest,20,5,12,60,False,n_lignes=20 < n_min_requis=60 (ratio=5),0,,,,,False,False
+cluster_id,HISENSE::Gamme unique::c0,hedonic_ols,23,6,10,100,False,n_lignes=23 < n_min_requis=100 (ratio=10),12,,,,,False,False
+cluster_id,HISENSE::Gamme unique::c0,ridge,23,6,10,50,False,n_lignes=23 < n_min_requis=50 (ratio=5),12,,,,,False,False
+cluster_id,HISENSE::Gamme unique::c0,random_forest,23,6,10,50,False,n_lignes=23 < n_min_requis=50 (ratio=5),12,,,,,False,False
+cluster_id,LG::Premium::c0,hedonic_ols,12,3,7,70,False,n_lignes=12 < n_min_requis=70 (ratio=10),8,,,,,False,False
+cluster_id,LG::Premium::c0,ridge,12,3,7,35,False,n_lignes=12 < n_min_requis=35 (ratio=5),8,,,,,False,False
+cluster_id,LG::Premium::c0,random_forest,12,3,7,35,False,n_lignes=12 < n_min_requis=35 (ratio=5),8,,,,,False,False
+cluster_id,LG::Économique::c0,hedonic_ols,13,4,7,70,False,n_lignes=13 < n_min_requis=70 (ratio=10),7,,,,,False,False
+cluster_id,LG::Économique::c0,ridge,13,4,7,35,False,n_lignes=13 < n_min_requis=35 (ratio=5),7,,,,,False,False
+cluster_id,LG::Économique::c0,random_forest,13,4,7,35,False,n_lignes=13 < n_min_requis=35 (ratio=5),7,,,,,False,False
+cluster_id,MAXWELL::Gamme unique::c0,hedonic_ols,17,5,11,110,False,n_lignes=17 < n_min_requis=110 (ratio=10),8,,,,,False,False
+cluster_id,MAXWELL::Gamme unique::c0,ridge,17,5,11,55,False,n_lignes=17 < n_min_requis=55 (ratio=5),8,,,,,False,False
+cluster_id,MAXWELL::Gamme unique::c0,random_forest,17,5,11,55,False,n_lignes=17 < n_min_requis=55 (ratio=5),8,,,,,False,False
+cluster_id,SAMSUNG::Milieu de gamme::c0,hedonic_ols,15,4,4,40,False,n_lignes=15 < n_min_requis=40 (ratio=10),8,,,,,False,False
+cluster_id,SAMSUNG::Milieu de gamme::c0,ridge,15,4,4,20,False,n_lignes=15 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,SAMSUNG::Milieu de gamme::c0,random_forest,15,4,4,20,False,n_lignes=15 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,SAMSUNG::Premium::c0,hedonic_ols,24,6,3,30,False,n_lignes=24 < n_min_requis=30 (ratio=10),4,,,,,False,False
+cluster_id,SAMSUNG::Premium::c0,ridge,24,6,3,15,True,,4,0.0,564.22,0.0,2003.09,True,False
+cluster_id,SAMSUNG::Premium::c0,random_forest,24,6,3,15,True,,4,0.0,1041.91,0.0,464.68,True,False
+cluster_id,SAMSUNG::Économique::c0,hedonic_ols,24,6,8,80,False,n_lignes=24 < n_min_requis=80 (ratio=10),8,,,,,False,False
+cluster_id,SAMSUNG::Économique::c0,ridge,24,6,8,40,False,n_lignes=24 < n_min_requis=40 (ratio=5),8,,,,,False,False
+cluster_id,SAMSUNG::Économique::c0,random_forest,24,6,8,40,False,n_lignes=24 < n_min_requis=40 (ratio=5),8,,,,,False,False
+cluster_id,TCL::Milieu de gamme::c0,hedonic_ols,24,6,6,60,False,n_lignes=24 < n_min_requis=60 (ratio=10),0,,,,,False,False
+cluster_id,TCL::Milieu de gamme::c0,ridge,24,6,6,30,False,n_lignes=24 < n_min_requis=30 (ratio=5),0,,,,,False,False
+cluster_id,TCL::Milieu de gamme::c0,random_forest,24,6,6,30,False,n_lignes=24 < n_min_requis=30 (ratio=5),0,,,,,False,False
+cluster_id,TCL::Premium::c0,hedonic_ols,24,6,7,70,False,n_lignes=24 < n_min_requis=70 (ratio=10),0,,,,,False,False
+cluster_id,TCL::Premium::c0,ridge,24,6,7,35,False,n_lignes=24 < n_min_requis=35 (ratio=5),0,,,,,False,False
+cluster_id,TCL::Premium::c0,random_forest,24,6,7,35,False,n_lignes=24 < n_min_requis=35 (ratio=5),0,,,,,False,False
+cluster_id,TCL::Économique::c0,hedonic_ols,19,5,5,50,False,n_lignes=19 < n_min_requis=50 (ratio=10),4,,,,,False,False
+cluster_id,TCL::Économique::c0,ridge,19,5,5,25,False,n_lignes=19 < n_min_requis=25 (ratio=5),4,,,,,False,False
+cluster_id,TCL::Économique::c0,random_forest,19,5,5,25,False,n_lignes=19 < n_min_requis=25 (ratio=5),4,,,,,False,False
+cluster_id,TELEFUNKEN::Milieu de gamme::c0,hedonic_ols,16,4,6,60,False,n_lignes=16 < n_min_requis=60 (ratio=10),8,,,,,False,False
+cluster_id,TELEFUNKEN::Milieu de gamme::c0,ridge,16,4,6,30,False,n_lignes=16 < n_min_requis=30 (ratio=5),8,,,,,False,False
+cluster_id,TELEFUNKEN::Milieu de gamme::c0,random_forest,16,4,6,30,False,n_lignes=16 < n_min_requis=30 (ratio=5),8,,,,,False,False
+cluster_id,TELEFUNKEN::Premium::c0,hedonic_ols,24,6,10,100,False,n_lignes=24 < n_min_requis=100 (ratio=10),0,,,,,False,False
+cluster_id,TELEFUNKEN::Premium::c0,ridge,24,6,10,50,False,n_lignes=24 < n_min_requis=50 (ratio=5),0,,,,,False,False
+cluster_id,TELEFUNKEN::Premium::c0,random_forest,24,6,10,50,False,n_lignes=24 < n_min_requis=50 (ratio=5),0,,,,,False,False
+cluster_id,TELEFUNKEN::Économique::c0,hedonic_ols,12,3,3,30,False,n_lignes=12 < n_min_requis=30 (ratio=10),12,,,,,False,False
+cluster_id,TELEFUNKEN::Économique::c0,ridge,12,3,3,15,False,n_lignes=12 < n_min_requis=15 (ratio=5),12,,,,,False,False
+cluster_id,TELEFUNKEN::Économique::c0,random_forest,12,3,3,15,False,n_lignes=12 < n_min_requis=15 (ratio=5),12,,,,,False,False
+cluster_id,THOMSON::Premium::c0,hedonic_ols,16,4,6,60,False,n_lignes=16 < n_min_requis=60 (ratio=10),0,,,,,False,False
+cluster_id,THOMSON::Premium::c0,ridge,16,4,6,30,False,n_lignes=16 < n_min_requis=30 (ratio=5),0,,,,,False,False
+cluster_id,THOMSON::Premium::c0,random_forest,16,4,6,30,False,n_lignes=16 < n_min_requis=30 (ratio=5),0,,,,,False,False
+cluster_id,THOMSON::Économique::c0,hedonic_ols,16,4,4,40,False,n_lignes=16 < n_min_requis=40 (ratio=10),8,,,,,False,False
+cluster_id,THOMSON::Économique::c0,ridge,16,4,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,THOMSON::Économique::c0,random_forest,16,4,4,20,False,n_lignes=16 < n_min_requis=20 (ratio=5),8,,,,,False,False
+cluster_id,VEGA::Gamme unique::c0,hedonic_ols,20,5,8,80,False,n_lignes=20 < n_min_requis=80 (ratio=10),4,,,,,False,False
+cluster_id,VEGA::Gamme unique::c0,ridge,20,5,8,40,False,n_lignes=20 < n_min_requis=40 (ratio=5),4,,,,,False,False
+cluster_id,VEGA::Gamme unique::c0,random_forest,20,5,8,40,False,n_lignes=20 < n_min_requis=40 (ratio=5),4,,,,,False,False

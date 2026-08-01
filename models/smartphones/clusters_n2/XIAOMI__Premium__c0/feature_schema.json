@@ -1,0 +1,33 @@
+{
+  "segment": "XIAOMI::Premium::c0",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "cpu_brand",
+    "has_wifi6",
+    "has_wifi",
+    "has_bluetooth"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "has_wifi6",
+    "has_wifi",
+    "has_bluetooth",
+    "cpu_brand_Qualcomm"
+  ],
+  "n_train": 48,
+  "n_test": 12,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": true,
+    "random_forest": false
+  }
+}

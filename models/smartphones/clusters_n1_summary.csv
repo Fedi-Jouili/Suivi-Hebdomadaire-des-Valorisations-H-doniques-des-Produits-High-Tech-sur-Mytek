@@ -1,0 +1,13 @@
+﻿segment_col,segment,famille,n_lignes,n_produits_distincts,n_predicteurs,n_min_requis,ajuste,raison_rejet,n_test,r2_test,rmse_tnd_test,r2_test_categorie,rmse_tnd_test_categorie,comparaison_possible,retenu_pour_prediction
+cluster_direct,0,hedonic_ols,301,81,15,150,True,,94,0.8298,505.51,0.5087,1305.36,True,True
+cluster_direct,0,ridge,301,81,15,75,True,,94,0.8169,614.94,0.4844,1349.24,True,True
+cluster_direct,0,random_forest,301,81,15,75,True,,94,0.9609,208.44,0.9606,210.98,True,True
+cluster_direct,1,hedonic_ols,346,94,16,160,True,,63,0.7857,98.32,0.3445,173.69,True,True
+cluster_direct,1,ridge,346,94,16,80,True,,63,0.5854,136.37,0.3741,171.01,True,True
+cluster_direct,1,random_forest,346,94,16,80,True,,63,0.9183,65.21,0.9165,65.91,True,True
+cluster_direct,2,hedonic_ols,92,28,12,120,False,n_lignes=92 < n_min_requis=120 (ratio=10),24,,,,,False,False
+cluster_direct,2,ridge,92,28,12,60,True,,24,0.9667,344.94,0.9832,66.37,True,False
+cluster_direct,2,random_forest,92,28,12,60,True,,24,0.9998,20.25,0.9999,14.17,True,False
+cluster_direct,3,hedonic_ols,76,19,9,90,False,n_lignes=76 < n_min_requis=90 (ratio=10),16,,,,,False,False
+cluster_direct,3,ridge,76,19,9,45,True,,16,-17.4366,587.38,-59.2428,895.05,True,True
+cluster_direct,3,random_forest,76,19,9,45,True,,16,-4.8677,312.8,0.3395,120.14,True,False

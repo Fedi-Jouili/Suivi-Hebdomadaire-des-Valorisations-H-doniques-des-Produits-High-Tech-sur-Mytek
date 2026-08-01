@@ -1,0 +1,29 @@
+{
+  "segment": "2",
+  "continuous_features": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran"
+  ],
+  "categorical_features": [
+    "marque"
+  ],
+  "design_matrix_columns": [
+    "ram_go",
+    "stockage_go",
+    "taille_ecran",
+    "marque_PHILIPS",
+    "marque_SMARTEC",
+    "marque_UNIWA"
+  ],
+  "n_train": 56,
+  "n_test": 16,
+  "familles_ajustees": [
+    "random_forest",
+    "ridge"
+  ],
+  "retenu_pour_prediction": {
+    "ridge": true,
+    "random_forest": false
+  }
+}

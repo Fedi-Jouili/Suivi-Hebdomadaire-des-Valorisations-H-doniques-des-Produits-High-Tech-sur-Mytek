@@ -41,7 +41,16 @@ from src.dashboard.data_loader import (
     load_model_artifact,
     load_n1_feature_schema,
     load_pooled_labeled,
+    load_retained_cluster_models,
 )
+
+# model_name (page Prediction, "ols"/"ridge"/"rf") -> famille (cf.
+# save_artifacts.fit_models_per_segment, "hedonic_ols"/"ridge"/"random_forest")
+# -- deux vocabulaires historiquement distincts (le premier prefixe les noms
+# de fichiers .joblib, le second suit metrics.json/marque_gamme_estimations_
+# hebdo.csv) -- jamais unifies pour ne pas casser les artefacts deja
+# persistes, cette table de correspondance est la SEULE traduction.
+_FAMILLE_BY_MODEL_NAME = {"ols": "hedonic_ols", "ridge": "ridge", "rf": "random_forest"}
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -122,34 +131,16 @@ def _week_adjustment_pct(category: str, week) -> tuple:
     return week_idx - mean_idx, sorted(idx["semaine"].unique().tolist())
 
 
-def predict_price(category: str, model_name: str, values: dict, week=None) -> dict:
-    """
-    Predit le prix d'un produit hypothetique.
-
-    Retro-transformation : log(prix) -> prix par np.exp(), SANS correction
-    de biais de retransformation (Duan/Miller) -- meme choix documente que
-    src/models/save_artifacts.py::evaluate_predictions (sous-estime
-    legerement le prix moyen "vrai", explicite dans le resultat retourne).
-
-    Intervalle : disponible UNIQUEMENT pour Hedonic OLS (statsmodels
-    .get_prediction(), intervalle de prediction a 95% sur log(prix) puis
-    retro-transforme) -- Ridge/RF n'offrent pas nativement d'intervalle
-    (ni l'un ni l'autre ne sont bayesiens/quantile), signale comme tel.
-
-    week : semaine choisie dans le formulaire -- applique l'ajustement de
-        _week_adjustment_pct (indice hedonique deja persiste) au prix ET a
-        l'intervalle, si disponible pour cette categorie/semaine.
-
-    Returns: dict {price, price_lower, price_upper (ou None), log_price,
-        model_label, has_interval, week_adjustment_pct (ou None), note}
-    """
-    metrics = load_metrics(category)
-    design_columns = metrics["design_matrix_columns"]
-    continuous_features = metrics["continuous_features"]
-    categorical_features = metrics["categorical_features"]
-
+def _predict_with_model(model, model_name: str, design_columns: list, continuous_features: list,
+                         categorical_features: list, values: dict, week, category: str) -> dict:
+    """Coeur de la prediction, factorise pour etre reutilise SUR N'IMPORTE
+    QUEL modele (categorie entiere, ou par cluster N1/N2 -- meme classe
+    HedonicOLS/RidgeModel/RandomForestModel dans les 3 cas, cf.
+    save_artifacts.fit_models_per_segment) -- jamais deux implementations
+    paralleles de la retro-transformation/l'intervalle/l'ajustement semaine.
+    Voir predict_price pour la description complete du resultat retourne
+    (sans "price_source", ajoute par l'appelant cluster-aware)."""
     X_row = encode_hypothetical_row(design_columns, continuous_features, categorical_features, values)
-    model = load_model_artifact(category, model_name)
 
     if model_name == "ols":
         log_pred = float(model.predict(X_row).iloc[0])
@@ -159,11 +150,7 @@ def predict_price(category: str, model_name: str, values: dict, week=None) -> di
         log_lo = float(pred_summary["obs_ci_lower"].iloc[0])
         log_hi = float(pred_summary["obs_ci_upper"].iloc[0])
         price_lower, price_upper, has_interval = float(np.exp(log_lo)), float(np.exp(log_hi)), True
-    elif model_name == "ridge":
-        log_pred = float(np.asarray(model.predict(X_row))[0])
-        price_lower = price_upper = None
-        has_interval = False
-    elif model_name == "rf":
+    elif model_name in ("ridge", "rf"):
         log_pred = float(np.asarray(model.predict(X_row))[0])
         price_lower = price_upper = None
         has_interval = False
@@ -201,6 +188,112 @@ def predict_price(category: str, model_name: str, values: dict, week=None) -> di
             f"{MODEL_LABELS[model_name]} ne fournit pas nativement d'intervalle de prédiction."
         ) + week_note,
     }
+
+
+def predict_price(category: str, model_name: str, values: dict, week=None) -> dict:
+    """
+    Predit le prix d'un produit hypothetique avec le modele CATEGORIE
+    ENTIERE (cf. predict_price_cluster_aware pour la version qui prefere un
+    modele de cluster N1/N2 quand un est retenu -- decision utilisateur du
+    2026-08-01, page Prediction).
+
+    Retro-transformation : log(prix) -> prix par np.exp(), SANS correction
+    de biais de retransformation (Duan/Miller) -- meme choix documente que
+    src/models/save_artifacts.py::evaluate_predictions (sous-estime
+    legerement le prix moyen "vrai", explicite dans le resultat retourne).
+
+    Intervalle : disponible UNIQUEMENT pour Hedonic OLS (statsmodels
+    .get_prediction(), intervalle de prediction a 95% sur log(prix) puis
+    retro-transforme) -- Ridge/RF n'offrent pas nativement d'intervalle
+    (ni l'un ni l'autre ne sont bayesiens/quantile), signale comme tel.
+
+    week : semaine choisie dans le formulaire -- applique l'ajustement de
+        _week_adjustment_pct (indice hedonique deja persiste) au prix ET a
+        l'intervalle, si disponible pour cette categorie/semaine.
+
+    Returns: dict {price, price_lower, price_upper (ou None), log_price,
+        model_label, has_interval, week_adjustment_pct (ou None), note}
+    """
+    metrics = load_metrics(category)
+    model = load_model_artifact(category, model_name)
+    return _predict_with_model(
+        model, model_name, metrics["design_matrix_columns"],
+        metrics["continuous_features"], metrics["categorical_features"], values, week, category,
+    )
+
+
+def predict_price_cluster_aware(category: str, model_name: str, values: dict, week=None) -> dict:
+    """
+    Meme resultat que predict_price, mais prefere un modele de CLUSTER
+    (N2 marque x gamme x sous-cluster, puis N1 technique) au modele
+    categorie entiere des qu'un est RETENU pour la famille demandee (bat le
+    modele categorie sur son propre test hors-echantillon, cf.
+    save_artifacts.fit_models_per_segment) -- decision utilisateur du
+    2026-08-01 : un seul modele par categorie est trop general.
+
+    Assignation EN 3 TEMPS (etend le "2 temps" documente en tete de module,
+    N2 reste inconnaissable avant un prix provisoire) :
+      1. N1 (cluster_direct) est calculable directement (aucune dependance
+         au prix, cf. assign_n1_cluster) -- si un modele N1 est retenu pour
+         cette famille, il fournit le prix PROVISOIRE ; sinon le modele
+         categorie s'en charge (comme predict_price).
+      2. Ce prix provisoire situe la gamme (assign_n2_segment), donc le
+         segment N2.
+      3. Si un modele N2 est retenu pour cette famille, RE-predit avec lui
+         -- resultat FINAL. Sinon le prix de l'etape 1 (N1 ou categorie)
+         reste le resultat final.
+
+    Returns: meme dict que predict_price, + "price_source"
+        ("n2"/"n1"/"categorie") -- jamais ambigu sur quel modele a produit
+        le prix retourne.
+    """
+    famille = _FAMILLE_BY_MODEL_NAME[model_name]
+    metrics = load_metrics(category)
+    category_model = load_model_artifact(category, model_name)
+    category_design_columns = metrics["design_matrix_columns"]
+    category_continuous = metrics["continuous_features"]
+    category_categorical = metrics["categorical_features"]
+
+    # ── 1. Prix provisoire : modele N1 retenu si disponible, sinon categorie ──
+    n1_cluster = assign_n1_cluster(category, values)
+    n1_models = load_retained_cluster_models(category, "clusters_n1")
+    n1_info = n1_models.get(str(n1_cluster), {}).get(famille)
+
+    if n1_info is not None:
+        result = _predict_with_model(
+            n1_info["model"], model_name, n1_info["design_columns"],
+            n1_info["continuous_features"], n1_info["categorical_features"], values, week, category,
+        )
+        result["price_source"] = "n1"
+    else:
+        result = _predict_with_model(
+            category_model, model_name, category_design_columns,
+            category_continuous, category_categorical, values, week, category,
+        )
+        result["price_source"] = "categorie"
+
+    # ── 2. Segment N2 a partir du prix provisoire ────────────────────────────
+    marque = values.get("marque")
+    n2_assignment = assign_n2_segment(category, marque, result["price"], values) if marque else {"cluster_id": None}
+    cluster_id = n2_assignment.get("cluster_id")
+
+    # ── 3. Re-prediction FINALE si un modele N2 est retenu pour ce cluster ──
+    if cluster_id is not None:
+        n2_models = load_retained_cluster_models(category, "clusters_n2")
+        n2_info = n2_models.get(str(cluster_id), {}).get(famille)
+        if n2_info is not None:
+            result = _predict_with_model(
+                n2_info["model"], model_name, n2_info["design_columns"],
+                n2_info["continuous_features"], n2_info["categorical_features"], values, week, category,
+            )
+            result["price_source"] = "n2"
+
+    result["note"] += {
+        "n2": " Estimation par le modèle dédié à ce cluster marque × gamme × profil technique (plus précis que le modèle catégorie sur ce segment).",
+        "n1": " Estimation par le modèle dédié à ce cluster technique (plus précis que le modèle catégorie sur ce segment).",
+        "categorie": "",
+    }[result["price_source"]]
+    return result
 
 
 # ─────────────────────────────────────────────────────────────────────────────

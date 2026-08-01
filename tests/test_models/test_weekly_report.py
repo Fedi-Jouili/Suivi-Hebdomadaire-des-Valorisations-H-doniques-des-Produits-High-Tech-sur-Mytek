@@ -327,7 +327,9 @@ class TestMarqueGammeModelEstimates:
         2026-07-25) : categorie, marque, gamme, cluster, semaine,
         moyenne_geometrique, moyenne_estimee_ridge, moyenne_estimee_hedonic,
         moyenne_estimee_rf, erreur_ridge_pct/_hedonic_pct/_rf_pct (ajout du
-        2026-07-29, page Telechargements) + n_produits."""
+        2026-07-29, page Telechargements) + n_produits + source_ridge/
+        _hedonic/_rf (ajout du 2026-08-01, modelisation par cluster N1/N2 --
+        cf. _predict_all_models_cluster_aware)."""
         for category in CATEGORY_ORDER:
             if not artifacts_available(category):
                 continue
@@ -336,6 +338,7 @@ class TestMarqueGammeModelEstimates:
                 "categorie", "marque", "gamme", "cluster", "semaine",
                 "moyenne_geometrique", "moyenne_estimee_ridge", "moyenne_estimee_hedonic",
                 "moyenne_estimee_rf", "erreur_ridge_pct", "erreur_hedonic_pct", "erreur_rf_pct", "n_produits",
+                "source_ridge", "source_hedonic", "source_rf",
             ]
             assert (df["categorie"] == category).all()
             assert (df["moyenne_geometrique"] > 0).all()
