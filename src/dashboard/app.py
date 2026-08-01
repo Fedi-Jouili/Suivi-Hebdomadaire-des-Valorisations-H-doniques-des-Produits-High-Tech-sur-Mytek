@@ -188,11 +188,12 @@ def _serve_stage_img(filename):
 NOTEBOOKS_PDF_DIR = REPORTS_DIR / "notebooks_pdf"
 
 
-@server.route('/download/notebook-pdf/<path:filename>')
-def _serve_notebook_pdf(filename):
-    """PDF pre-generes hors-ligne (cf. scripts/generate_notebook_pdfs.py) --
-    jamais convertis a la volee (jupyter/nbconvert/playwright ne sont pas
-    installes dans l'image de production, cf. requirements-deploy.txt)."""
+def _serve_notebook_pdf_file(filename):
+    """Serve a pre-generated notebook PDF from reports/notebooks_pdf/.
+
+    The dashboard links now point to /files/notebook-pdf/... but the old
+    /download/notebook-pdf/... path is kept as a compatibility alias.
+    """
     filename = unquote(filename)
     full = NOTEBOOKS_PDF_DIR / filename
     if not full.exists() or not full.is_file():
@@ -200,6 +201,16 @@ def _serve_notebook_pdf(filename):
     return send_from_directory(str(NOTEBOOKS_PDF_DIR), filename, as_attachment=True)
 
 
+@server.route('/files/notebook-pdf/<path:filename>')
+@server.route('/download/notebook-pdf/<path:filename>')
+def _serve_notebook_pdf(filename):
+    """PDF pre-generes hors-ligne (cf. scripts/generate_notebook_pdfs.py) --
+    jamais convertis a la volee (jupyter/nbconvert/playwright ne sont pas
+    installes dans l'image de production, cf. requirements-deploy.txt)."""
+    return _serve_notebook_pdf_file(filename)
+
+
+@server.route('/files/produits/<category>.csv')
 @server.route('/download/produits/<category>.csv')
 def _download_produits(category):
     """Donnees produit (une ligne par produit, toutes semaines poolees,
@@ -215,6 +226,7 @@ def _download_produits(category):
                                 download_name=f"produits_{category}.csv")
 
 
+@server.route('/files/estimations-cluster/<category>.csv')
 @server.route('/download/estimations-cluster/<category>.csv')
 def _download_estimations_cluster(category):
     """Estimations par cluster x semaine (moyenne geometrique reelle + les

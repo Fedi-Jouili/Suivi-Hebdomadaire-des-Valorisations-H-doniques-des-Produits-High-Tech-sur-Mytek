@@ -5,6 +5,8 @@ methodologie, affiche les metriques deja calculees (JAMAIS de reentrainement
 ici, cf. src/models/save_artifacts.py) et les caracteristiques des clusters.
 """
 
+import functools
+
 import dash
 import dash_ag_grid as dag
 import dash_mantine_components as dmc
@@ -266,7 +268,7 @@ def _cluster_models_summary_grid(summary: pd.DataFrame) -> dag.AgGrid | dmc.Aler
             {"field": "raison_rejet", "headerName": "Raison si écarté", "flex": 3},
         ],
         defaultColDef={"sortable": True, "resizable": True, "filter": True},
-        style={"height": "420px"}, columnSize="sizeToFit",
+        style={"height": "420px"}, columnSize="responsiveSizeToFit",
         dashGridOptions={"theme": "legacy"},
     )
 
@@ -425,7 +427,7 @@ def _famille_formula_card(famille: str, status: dict, coefs: pd.DataFrame | None
                 rowData=table_rows,
                 columnDefs=table_cols,
                 defaultColDef={"sortable": True, "resizable": True},
-                style={"height": f"{min(260, 50 + 28 * len(table_rows))}px"}, columnSize="sizeToFit",
+                style={"height": f"{min(260, 50 + 28 * len(table_rows))}px"}, columnSize="responsiveSizeToFit",
                 dashGridOptions={"theme": "legacy"},
             ),
         ], gap=6),
@@ -433,13 +435,19 @@ def _famille_formula_card(famille: str, status: dict, coefs: pd.DataFrame | None
     )
 
 
+@functools.lru_cache(maxsize=None)
 def _cluster_weekly_comparison(category: str, subdir: str, segment: str) -> pd.DataFrame:
     """Prix reel (moyenne geometrique) vs estime par semaine, pour UN
     cluster -- cf. n1_cluster_estimations_hebdo.csv (N1) / marque_gamme_
     estimations_hebdo.csv (N2, ou "cluster" n'est que le sous-cluster "c0"/
-    "c1" -- la cle complete marque::gamme::sous-cluster doit etre re-
-    decomposee, cf. save_artifacts._sanitize_segment_name pour le format
-    d'origine du segment)."""
+    "c1", jamais la cle complete "marque::gamme::sous-cluster").
+
+    marque/gamme sont lus directement depuis un PRODUIT reel du cluster
+    (load_cluster_products), jamais reconstruits en decoupant `segment` sur
+    "::" -- meme principe que weekly_report.py::_marque_gamme_product_level
+    (`cluster_id.str.split("::").str[-1]`, qui ne prend QUE le dernier
+    element) : rien ne garantit que marque/gamme ne contiennent jamais
+    "::", jamais une hypothese non verifiee sur le nombre de parties."""
     if subdir == "clusters_n1":
         df = load_n1_cluster_estimates(category)
         if df.empty:
@@ -453,10 +461,12 @@ def _cluster_weekly_comparison(category: str, subdir: str, segment: str) -> pd.D
     df = load_marque_gamme_estimates(category)
     if df.empty:
         return df
-    parts = str(segment).split("::")
-    if len(parts) != 3:
+    products = load_cluster_products(category, subdir, segment)
+    if products.empty:
         return pd.DataFrame()
-    marque, gamme, subcluster = parts
+    marque = products["marque"].iloc[0]
+    gamme = products["gamme_prix"].iloc[0]
+    subcluster = str(segment).split("::")[-1]
     mask = (df["marque"] == marque) & (df["gamme"] == gamme) & (df["cluster"] == subcluster)
     return df[mask].sort_values("semaine").reset_index(drop=True)
 
@@ -482,7 +492,7 @@ def _weekly_comparison_grid(weekly: pd.DataFrame) -> dag.AgGrid:
         rowData=display.to_dict("records"),
         columnDefs=cols,
         defaultColDef={"sortable": True, "resizable": True},
-        style={"height": f"{min(360, 90 + 32 * len(display))}px"}, columnSize="sizeToFit",
+        style={"height": f"{min(360, 90 + 32 * len(display))}px"}, columnSize="responsiveSizeToFit",
         dashGridOptions={"theme": "legacy"},
     )
 
@@ -503,7 +513,7 @@ def _products_grid(products: pd.DataFrame) -> dag.AgGrid:
         rowData=display.to_dict("records"),
         columnDefs=base_cols + feature_cols,
         defaultColDef={"sortable": True, "resizable": True, "filter": True},
-        style={"height": "420px"}, columnSize="sizeToFit",
+        style={"height": "420px"}, columnSize="responsiveSizeToFit",
         dashGridOptions={"theme": "legacy"},
     )
 
@@ -544,7 +554,7 @@ def _cluster_overview_grid(rows: list) -> dag.AgGrid:
             {"field": "statut_random_forest", "headerName": "Random Forest", "flex": 1, "cellClassRules": status_rules},
         ],
         defaultColDef={"sortable": True, "resizable": True, "filter": True},
-        style={"height": f"{min(400, 90 + 32 * len(rows))}px"}, columnSize="sizeToFit",
+        style={"height": f"{min(400, 90 + 32 * len(rows))}px"}, columnSize="responsiveSizeToFit",
         dashGridOptions={"theme": "legacy"},
     )
 
@@ -769,7 +779,7 @@ def render_models(category):
                 {"field": "coefficient", "headerName": "Coefficient", "type": "rightAligned", "flex": 1},
             ],
             defaultColDef={"sortable": True, "resizable": True},
-            style={"height": "320px"}, columnSize="sizeToFit",
+            style={"height": "320px"}, columnSize="responsiveSizeToFit",
             dashGridOptions={"theme": "legacy"},
         ),
     ])
@@ -840,7 +850,7 @@ def render_models(category):
                        [{"field": c, "headerName": c.replace("_", " "), "type": "rightAligned", "flex": 1}
                         for c in n1_profile.columns if c not in ("cluster_direct", "cluster_name", "n", "prix_median")],
             defaultColDef={"sortable": True, "resizable": True},
-            style={"height": "260px"}, columnSize="sizeToFit",
+            style={"height": "260px"}, columnSize="responsiveSizeToFit",
             dashGridOptions={"theme": "legacy"},
         ),
         section_header("Segmentation marque × gamme (N2) — unités", order=5,
@@ -868,7 +878,7 @@ def render_models(category):
                 },
             ],
             defaultColDef={"sortable": True, "resizable": True, "filter": True},
-            style={"height": "360px"}, columnSize="sizeToFit",
+            style={"height": "360px"}, columnSize="responsiveSizeToFit",
             dashGridOptions={"theme": "legacy"},
         ),
     ])

@@ -23,10 +23,22 @@ ROLE :
          l'en-tete).
 
     Tous les liens pointent vers des routes Flask directes (app.py,
-    section "PAGE TELECHARGEMENTS") -- de simples <a href> avec l'attribut
-    "download", jamais un callback Dash : un telechargement de fichier n'a
-    besoin d'aucun etat cote client, un lien direct est plus simple et
-    plus robuste qu'un pattern-matching callback pour ce cas d'usage.
+    section "PAGE TELECHARGEMENTS") -- de simples <a href>, jamais un
+    callback Dash : un telechargement de fichier n'a besoin d'aucun etat
+    cote client, un lien direct est plus simple et plus robuste qu'un
+    pattern-matching callback pour ce cas d'usage.
+
+    target="_blank" est OBLIGATOIRE sur ces liens (bug corrige le
+    2026-08-01 -- observe en production : la boite de dialogue "Enregistrer
+    sous" reapparaissait a chaque ouverture du dashboard). Sans lui, le
+    clic navigue l'ONGLET COURANT vers l'URL du fichier (Content-
+    Disposition: attachment empeche juste l'affichage, la barre d'adresse
+    change quand meme) -- si le navigateur restaure les onglets au
+    demarrage (reglage courant), il re-navigue vers cette URL de
+    telechargement a chaque ouverture, redeclenchant la boite de dialogue
+    en boucle. target="_blank" ouvre un onglet ephemere pour le
+    telechargement sans jamais toucher a l'historique de l'onglet
+    dashboard.
 =============================================================================
 """
 
@@ -94,6 +106,7 @@ def _download_row(icon: str, title: str, description: str, href: str, available:
                     size="xs", variant="light", disabled=not available,
                 ),
                 href=href if available else None,
+                target="_blank",
             ),
         ],
         justify="space-between", wrap="nowrap", py="xs",
@@ -109,7 +122,7 @@ def _notebooks_section():
         size_note = f" ({_format_size(pdf_path.stat().st_size)})" if available else ""
         rows.append(_download_row(
             "tabler:file-type-pdf", title, description + size_note,
-            f"/download/notebook-pdf/{slug}.pdf", available,
+            f"/files/notebook-pdf/{slug}.pdf", available,
         ))
     if not any((NOTEBOOKS_PDF_DIR / f"{slug}.pdf").exists() for slug, _, _ in _NOTEBOOKS):
         rows.insert(0, dmc.Alert(
@@ -156,7 +169,7 @@ def layout():
                 size="xs", c="dimmed", mb="xs",
             ),
             _per_category_section(
-                "tabler:chart-dots-3", "Estimations", "/download/estimations-cluster",
+                "tabler:chart-dots-3", "Estimations", "/files/estimations-cluster",
                 reports_available,
                 "Rapports indisponibles — exécuter `python -m src.models.weekly_report`.",
             ),
@@ -166,7 +179,7 @@ def layout():
                 size="xs", c="dimmed", mb="xs",
             ),
             _per_category_section(
-                "tabler:table", "Produits", "/download/produits",
+                "tabler:table", "Produits", "/files/produits",
                 models_available,
                 "Modèles indisponibles — exécuter `python -m src.models.save_artifacts`.",
             ),
