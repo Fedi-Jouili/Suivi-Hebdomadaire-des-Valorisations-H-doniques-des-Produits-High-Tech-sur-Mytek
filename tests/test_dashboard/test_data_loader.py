@@ -32,6 +32,9 @@ from src.dashboard.data_loader import (
     last_n_weeks,
     load_clean_category_recent,
     load_clean_category_week,
+    load_cluster_models_summary,
+    load_cluster_products,
+    load_cluster_segment_detail,
     load_coefficients,
     load_metrics,
     load_model_artifact,
@@ -197,3 +200,76 @@ class TestPooledCategoryFull:
                 assert "semaine" in df.columns
                 return
         pytest.skip("aucune categorie avec donnees")
+
+
+class TestClusterSegmentDetail:
+    """load_cluster_segment_detail / load_cluster_products -- ajoutes le
+    2026-08-01ter pour la page Modeles enrichie (formule par cluster +
+    produits du cluster par semaine, cf. demande utilisateur)."""
+
+    @staticmethod
+    def _a_segment(subdir: str):
+        """Un (categorie, segment) reel AVEC AU MOINS UNE famille ajustee
+        (persist_segment_models n'ecrit un dossier/feature_schema.json que
+        pour ces segments-la, cf. save_artifacts.py -- un segment ou les 3
+        familles sont ecartees (effectif insuffisant partout) n'existe
+        simplement pas sous disque, jamais une erreur mais pas un candidat
+        valide pour ce test)."""
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            summary = load_cluster_models_summary(category, subdir)
+            if summary.empty:
+                continue
+            ajustes = summary[summary["ajuste"] == True]  # noqa: E712
+            if ajustes.empty:
+                continue
+            return category, str(ajustes["segment"].iloc[0])
+        return None, None
+
+    @requires_artifacts
+    @pytest.mark.parametrize("subdir", ["clusters_n1", "clusters_n2"])
+    def test_segment_detail_schema(self, subdir):
+        category, segment = self._a_segment(subdir)
+        if category is None:
+            pytest.skip(f"aucun cluster {subdir} disponible")
+        detail = load_cluster_segment_detail(category, subdir, segment)
+        assert "schema" in detail and "coefficients" in detail
+        for key in ("continuous_features", "categorical_features", "design_matrix_columns",
+                    "n_train", "n_test", "familles_ajustees", "retenu_pour_prediction"):
+            assert key in detail["schema"]
+        for famille, coefs in detail["coefficients"].items():
+            assert famille in ("hedonic_ols", "ridge", "random_forest")
+            assert not coefs.empty
+
+    @requires_artifacts
+    def test_segment_detail_vide_si_segment_absent(self):
+        category = next((c for c in CATEGORY_ORDER if artifacts_available(c)), None)
+        if category is None:
+            pytest.skip("aucun artefact disponible")
+        assert load_cluster_segment_detail(category, "clusters_n1", "segment_qui_nexiste_pas") == {}
+
+    @requires_artifacts
+    @pytest.mark.parametrize("subdir", ["clusters_n1", "clusters_n2"])
+    def test_cluster_products_non_vide_et_coherent(self, subdir):
+        """Chaque produit retourne doit reellement appartenir au cluster
+        demande -- jamais un melange avec d'autres clusters (cf. bug de
+        pooling multi-semaines deja corrige pour N2, meme classe de risque)."""
+        category, segment = self._a_segment(subdir)
+        if category is None:
+            pytest.skip(f"aucun cluster {subdir} disponible")
+        products = load_cluster_products(category, subdir, segment)
+        assert not products.empty
+        key_col = "cluster_direct" if subdir == "clusters_n1" else "cluster_id"
+        assert (products[key_col].astype(str) == segment).all()
+        for col in ("nom", "prix_tnd", "marque", "semaine"):
+            assert col in products.columns
+
+    @requires_artifacts
+    def test_cluster_products_vide_si_colonne_absente(self):
+        """subdir invalide (ni clusters_n1 ni clusters_n2) -- jamais une
+        KeyError, DataFrame vide comme toute autre absence de donnees."""
+        category = next((c for c in CATEGORY_ORDER if artifacts_available(c)), None)
+        if category is None:
+            pytest.skip("aucun artefact disponible")
+        assert load_cluster_products(category, "subdir_invalide", "x").empty

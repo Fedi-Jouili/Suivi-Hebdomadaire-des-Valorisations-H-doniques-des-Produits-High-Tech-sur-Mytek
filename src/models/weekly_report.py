@@ -108,6 +108,15 @@ ROLE :
        source_ridge/_hedonic/_rf ("n2"/"n1"/"categorie") tracent EXPLICITEMENT
        quel modele a produit quelle estimation, jamais ambigu.
 
+    6bis. n1_cluster_estimations_hebdo.csv (ajoute le 2026-08-01ter) :
+       equivalent du point 6 pour le CLUSTER N1 (technique pur, traverse
+       les marques) -- colonnes categorie, cluster, semaine,
+       moyenne_geometrique, moyenne_estimee_ridge/_hedonic/_rf,
+       erreur_*_pct, n_produits, source_ridge/_hedonic/_rf. Pas de
+       marque/gamme (non pertinent pour N1). Sert la page "Modeles &
+       clustering" du dashboard (detail par cluster, prix reel vs estime
+       semaine par semaine).
+
     7. transitions_cluster_hebdo.csv : pour chaque cluster et chaque paire
        de semaines consecutives, classe la transition dans une grille 3x3
        (direction du prix REEL x direction du prix ESTIME/implicite) --
@@ -471,6 +480,71 @@ def weekly_model_estimates(category: str) -> pd.DataFrame:
                 "mape_pct": round(mape, 2),
             })
     return pd.DataFrame(rows)
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 3ter. PRIX ESTIME PAR MODELE, AU NIVEAU DU CLUSTER N1 (technique pur) --
+#    meme principe que 3bis (N2) mais sans marque/gamme (cluster_direct
+#    traverse les marques par construction) -- decision utilisateur du
+#    2026-08-01ter : la page Modeles & clustering du dashboard doit pouvoir
+#    montrer, PAR CLUSTER N1 aussi, le prix reel vs estime semaine par
+#    semaine (jusqu'ici disponible seulement pour N2 via
+#    marque_gamme_estimations_hebdo.csv).
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _n1_cluster_product_level(category: str) -> pd.DataFrame:
+    """Equivalent N1 de _marque_gamme_product_level -- une ligne par
+    PRODUIT (toutes les lignes ont un cluster_direct, cf. couverture 100%
+    structurelle de N1, jamais de filtrage ici contrairement a N2)."""
+    df = pd.read_csv(MODELS_DIR / category / "pooled_labeled.csv")
+    price_true, price_pred, source = _predict_all_models_cluster_aware(category, df)
+
+    work = df[["cluster_direct", "semaine"]].copy().rename(columns={"cluster_direct": "cluster"})
+    work["prix_reel"] = price_true
+    for model_name, arr in price_pred.items():
+        work[model_name] = arr
+        work[f"{model_name}_source"] = source[model_name]
+    work["semaine"] = work["semaine"].astype(int)
+    return work
+
+
+def n1_cluster_model_estimates(category: str, product_level: pd.DataFrame | None = None) -> pd.DataFrame:
+    """Equivalent N1 de marque_gamme_model_estimates -- colonnes categorie,
+    cluster, semaine, moyenne_geometrique, moyenne_estimee_ridge/_hedonic/
+    _rf, erreur_*_pct, n_produits, source_ridge/_hedonic/_rf. Pas de
+    marque/gamme (non pertinent, cf. note de section)."""
+    work = product_level if product_level is not None else _n1_cluster_product_level(category)
+
+    grouped = work.groupby(["cluster", "semaine"]).agg(
+        n_produits=("prix_reel", "size"),
+        moyenne_geometrique=("prix_reel", _geo_mean),
+        moyenne_estimee_ridge=("ridge", _geo_mean),
+        moyenne_estimee_hedonic=("hedonic_ols", _geo_mean),
+        moyenne_estimee_rf=("random_forest", _geo_mean),
+        source_ridge=("ridge_source", "first"),
+        source_hedonic=("hedonic_ols_source", "first"),
+        source_rf=("random_forest_source", "first"),
+    ).reset_index()
+
+    grouped.insert(0, "categorie", category)
+    for c in ["moyenne_geometrique", "moyenne_estimee_ridge", "moyenne_estimee_hedonic", "moyenne_estimee_rf"]:
+        grouped[c] = grouped[c].round(2)
+    grouped["semaine"] = grouped["semaine"].astype(int)
+
+    for model_col, erreur_col in [
+        ("moyenne_estimee_ridge", "erreur_ridge_pct"),
+        ("moyenne_estimee_hedonic", "erreur_hedonic_pct"),
+        ("moyenne_estimee_rf", "erreur_rf_pct"),
+    ]:
+        grouped[erreur_col] = (
+            (grouped[model_col] - grouped["moyenne_geometrique"]) / grouped["moyenne_geometrique"] * 100
+        ).round(2)
+
+    col_order = ["categorie", "cluster", "semaine",
+                 "moyenne_geometrique", "moyenne_estimee_ridge", "moyenne_estimee_hedonic", "moyenne_estimee_rf",
+                 "erreur_ridge_pct", "erreur_hedonic_pct", "erreur_rf_pct", "n_produits",
+                 "source_ridge", "source_hedonic", "source_rf"]
+    return grouped[col_order].sort_values(["cluster", "semaine"]).reset_index(drop=True)
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -1138,6 +1212,7 @@ def main():
 
     coverage_frames, cluster_frames, estimates_frames, composition_frames, index_frames = [], [], [], [], []
     mg_estimates_frames, transitions_frames, stability_frames, k_justification_frames = [], [], [], []
+    n1_estimates_frames = []
 
     for category in categories:
         logger.info(f"{'=' * 70}\nCategorie : {category}")
@@ -1148,6 +1223,8 @@ def main():
         idx = hedonic_price_index(category)
         if idx is not None:
             index_frames.append(idx)
+
+        n1_estimates_frames.append(n1_cluster_model_estimates(category))
 
         product_level = _marque_gamme_product_level(category)
         mg_estimates = marque_gamme_model_estimates(category, product_level=product_level)
@@ -1167,6 +1244,8 @@ def main():
         REPORTS_DIR / "estimations_prix_hebdo.csv", index=False, encoding="utf-8-sig")
     pd.concat(composition_frames, ignore_index=True).to_csv(
         REPORTS_DIR / "composition_catalogue_hebdo.csv", index=False, encoding="utf-8-sig")
+    pd.concat(n1_estimates_frames, ignore_index=True).to_csv(
+        REPORTS_DIR / "n1_cluster_estimations_hebdo.csv", index=False, encoding="utf-8-sig")
     pd.concat(mg_estimates_frames, ignore_index=True).to_csv(
         REPORTS_DIR / "marque_gamme_estimations_hebdo.csv", index=False, encoding="utf-8-sig")
     pd.concat(transitions_frames, ignore_index=True).to_csv(

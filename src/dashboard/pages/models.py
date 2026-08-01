@@ -21,11 +21,15 @@ from src.dashboard.data_loader import (
     available_weeks,
     category_label,
     load_cluster_models_summary,
+    load_cluster_products,
+    load_cluster_segment_detail,
     load_cluster_stability_n2,
     load_coefficients,
     load_k_selection_justification,
+    load_marque_gamme_estimates,
     load_metrics,
     load_model_agreement,
+    load_n1_cluster_estimates,
     load_pooled_labeled,
     load_rf_importances,
     load_rf_permutation_importances,
@@ -264,6 +268,336 @@ def _cluster_models_summary_grid(summary: pd.DataFrame) -> dag.AgGrid | dmc.Aler
         defaultColDef={"sortable": True, "resizable": True, "filter": True},
         style={"height": "420px"}, columnSize="sizeToFit",
         dashGridOptions={"theme": "legacy"},
+    )
+
+
+_FAMILLE_LABELS = {"hedonic_ols": "Hedonic OLS", "ridge": "Ridge", "random_forest": "Random Forest"}
+_STATUT_COLORS = {"Retenu": "green", "Ajusté mais pas meilleur": "orange", "Écarté": "red", "n/d": "gray"}
+
+
+def _format_linear_equation(lhs: str, intercept: float | None, terms: list) -> str:
+    """Equation log-lineaire lisible : signe + coefficient + variable, triee
+    par |coefficient| decroissant (deja fait par l'appelant). Sans
+    intercept (cas Ridge, pas d'ordonnee a l'origine apres standardisation),
+    le premier terme garde son propre signe au lieu d'un "+" de tete
+    artificiel."""
+    pieces = [f"{intercept:.3f}"] if intercept is not None else []
+    for name, coef in terms:
+        op = "+" if coef >= 0 else "−"
+        pieces.append(f"{op} {abs(coef):.3f}·{name}")
+    if not pieces:
+        return f"{lhs} = —"
+    expr = " ".join(pieces)
+    if intercept is None and expr.startswith("+ "):
+        expr = expr[2:]
+    return f"{lhs} = {expr}"
+
+
+def _ols_equation_text(coefs: pd.DataFrame, max_terms: int = 8) -> tuple:
+    body = coefs[coefs["feature"] != "const"].copy()
+    const_rows = coefs.loc[coefs["feature"] == "const", "coefficient"]
+    intercept = float(const_rows.iloc[0]) if not const_rows.empty else None
+    body = body.reindex(body["coefficient"].abs().sort_values(ascending=False).index)
+    shown = body.head(max_terms)
+    n_hidden = max(len(body) - max_terms, 0)
+    equation = _format_linear_equation("log(prix)", intercept, list(zip(shown["feature"], shown["coefficient"])))
+    return equation, n_hidden
+
+
+def _ridge_equation_text(coefs: pd.DataFrame, max_terms: int = 8) -> tuple:
+    body = coefs.reindex(coefs["coefficient"].abs().sort_values(ascending=False).index)
+    shown = body.head(max_terms)
+    n_hidden = max(len(body) - max_terms, 0)
+    equation = _format_linear_equation(
+        "log(prix) (coefficients ré-exprimés, sans ordonnée à l'origine)", None,
+        list(zip(shown["feature"], shown["coefficient"])),
+    )
+    return equation, n_hidden
+
+
+def _rf_importance_text(imp: pd.DataFrame, max_terms: int = 5) -> str:
+    top = imp.head(max_terms)
+    parts = [f"{row.feature} ({row.importance * 100:.1f} %)" for row in top.itertuples()]
+    return (
+        "Pas de formule fermée (ensemble d'arbres) — variables les plus influentes (importance MDI) : "
+        + ", ".join(parts) + "."
+    )
+
+
+def _format_ols_table(coefs: pd.DataFrame) -> list:
+    df = coefs.copy()
+    df["coefficient"] = df["coefficient"].round(4)
+    df["p_value"] = df["p_value"].map(lambda v: "<0.001" if pd.notna(v) and v < 0.001 else (f"{v:.3f}" if pd.notna(v) else "—"))
+    df["pct_effect"] = df["pct_effect"].map(lambda v: f"{v:.2f}" if pd.notna(v) else "—")
+    return df[["feature", "coefficient", "p_value", "pct_effect"]].to_dict("records")
+
+
+def _segment_status_info(summary: pd.DataFrame, segment: str, famille: str) -> dict:
+    """Statut + diagnostics (R² cluster vs R² catégorie, raison si écarté)
+    d'UNE famille pour UN segment -- lu depuis <subdir>_summary.csv (cf.
+    save_artifacts.fit_models_per_segment), jamais recalculé ici."""
+    row = summary[(summary["segment"].astype(str) == str(segment)) & (summary["famille"] == famille)]
+    if row.empty:
+        return {"statut": "n/d", "raison": None, "r2_test": None, "r2_test_categorie": None}
+    r = row.iloc[0]
+    if bool(r["retenu_pour_prediction"]):
+        statut = "Retenu"
+    elif bool(r["ajuste"]):
+        statut = "Ajusté mais pas meilleur"
+    else:
+        statut = "Écarté"
+    raison = r.get("raison_rejet")
+    r2_test = r.get("r2_test")
+    r2_test_categorie = r.get("r2_test_categorie")
+    return {
+        "statut": statut,
+        "raison": raison if pd.notna(raison) else None,
+        "r2_test": float(r2_test) if pd.notna(r2_test) else None,
+        "r2_test_categorie": float(r2_test_categorie) if pd.notna(r2_test_categorie) else None,
+    }
+
+
+def _famille_formula_card(famille: str, status: dict, coefs: pd.DataFrame | None) -> dmc.Paper:
+    """Carte "formule" d'UNE famille de modele pour UN cluster -- equation
+    lisible (OLS/Ridge) ou resume d'importance (RF, pas de forme close),
+    plus le tableau COMPLET des coefficients/importances (jamais tronque
+    silencieusement, cf. `n_hidden` dans l'equation) et le R² qui justifie
+    le statut retenu/ecarte (transparence academique demandee explicitement
+    par l'utilisateur -- montrer le travail, pas seulement le resultat)."""
+    label = _FAMILLE_LABELS[famille]
+    badge = dmc.Badge(status["statut"], color=_STATUT_COLORS.get(status["statut"], "gray"), variant="light", size="sm")
+
+    extra = []
+    if status["r2_test"] is not None:
+        r2_text = f"R² test (ce cluster) = {status['r2_test']:.3f}"
+        if status["r2_test_categorie"] is not None:
+            r2_text += f"  vs  R² test (modèle catégorie) = {status['r2_test_categorie']:.3f}"
+        extra.append(dmc.Text(r2_text, size="xs", c="dimmed"))
+    if status["raison"]:
+        extra.append(dmc.Text(f"Non ajusté : {status['raison']}", size="xs", c="orange"))
+
+    if coefs is None or coefs.empty:
+        return dmc.Paper(
+            dmc.Stack([
+                dmc.Group([dmc.Text(label, fw=600), badge], justify="space-between"),
+                dmc.Text("Modèle non ajusté sur ce cluster (effectif insuffisant pour cette famille).",
+                          size="sm", c="dimmed"),
+                *extra,
+            ], gap=4),
+            p="sm", withBorder=True,
+        )
+
+    if famille == "hedonic_ols":
+        equation, n_hidden = _ols_equation_text(coefs)
+        table_rows = _format_ols_table(coefs)
+        table_cols = [
+            {"field": "feature", "headerName": "Variable", "flex": 2},
+            {"field": "coefficient", "headerName": "Coefficient (log)", "type": "rightAligned", "flex": 1},
+            {"field": "p_value", "headerName": "p-value", "type": "rightAligned", "flex": 1},
+            {"field": "pct_effect", "headerName": "Effet (%)", "type": "rightAligned", "flex": 1},
+        ]
+    elif famille == "ridge":
+        equation, n_hidden = _ridge_equation_text(coefs)
+        table_rows = coefs.round(4).to_dict("records")
+        table_cols = [
+            {"field": "feature", "headerName": "Variable", "flex": 2},
+            {"field": "coefficient", "headerName": "Coefficient (log)", "type": "rightAligned", "flex": 1},
+        ]
+    else:
+        equation = _rf_importance_text(coefs)
+        n_hidden = 0
+        table_rows = coefs.round(4).to_dict("records")
+        table_cols = [
+            {"field": "feature", "headerName": "Variable", "flex": 2},
+            {"field": "importance", "headerName": "Importance (MDI)", "type": "rightAligned", "flex": 1},
+        ]
+
+    if n_hidden:
+        extra.insert(0, dmc.Text(f"+ {n_hidden} autre(s) terme(s) dans le tableau ci-dessous.", size="xs", c="dimmed"))
+
+    return dmc.Paper(
+        dmc.Stack([
+            dmc.Group([dmc.Text(label, fw=600), badge], justify="space-between"),
+            dmc.Code(equation, block=True),
+            *extra,
+            dag.AgGrid(
+                className="ag-theme-quartz-dark",
+                rowData=table_rows,
+                columnDefs=table_cols,
+                defaultColDef={"sortable": True, "resizable": True},
+                style={"height": f"{min(260, 50 + 28 * len(table_rows))}px"}, columnSize="sizeToFit",
+                dashGridOptions={"theme": "legacy"},
+            ),
+        ], gap=6),
+        p="sm", withBorder=True,
+    )
+
+
+def _cluster_weekly_comparison(category: str, subdir: str, segment: str) -> pd.DataFrame:
+    """Prix reel (moyenne geometrique) vs estime par semaine, pour UN
+    cluster -- cf. n1_cluster_estimations_hebdo.csv (N1) / marque_gamme_
+    estimations_hebdo.csv (N2, ou "cluster" n'est que le sous-cluster "c0"/
+    "c1" -- la cle complete marque::gamme::sous-cluster doit etre re-
+    decomposee, cf. save_artifacts._sanitize_segment_name pour le format
+    d'origine du segment)."""
+    if subdir == "clusters_n1":
+        df = load_n1_cluster_estimates(category)
+        if df.empty:
+            return df
+        try:
+            seg_val = int(segment)
+        except (TypeError, ValueError):
+            return pd.DataFrame()
+        return df[df["cluster"] == seg_val].sort_values("semaine").reset_index(drop=True)
+
+    df = load_marque_gamme_estimates(category)
+    if df.empty:
+        return df
+    parts = str(segment).split("::")
+    if len(parts) != 3:
+        return pd.DataFrame()
+    marque, gamme, subcluster = parts
+    mask = (df["marque"] == marque) & (df["gamme"] == gamme) & (df["cluster"] == subcluster)
+    return df[mask].sort_values("semaine").reset_index(drop=True)
+
+
+def _weekly_comparison_grid(weekly: pd.DataFrame) -> dag.AgGrid:
+    display = weekly.copy()
+    for c in ("moyenne_geometrique", "moyenne_estimee_ridge", "moyenne_estimee_hedonic", "moyenne_estimee_rf"):
+        if c in display.columns:
+            display[c] = display[c].round(2)
+    cols = [
+        {"field": "semaine", "headerName": "Semaine", "flex": 1},
+        {"field": "n_produits", "headerName": "n produits", "type": "rightAligned", "flex": 1},
+        {"field": "moyenne_geometrique", "headerName": "Prix réel (moy. géo., TND)", "type": "rightAligned", "flex": 2},
+        {"field": "moyenne_estimee_ridge", "headerName": "Estimé Ridge (TND)", "type": "rightAligned", "flex": 2},
+        {"field": "moyenne_estimee_hedonic", "headerName": "Estimé Hedonic (TND)", "type": "rightAligned", "flex": 2},
+        {"field": "moyenne_estimee_rf", "headerName": "Estimé RF (TND)", "type": "rightAligned", "flex": 2},
+        {"field": "erreur_ridge_pct", "headerName": "Écart Ridge (%)", "type": "rightAligned", "flex": 1},
+        {"field": "erreur_hedonic_pct", "headerName": "Écart Hedonic (%)", "type": "rightAligned", "flex": 1},
+        {"field": "erreur_rf_pct", "headerName": "Écart RF (%)", "type": "rightAligned", "flex": 1},
+    ]
+    return dag.AgGrid(
+        className="ag-theme-quartz-dark",
+        rowData=display.to_dict("records"),
+        columnDefs=cols,
+        defaultColDef={"sortable": True, "resizable": True},
+        style={"height": f"{min(360, 90 + 32 * len(display))}px"}, columnSize="sizeToFit",
+        dashGridOptions={"theme": "legacy"},
+    )
+
+
+def _products_grid(products: pd.DataFrame) -> dag.AgGrid:
+    display = products.sort_values(["semaine", "prix_tnd"], ascending=[False, True]).round(2)
+    base_cols = [
+        {"field": "semaine", "headerName": "Semaine", "flex": 1},
+        {"field": "nom", "headerName": "Produit", "flex": 3},
+        {"field": "marque", "headerName": "Marque", "flex": 1},
+        {"field": "prix_tnd", "headerName": "Prix (TND)", "type": "rightAligned", "flex": 1},
+    ]
+    excluded = {"semaine", "nom", "marque", "prix_tnd", "url", "gamme_prix", "cluster_id", "cluster_direct"}
+    feature_cols = [{"field": c, "headerName": c.replace("_", " "), "flex": 1}
+                     for c in display.columns if c not in excluded]
+    return dag.AgGrid(
+        className="ag-theme-quartz-dark",
+        rowData=display.to_dict("records"),
+        columnDefs=base_cols + feature_cols,
+        defaultColDef={"sortable": True, "resizable": True, "filter": True},
+        style={"height": "420px"}, columnSize="sizeToFit",
+        dashGridOptions={"theme": "legacy"},
+    )
+
+
+def _cluster_overview_rows(category: str, subdir: str, summary: pd.DataFrame) -> list:
+    """Une ligne par CLUSTER (pas par famille, contrairement a
+    _cluster_models_summary_grid) -- vue compacte utilisee a la fois pour
+    la grille d'ensemble et les options du selecteur de detail."""
+    if summary.empty:
+        return []
+    rows = []
+    for segment, grp in summary.groupby("segment", sort=False):
+        display = n1_cluster_name(category, segment) if subdir == "clusters_n1" else str(segment).replace("::", " → ")
+        row = {
+            "segment": str(segment),
+            "cluster_display": display,
+            "n_lignes": int(grp["n_lignes"].iloc[0]),
+            "n_produits_distincts": int(grp["n_produits_distincts"].iloc[0]) if "n_produits_distincts" in grp else None,
+        }
+        for famille in ("hedonic_ols", "ridge", "random_forest"):
+            row[f"statut_{famille}"] = _segment_status_info(summary, segment, famille)["statut"]
+        rows.append(row)
+    rows.sort(key=lambda r: r["n_lignes"], reverse=True)
+    return rows
+
+
+def _cluster_overview_grid(rows: list) -> dag.AgGrid:
+    status_rules = {"ag-status-positive": "value == 'Retenu'", "ag-status-negative": "value == 'Écarté'"}
+    return dag.AgGrid(
+        className="ag-theme-quartz-dark",
+        rowData=rows,
+        columnDefs=[
+            {"field": "cluster_display", "headerName": "Cluster", "flex": 2},
+            {"field": "n_lignes", "headerName": "n (train, poolé)", "type": "rightAligned", "flex": 1},
+            {"field": "n_produits_distincts", "headerName": "n produits distincts", "type": "rightAligned", "flex": 1},
+            {"field": "statut_hedonic_ols", "headerName": "Hedonic OLS", "flex": 1, "cellClassRules": status_rules},
+            {"field": "statut_ridge", "headerName": "Ridge", "flex": 1, "cellClassRules": status_rules},
+            {"field": "statut_random_forest", "headerName": "Random Forest", "flex": 1, "cellClassRules": status_rules},
+        ],
+        defaultColDef={"sortable": True, "resizable": True, "filter": True},
+        style={"height": f"{min(400, 90 + 32 * len(rows))}px"}, columnSize="sizeToFit",
+        dashGridOptions={"theme": "legacy"},
+    )
+
+
+def _cluster_detail_panel(category: str, subdir: str, segment: str | None) -> dmc.Accordion | dmc.Alert:
+    """Detail complet d'UN cluster choisi via le selecteur -- 3 sections
+    repliables (boutons AccordionControl, cf. demande explicite d'optimiser
+    l'espace) : formules des 3 familles, prix reel vs estime par semaine,
+    produits du cluster par semaine avec leurs caracteristiques."""
+    if not segment:
+        return dmc.Alert(
+            "Aucun cluster disponible pour cette segmentation -- exécuter "
+            "`python -m src.models.save_artifacts` (version 2026-08-01 ou plus récente).",
+            color="gray", variant="light", icon=DashIconify(icon="tabler:info-circle"),
+        )
+
+    summary = load_cluster_models_summary(category, subdir)
+    detail = load_cluster_segment_detail(category, subdir, segment)
+    coefficients = detail.get("coefficients", {})
+
+    formula_cards = [
+        _famille_formula_card(famille, _segment_status_info(summary, segment, famille), coefficients.get(famille))
+        for famille in ("hedonic_ols", "ridge", "random_forest")
+    ]
+
+    weekly = _cluster_weekly_comparison(category, subdir, segment)
+    weekly_section = _weekly_comparison_grid(weekly) if not weekly.empty else dmc.Alert(
+        "Comparaison hebdomadaire non disponible pour ce cluster.", color="gray", variant="light",
+        icon=DashIconify(icon="tabler:info-circle"),
+    )
+
+    products = load_cluster_products(category, subdir, segment)
+    products_section = _products_grid(products) if not products.empty else dmc.Alert(
+        "Aucun produit trouvé pour ce cluster.", color="gray", variant="light",
+        icon=DashIconify(icon="tabler:info-circle"),
+    )
+
+    return dmc.Accordion(
+        [
+            dmc.AccordionItem([
+                dmc.AccordionControl("Formules des modèles (Hedonic OLS / Ridge / Random Forest)"),
+                dmc.AccordionPanel(dmc.Stack(formula_cards, gap="sm")),
+            ], value="formulas"),
+            dmc.AccordionItem([
+                dmc.AccordionControl("Prix réel (moyenne géométrique) vs estimé, par semaine"),
+                dmc.AccordionPanel(weekly_section),
+            ], value="weekly"),
+            dmc.AccordionItem([
+                dmc.AccordionControl("Produits du cluster, par semaine (prix et caractéristiques)"),
+                dmc.AccordionPanel(products_section),
+            ], value="products"),
+        ],
+        value=["formulas"], multiple=True, variant="separated",
     )
 
 
@@ -547,6 +881,13 @@ def render_models(category):
     )
     n2_segments = int(n2_models_summary["segment"].nunique()) if not n2_models_summary.empty else 0
 
+    n1_rows = _cluster_overview_rows(category, "clusters_n1", n1_models_summary)
+    n2_rows = _cluster_overview_rows(category, "clusters_n2", n2_models_summary)
+    n1_select_data = [{"value": r["segment"], "label": f"{r['cluster_display']} — n={r['n_lignes']} lignes poolées"}
+                       for r in n1_rows]
+    n2_select_data = [{"value": r["segment"], "label": f"{r['cluster_display']} — n={r['n_lignes']} lignes poolées"}
+                       for r in n2_rows]
+
     cluster_models_tab = dmc.Stack([
         dmc.Alert(
             dmc.Text([
@@ -567,11 +908,46 @@ def render_models(category):
             kpi_card("Clusters N2 avec modèle retenu", f"{n2_retenus_count}/{n2_segments}" if n2_segments else "n/d",
                       "tabler:layout-grid", color=color),
         ]),
-        section_header("Clusters N2 (marque × gamme × profil technique)", order=5,
-                        subtitle="Une ligne par (segment, famille) — le modèle catégorie reste utilisé pour toute ligne non « Retenu »."),
-        _cluster_models_summary_grid(n2_models_summary),
-        section_header("Clusters N1 (technique, toute la catégorie)", order=5),
-        _cluster_models_summary_grid(n1_models_summary),
+
+        section_header("Clusters N2 (marque × gamme × profil technique) — vue d'ensemble", order=5,
+                        subtitle="Une ligne par cluster. Choisir un cluster ci-dessous pour son détail complet (formules, prix par semaine, produits)."),
+        _cluster_overview_grid(n2_rows) if n2_rows else dmc.Alert(
+            "Modèles par cluster N2 non disponibles pour cette catégorie -- exécuter "
+            "`python -m src.models.save_artifacts` (version 2026-08-01 ou plus récente).",
+            color="gray", variant="light", icon=DashIconify(icon="tabler:info-circle"),
+        ),
+        dmc.Select(
+            id="models-n2-cluster-select", label="Cluster N2 à examiner en détail",
+            data=n2_select_data, value=n2_select_data[0]["value"] if n2_select_data else None,
+            disabled=not n2_select_data, mt="sm", mb="sm", maw=520, clearable=False,
+        ),
+        html.Div(id="models-n2-cluster-detail"),
+        dmc.Accordion([
+            dmc.AccordionItem([
+                dmc.AccordionControl("Voir le tableau d'audit complet N2 (tous les clusters × familles)"),
+                dmc.AccordionPanel(_cluster_models_summary_grid(n2_models_summary)),
+            ], value="n2-audit"),
+        ], mt="sm", mb="md"),
+
+        section_header("Clusters N1 (technique, toute la catégorie) — vue d'ensemble", order=5,
+                        subtitle="Une ligne par cluster. Choisir un cluster ci-dessous pour son détail complet (formules, prix par semaine, produits)."),
+        _cluster_overview_grid(n1_rows) if n1_rows else dmc.Alert(
+            "Modèles par cluster N1 non disponibles pour cette catégorie -- exécuter "
+            "`python -m src.models.save_artifacts` (version 2026-08-01 ou plus récente).",
+            color="gray", variant="light", icon=DashIconify(icon="tabler:info-circle"),
+        ),
+        dmc.Select(
+            id="models-n1-cluster-select", label="Cluster N1 à examiner en détail",
+            data=n1_select_data, value=n1_select_data[0]["value"] if n1_select_data else None,
+            disabled=not n1_select_data, mt="sm", mb="sm", maw=520, clearable=False,
+        ),
+        html.Div(id="models-n1-cluster-detail"),
+        dmc.Accordion([
+            dmc.AccordionItem([
+                dmc.AccordionControl("Voir le tableau d'audit complet N1 (tous les clusters × familles)"),
+                dmc.AccordionPanel(_cluster_models_summary_grid(n1_models_summary)),
+            ], value="n1-audit"),
+        ], mt="sm"),
     ])
 
     content = dmc.Stack([
@@ -593,3 +969,29 @@ def render_models(category):
         ),
     ])
     return content, False
+
+
+@callback(
+    Output("models-n1-cluster-detail", "children"),
+    Input("models-category", "value"),
+    Input("models-n1-cluster-select", "value"),
+)
+def _render_n1_cluster_detail(category, segment):
+    """Callback chaîné (cf. render_form/on_predict de prediction.py pour le
+    même patron) : le Select N1 est recréé par render_models a chaque
+    changement de catégorie, ce qui redéclenche naturellement ce callback
+    (suppress_callback_exceptions=True, composants insérés dynamiquement)."""
+    if not artifacts_available(category):
+        return dash.no_update
+    return _cluster_detail_panel(category, "clusters_n1", segment)
+
+
+@callback(
+    Output("models-n2-cluster-detail", "children"),
+    Input("models-category", "value"),
+    Input("models-n2-cluster-select", "value"),
+)
+def _render_n2_cluster_detail(category, segment):
+    if not artifacts_available(category):
+        return dash.no_update
+    return _cluster_detail_panel(category, "clusters_n2", segment)

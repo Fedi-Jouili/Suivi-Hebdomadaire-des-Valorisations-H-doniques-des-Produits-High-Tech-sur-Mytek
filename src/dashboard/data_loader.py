@@ -269,6 +269,64 @@ def load_cluster_models_summary(category: str, subdir: str) -> pd.DataFrame:
     return pd.read_csv(path, encoding="utf-8-sig") if path.exists() else pd.DataFrame()
 
 
+_SEGMENT_COEF_FILES = {
+    "hedonic_ols": "coefficients.csv",
+    "ridge": "ridge_coefficients.csv",
+    "random_forest": "rf_importances.csv",
+}
+
+_SEGMENT_KEY_COLUMN = {"clusters_n1": "cluster_direct", "clusters_n2": "cluster_id"}
+
+
+@functools.lru_cache(maxsize=None)
+def load_cluster_segment_detail(category: str, subdir: str, segment: str) -> dict:
+    """Detail complet d'UN segment (N1 ou N2) -- feature_schema.json +
+    coefficients/importances de CHAQUE famille AJUSTEE (ajuste=True dans
+    <subdir>_summary.csv), QUE le modele soit retenu_pour_prediction ou non.
+
+    Different de load_retained_cluster_models : celui-la ne charge que les
+    modeles utilises en production (comparaison gagnee contre la categorie),
+    celui-ci sert a la page Modeles qui doit AFFICHER la formule ajustee
+    meme quand elle a finalement perdu la comparaison (transparence
+    academique demandee par l'utilisateur -- montrer le travail, pas
+    seulement le resultat retenu).
+
+    Returns: {} si le segment n'existe pas sous disque, sinon
+    {"schema": dict (feature_schema.json), "coefficients": {famille:
+    DataFrame}} -- une entree "coefficients" par famille dont le fichier
+    existe reellement (jamais suppose)."""
+    from src.models.save_artifacts import _sanitize_segment_name
+
+    seg_dir = MODELS_DIR / category / subdir / _sanitize_segment_name(segment)
+    schema_path = seg_dir / "feature_schema.json"
+    if not schema_path.exists():
+        return {}
+    with open(schema_path, "r", encoding="utf-8") as fh:
+        schema = json.load(fh)
+
+    coefficients = {}
+    for famille, filename in _SEGMENT_COEF_FILES.items():
+        path = seg_dir / filename
+        if path.exists():
+            coefficients[famille] = pd.read_csv(path)
+    return {"schema": schema, "coefficients": coefficients}
+
+
+@functools.lru_cache(maxsize=None)
+def load_cluster_products(category: str, subdir: str, segment: str) -> pd.DataFrame:
+    """Produits (1 ligne par produit x semaine, cf. pooled_labeled.csv)
+    appartenant a CE segment -- alimente le tableau "produits du cluster,
+    par semaine" de la page Modeles. subdir in {"clusters_n1",
+    "clusters_n2"} determine la colonne de filtrage (cluster_direct vs
+    cluster_id). DataFrame vide (jamais une erreur) si le segment/la
+    colonne n'existe pas."""
+    df = load_pooled_labeled(category)
+    key_col = _SEGMENT_KEY_COLUMN.get(subdir)
+    if key_col is None or key_col not in df.columns:
+        return pd.DataFrame()
+    return df[df[key_col].astype(str) == str(segment)].reset_index(drop=True)
+
+
 @functools.lru_cache(maxsize=None)
 def load_retained_cluster_models(category: str, subdir: str) -> dict:
     """UNIQUEMENT les segments/familles avec retenu_pour_prediction=True
@@ -400,6 +458,25 @@ def load_marque_gamme_estimates(category: str) -> pd.DataFrame:
     CLUSTER (marque x gamme x sous-cluster technique) et par semaine --
     cf. src.models.weekly_report.marque_gamme_model_estimates."""
     df = _load_marque_gamme_estimates_full()
+    return df[df["categorie"] == category].reset_index(drop=True)
+
+
+@functools.lru_cache(maxsize=1)
+def _load_n1_cluster_estimates_full() -> pd.DataFrame:
+    path = REPORTS_DIR / "n1_cluster_estimations_hebdo.csv"
+    if not path.exists():
+        return pd.DataFrame()
+    return pd.read_csv(path)
+
+
+def load_n1_cluster_estimates(category: str) -> pd.DataFrame:
+    """Prix reel (moyenne geometrique) vs estime par Ridge/Hedonic/RF, PAR
+    CLUSTER N1 (technique pur) et par semaine -- cf. src.models.
+    weekly_report.n1_cluster_model_estimates. DataFrame vide (jamais une
+    erreur) si le rapport n'a pas encore ete regenere avec ce correctif."""
+    df = _load_n1_cluster_estimates_full()
+    if df.empty:
+        return df
     return df[df["categorie"] == category].reset_index(drop=True)
 
 
@@ -555,9 +632,10 @@ __all__ = [
     "load_pooled_labeled", "load_brand_plan", "load_unit_summary", "load_n1_feature_schema",
     "load_model_artifact", "get_feature_ranges", "DISCRETE_OPTION_FEATURES", "category_label",
     "cluster_models_available", "load_cluster_models_summary", "load_retained_cluster_models",
+    "load_cluster_segment_detail", "load_cluster_products",
     "load_clustering_coverage", "load_cluster_geometric_means", "load_weekly_estimates",
     "load_hedonic_price_index", "load_catalog_composition",
-    "load_marque_gamme_estimates", "load_cluster_transitions", "weekly_reports_available",
+    "load_marque_gamme_estimates", "load_n1_cluster_estimates", "load_cluster_transitions", "weekly_reports_available",
     "load_cluster_stability_n2", "load_k_selection_justification",
     "CATEGORY_ORDER", "CATEGORY_LABELS",
 ]

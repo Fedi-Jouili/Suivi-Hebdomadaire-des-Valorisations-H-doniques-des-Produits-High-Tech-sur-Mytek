@@ -55,6 +55,7 @@ from src.models.weekly_report import (
     hedonic_price_index,
     k_selection_justification,
     marque_gamme_model_estimates,
+    n1_cluster_model_estimates,
     weekly_model_estimates,
 )
 from src.models.save_artifacts import MODELS_DIR
@@ -354,6 +355,57 @@ class TestMarqueGammeModelEstimates:
                 continue
             df = marque_gamme_model_estimates(category)
             assert df["gamme"].notna().all()
+            assert df["cluster"].notna().all()
+            return
+        pytest.skip("aucun artefact disponible")
+
+
+class TestN1ClusterModelEstimates:
+    """Equivalent N1 de TestMarqueGammeModelEstimates -- meme rapport mais
+    par cluster_direct (technique pur, couverture 100% structurelle) au
+    lieu de marque x gamme x sous-cluster (N2, filtre aux lignes couvertes
+    seulement)."""
+
+    @requires_artifacts
+    def test_schema_exact(self):
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            df = n1_cluster_model_estimates(category)
+            assert list(df.columns) == [
+                "categorie", "cluster", "semaine",
+                "moyenne_geometrique", "moyenne_estimee_ridge", "moyenne_estimee_hedonic",
+                "moyenne_estimee_rf", "erreur_ridge_pct", "erreur_hedonic_pct", "erreur_rf_pct", "n_produits",
+                "source_ridge", "source_hedonic", "source_rf",
+            ]
+            assert (df["categorie"] == category).all()
+            assert (df["moyenne_geometrique"] > 0).all()
+            return
+        pytest.skip("aucun artefact disponible")
+
+    @requires_artifacts
+    def test_couverture_100_pourcent_jamais_filtre(self):
+        """Contrairement a N2 (unites sous l'effectif minimal exclues),
+        TOUT produit a un cluster_direct (K-Means s'applique a la categorie
+        entiere sans notion d'unite trop petite) -- le nombre total de
+        lignes poolees (produit x semaine) du rapport N1 doit egaler celui
+        de pooled_labeled.csv, jamais un sous-ensemble silencieux."""
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            pooled = pd.read_csv(MODELS_DIR / category / "pooled_labeled.csv")
+            df = n1_cluster_model_estimates(category)
+            assert df["n_produits"].sum() == len(pooled)
+            return
+        pytest.skip("aucun artefact disponible")
+
+    @requires_artifacts
+    def test_semaine_et_cluster_jamais_nan(self):
+        for category in CATEGORY_ORDER:
+            if not artifacts_available(category):
+                continue
+            df = n1_cluster_model_estimates(category)
+            assert df["semaine"].notna().all()
             assert df["cluster"].notna().all()
             return
         pytest.skip("aucun artefact disponible")
