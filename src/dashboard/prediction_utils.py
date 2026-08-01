@@ -222,26 +222,37 @@ def predict_price(category: str, model_name: str, values: dict, week=None) -> di
     )
 
 
-def predict_price_cluster_aware(category: str, model_name: str, values: dict, week=None) -> dict:
+def predict_price_cluster_aware(category: str, model_name: str, values: dict, week=None,
+                                 segmentation: str = "n2") -> dict:
     """
-    Meme resultat que predict_price, mais prefere un modele de CLUSTER
-    (N2 marque x gamme x sous-cluster, puis N1 technique) au modele
-    categorie entiere des qu'un est RETENU pour la famille demandee (bat le
-    modele categorie sur son propre test hors-echantillon, cf.
+    Meme resultat que predict_price, mais prefere un modele de CLUSTER au
+    modele categorie entiere des qu'un est RETENU pour la famille demandee
+    (bat le modele categorie sur son propre test hors-echantillon, cf.
     save_artifacts.fit_models_per_segment) -- decision utilisateur du
     2026-08-01 : un seul modele par categorie est trop general.
 
-    Assignation EN 3 TEMPS (etend le "2 temps" documente en tete de module,
-    N2 reste inconnaissable avant un prix provisoire) :
-      1. N1 (cluster_direct) est calculable directement (aucune dependance
-         au prix, cf. assign_n1_cluster) -- si un modele N1 est retenu pour
-         cette famille, il fournit le prix PROVISOIRE ; sinon le modele
-         categorie s'en charge (comme predict_price).
-      2. Ce prix provisoire situe la gamme (assign_n2_segment), donc le
-         segment N2.
-      3. Si un modele N2 est retenu pour cette famille, RE-predit avec lui
-         -- resultat FINAL. Sinon le prix de l'etape 1 (N1 ou categorie)
-         reste le resultat final.
+    `segmentation` ("n1" ou "n2", cf. le selecteur "Type de segmentation" de
+    la page Prediction) determine QUEL NIVEAU produit le resultat FINAL --
+    correctif du 2026-08-01bis : auparavant, la fonction essayait TOUJOURS
+    N2 puis retombait sur N1 puis categorie, quel que soit ce selecteur
+    (qui ne changeait alors que l'affichage du "segment assigne", jamais le
+    PRIX -- deux segmentations differentes affichaient donc silencieusement
+    le meme prix, signale par l'utilisateur comme un bug). Desormais :
+      - segmentation="n1" : resultat FINAL = modele N1 (cluster_direct) si
+        retenu pour cette famille, sinon modele categorie -- le cluster N2
+        n'entre JAMAIS dans le resultat affiche.
+      - segmentation="n2" : resultat FINAL = modele N2 (marque x gamme x
+        sous-cluster) si retenu, sinon modele categorie -- le cluster N1
+        n'est utilise qu'en INTERNE, pour le prix PROVISOIRE necessaire a
+        assigner la gamme (cf. section 2 temps en tete de module), jamais
+        comme resultat final meme s'il a lui-meme un modele retenu : un
+        utilisateur qui choisit explicitement "N2" doit voir soit un
+        resultat N2, soit un repli categorie explicite, jamais un N1
+        substitue silencieusement.
+    Les deux selections peuvent donc legitimement produire des prix
+    DIFFERENTS (chacune son propre niveau de modele) -- ou le MEME prix si
+    aucun des deux clusters n'a de modele retenu (repli categorie commun
+    aux deux, alors visible via price_source="categorie" dans les deux cas).
 
     Returns: meme dict que predict_price, + "price_source"
         ("n2"/"n1"/"categorie") -- jamais ambigu sur quel modele a produit
@@ -254,44 +265,58 @@ def predict_price_cluster_aware(category: str, model_name: str, values: dict, we
     category_continuous = metrics["continuous_features"]
     category_categorical = metrics["categorical_features"]
 
-    # ── 1. Prix provisoire : modele N1 retenu si disponible, sinon categorie ──
-    n1_cluster = assign_n1_cluster(category, values)
-    n1_models = load_retained_cluster_models(category, "clusters_n1")
-    n1_info = n1_models.get(str(n1_cluster), {}).get(famille)
-
-    if n1_info is not None:
-        result = _predict_with_model(
-            n1_info["model"], model_name, n1_info["design_columns"],
-            n1_info["continuous_features"], n1_info["categorical_features"], values, week, category,
-        )
-        result["price_source"] = "n1"
-    else:
+    def _predict_category():
         result = _predict_with_model(
             category_model, model_name, category_design_columns,
             category_continuous, category_categorical, values, week, category,
         )
         result["price_source"] = "categorie"
+        return result
 
-    # ── 2. Segment N2 a partir du prix provisoire ────────────────────────────
-    marque = values.get("marque")
-    n2_assignment = assign_n2_segment(category, marque, result["price"], values) if marque else {"cluster_id": None}
-    cluster_id = n2_assignment.get("cluster_id")
+    # ── Prix PROVISOIRE : modele N1 retenu si disponible, sinon categorie --
+    # sert UNIQUEMENT a situer la gamme (etape suivante) ; devient aussi le
+    # resultat FINAL si segmentation="n1".
+    n1_cluster = assign_n1_cluster(category, values)
+    n1_models = load_retained_cluster_models(category, "clusters_n1")
+    n1_info = n1_models.get(str(n1_cluster), {}).get(famille)
 
-    # ── 3. Re-prediction FINALE si un modele N2 est retenu pour ce cluster ──
-    if cluster_id is not None:
-        n2_models = load_retained_cluster_models(category, "clusters_n2")
-        n2_info = n2_models.get(str(cluster_id), {}).get(famille)
+    if n1_info is not None:
+        provisional = _predict_with_model(
+            n1_info["model"], model_name, n1_info["design_columns"],
+            n1_info["continuous_features"], n1_info["categorical_features"], values, week, category,
+        )
+        provisional["price_source"] = "n1"
+    else:
+        provisional = _predict_category()
+
+    if segmentation == "n1":
+        result = provisional
+    else:
+        # ── Segment N2 a partir du prix provisoire, puis resultat FINAL --
+        marque = values.get("marque")
+        n2_assignment = assign_n2_segment(category, marque, provisional["price"], values) if marque else {"cluster_id": None}
+        cluster_id = n2_assignment.get("cluster_id")
+
+        n2_info = None
+        if cluster_id is not None:
+            n2_models = load_retained_cluster_models(category, "clusters_n2")
+            n2_info = n2_models.get(str(cluster_id), {}).get(famille)
+
         if n2_info is not None:
             result = _predict_with_model(
                 n2_info["model"], model_name, n2_info["design_columns"],
                 n2_info["continuous_features"], n2_info["categorical_features"], values, week, category,
             )
             result["price_source"] = "n2"
+        else:
+            # Jamais un repli silencieux sur N1 ici : l'utilisateur a choisi
+            # "N2" explicitement, cf. docstring ci-dessus.
+            result = _predict_category()
 
     result["note"] += {
         "n2": " Estimation par le modèle dédié à ce cluster marque × gamme × profil technique (plus précis que le modèle catégorie sur ce segment).",
         "n1": " Estimation par le modèle dédié à ce cluster technique (plus précis que le modèle catégorie sur ce segment).",
-        "categorie": "",
+        "categorie": " Aucun modèle dédié retenu pour ce segment — modèle catégorie utilisé.",
     }[result["price_source"]]
     return result
 
@@ -319,15 +344,25 @@ def assign_n1_cluster(category: str, values: dict) -> int:
 def assign_n2_segment(category: str, marque: str, predicted_price: float, values: dict) -> dict:
     """
     Retourne {gamme_estimee, cluster_id, n_comparables, distance} ou un
-    dict avec gamme_estimee=None si la marque n'a pas de gamme definie
-    (ne devrait pas arriver : le formulaire ne propose que des marques
-    retenues par compute_price_tiers, cf. get_feature_ranges)."""
+    dict avec gamme_estimee=None si la marque n'a pas de gamme definie.
+
+    PEUT arriver (correctif du 2026-08-01bis -- IndexError observe sur
+    televiseurs/ALMATV) : le formulaire propose les marques de
+    brand_plan.csv (effectif POOLE, cf. get_feature_ranges), mais
+    gamme_prix/cluster_id (N2) sont ancres sur la seule semaine de
+    reference (cf. hedonic_model.n2_reference_week) -- une marque
+    suffisante sur l'effectif poole peut n'avoir AUCUNE ligne couverte par
+    cette semaine de reference (gamme_prix NaN partout), auquel cas
+    `bounds` (groupby qui ignore les cles NaN, comportement pandas par
+    defaut) est vide. Jamais un plantage : meme repli que df_brand vide."""
     df = load_pooled_labeled(category)
     df_brand = df[df["marque"] == marque]
     if df_brand.empty:
         return {"gamme_estimee": None, "cluster_id": None, "n_comparables": 0}
 
     bounds = df_brand.groupby("gamme_prix")["prix_tnd"].agg(["min", "max"]).reset_index()
+    if bounds.empty:
+        return {"gamme_estimee": None, "cluster_id": None, "n_comparables": 0}
     # Gamme dont la plage [min, max] deja observee CONTIENT le prix
     # provisoire ; a defaut (prix hors de toutes les plages -- produit
     # hypothetique plus extreme que tout l'historique de la marque), la

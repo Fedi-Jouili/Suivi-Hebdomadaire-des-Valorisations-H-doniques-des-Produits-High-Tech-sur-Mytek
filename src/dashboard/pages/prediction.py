@@ -271,7 +271,7 @@ def on_predict(n_clicks, values, ids, category, model_name, segmentation, week):
             form_values[field] = val
 
     try:
-        pred = predict_price_cluster_aware(category, model_name, form_values, week=week)
+        pred = predict_price_cluster_aware(category, model_name, form_values, week=week, segmentation=segmentation)
     except ArtifactsMissingError as exc:
         return dmc.Alert(str(exc), color="yellow", title="Artefacts manquants"), False
 
