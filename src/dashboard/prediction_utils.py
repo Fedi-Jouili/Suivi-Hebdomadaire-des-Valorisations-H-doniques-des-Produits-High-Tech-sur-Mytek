@@ -222,6 +222,71 @@ def predict_price(category: str, model_name: str, values: dict, week=None) -> di
     )
 
 
+def _resolve_n2_model_with_fallback(cluster_id: str | None, n2_models: dict, famille: str):
+    """
+    Recherche HIERARCHIQUE d'un modele N2 retenu pour la famille demandee,
+    du plus specifique au plus general (decision utilisateur du 2026-08-03) :
+
+        1. Modele dedie du cluster N2 exact  (cluster_id tel quel)
+        2. Modele dedie marque x gamme       (n'importe quel cluster
+           "MARQUE::GAMME::*" retenu pour cette famille)
+        3. Modele dedie marque               (n'importe quel cluster
+           "MARQUE::*" retenu pour cette famille)
+        4. Aucun modele N2 utilisable        -> repli categorie (appelant)
+
+    cluster_id est au format "MARQUE::GAMME::cN" (cf.
+    hedonic_model.compute_cluster_labels). Si le format est inattendu
+    (moins de 3 parties apres split sur "::"), les niveaux intermediaires
+    sont simplement ignores (jamais une erreur -- on tombe directement sur
+    le repli categorie, comportement le plus conservateur).
+
+    Args:
+        cluster_id: identifiant du cluster N2 assigne (ou None).
+        n2_models: dict retourne par load_retained_cluster_models("clusters_n2")
+            -- {segment_str: {famille: {model, design_columns, ...}}}.
+        famille: cle de famille dans _FAMILLE_BY_MODEL_NAME.values()
+            ("hedonic_ols"/"ridge"/"random_forest").
+
+    Returns:
+        (info, price_source) -- info est le dict {model, design_columns, ...}
+        du modele retenu, ou None si aucun niveau n'a abouti ; price_source
+        est le niveau utilise ("n2", "n2_marque_gamme", "n2_marque") ou None.
+    """
+    if cluster_id is None or not n2_models:
+        return None, None
+
+    cluster_id_str = str(cluster_id)
+
+    # ── Niveau 1 : cluster N2 exact ──────────────────────────────────────
+    info = n2_models.get(cluster_id_str, {}).get(famille)
+    if info is not None:
+        return info, "n2"
+
+    # Decompose cluster_id = "MARQUE::GAMME::cN"
+    parts = cluster_id_str.split("::")
+    if len(parts) < 3:
+        # Format inattendu -- aucun niveau intermediaire deductible.
+        return None, None
+
+    marque_part = parts[0]
+    gamme_part = parts[1]
+    prefix_marque_gamme = f"{marque_part}::{gamme_part}::"
+
+    # ── Niveau 2 : n'importe quel cluster du meme couple marque x gamme ──
+    for segment, segment_families in sorted(n2_models.items()):
+        if segment.startswith(prefix_marque_gamme) and famille in segment_families:
+            return segment_families[famille], "n2_marque_gamme"
+
+    # ── Niveau 3 : n'importe quel cluster de la meme marque ─────────────
+    prefix_marque = f"{marque_part}::"
+    for segment, segment_families in sorted(n2_models.items()):
+        if segment.startswith(prefix_marque) and famille in segment_families:
+            return segment_families[famille], "n2_marque"
+
+    # ── Niveau 4 : aucun modele N2 utilisable ────────────────────────────
+    return None, None
+
+
 def predict_price_cluster_aware(category: str, model_name: str, values: dict, week=None,
                                  segmentation: str = "n2") -> dict:
     """
@@ -241,22 +306,24 @@ def predict_price_cluster_aware(category: str, model_name: str, values: dict, we
       - segmentation="n1" : resultat FINAL = modele N1 (cluster_direct) si
         retenu pour cette famille, sinon modele categorie -- le cluster N2
         n'entre JAMAIS dans le resultat affiche.
-      - segmentation="n2" : resultat FINAL = modele N2 (marque x gamme x
-        sous-cluster) si retenu, sinon modele categorie -- le cluster N1
-        n'est utilise qu'en INTERNE, pour le prix PROVISOIRE necessaire a
-        assigner la gamme (cf. section 2 temps en tete de module), jamais
-        comme resultat final meme s'il a lui-meme un modele retenu : un
-        utilisateur qui choisit explicitement "N2" doit voir soit un
-        resultat N2, soit un repli categorie explicite, jamais un N1
-        substitue silencieusement.
+      - segmentation="n2" : resultat FINAL avec FALLBACK HIERARCHIQUE
+        (decision utilisateur du 2026-08-03, cf. _resolve_n2_model_with_
+        fallback) : modele dedie du cluster N2 exact, sinon modele dedie
+        marque x gamme, sinon modele dedie marque, sinon modele categorie.
+        Le cluster N1 n'est utilise qu'en INTERNE, pour le prix PROVISOIRE
+        necessaire a assigner la gamme (cf. section 2 temps en tete de
+        module), jamais comme resultat final meme s'il a lui-meme un modele
+        retenu : un utilisateur qui choisit explicitement "N2" doit voir
+        soit un resultat N2 (a l'un des 3 niveaux de granularite), soit un
+        repli categorie explicite, jamais un N1 substitue silencieusement.
     Les deux selections peuvent donc legitimement produire des prix
     DIFFERENTS (chacune son propre niveau de modele) -- ou le MEME prix si
     aucun des deux clusters n'a de modele retenu (repli categorie commun
     aux deux, alors visible via price_source="categorie" dans les deux cas).
 
     Returns: meme dict que predict_price, + "price_source"
-        ("n2"/"n1"/"categorie") -- jamais ambigu sur quel modele a produit
-        le prix retourne.
+        ("n2"/"n2_marque_gamme"/"n2_marque"/"n1"/"categorie") -- jamais
+        ambigu sur quel modele a produit le prix retourne.
     """
     famille = _FAMILLE_BY_MODEL_NAME[model_name]
     metrics = load_metrics(category)
@@ -292,22 +359,25 @@ def predict_price_cluster_aware(category: str, model_name: str, values: dict, we
     if segmentation == "n1":
         result = provisional
     else:
-        # ── Segment N2 a partir du prix provisoire, puis resultat FINAL --
+        # ── Segment N2 a partir du prix provisoire, puis resultat FINAL
+        # avec fallback hierarchique (cluster exact -> marque x gamme ->
+        # marque -> categorie, cf. _resolve_n2_model_with_fallback) ──
         marque = values.get("marque")
         n2_assignment = assign_n2_segment(category, marque, provisional["price"], values) if marque else {"cluster_id": None}
         cluster_id = n2_assignment.get("cluster_id")
 
-        n2_info = None
-        if cluster_id is not None:
-            n2_models = load_retained_cluster_models(category, "clusters_n2")
-            n2_info = n2_models.get(str(cluster_id), {}).get(famille)
+        n2_models = load_retained_cluster_models(category, "clusters_n2")
+        resolved_info, resolved_source = _resolve_n2_model_with_fallback(
+            cluster_id, n2_models, famille,
+        )
 
-        if n2_info is not None:
+        if resolved_info is not None:
             result = _predict_with_model(
-                n2_info["model"], model_name, n2_info["design_columns"],
-                n2_info["continuous_features"], n2_info["categorical_features"], values, week, category,
+                resolved_info["model"], model_name, resolved_info["design_columns"],
+                resolved_info["continuous_features"], resolved_info["categorical_features"],
+                values, week, category,
             )
-            result["price_source"] = "n2"
+            result["price_source"] = resolved_source
         else:
             # Jamais un repli silencieux sur N1 ici : l'utilisateur a choisi
             # "N2" explicitement, cf. docstring ci-dessus.
@@ -315,6 +385,8 @@ def predict_price_cluster_aware(category: str, model_name: str, values: dict, we
 
     result["note"] += {
         "n2": " Estimation par le modèle dédié à ce cluster marque × gamme × profil technique (plus précis que le modèle catégorie sur ce segment).",
+        "n2_marque_gamme": " Aucun modèle dédié pour ce sous-cluster — repli sur un modèle du même couple marque × gamme (retenu comme plus précis que le modèle catégorie).",
+        "n2_marque": " Aucun modèle dédié pour ce couple marque × gamme — repli sur un modèle de la même marque (retenu comme plus précis que le modèle catégorie).",
         "n1": " Estimation par le modèle dédié à ce cluster technique (plus précis que le modèle catégorie sur ce segment).",
         "categorie": " Aucun modèle dédié retenu pour ce segment — modèle catégorie utilisé.",
     }[result["price_source"]]

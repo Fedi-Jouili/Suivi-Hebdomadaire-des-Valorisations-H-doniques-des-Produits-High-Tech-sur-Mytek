@@ -473,16 +473,35 @@ def _cluster_weekly_comparison(category: str, subdir: str, segment: str) -> pd.D
 
 def _weekly_comparison_grid(weekly: pd.DataFrame) -> dag.AgGrid:
     display = weekly.copy()
+    display = display.sort_values("semaine").reset_index(drop=True)
+    
+    if not display.empty:
+        display["var_hebdo_reel_pct"] = display["moyenne_geometrique"].pct_change() * 100
+        for c, col_name in [("moyenne_estimee_ridge", "var_hebdo_ridge_pct"),
+                            ("moyenne_estimee_hedonic", "var_hebdo_hedonic_pct"),
+                            ("moyenne_estimee_rf", "var_hebdo_rf_pct")]:
+            if c in display.columns:
+                display[col_name] = display[c].pct_change() * 100
+
     for c in ("moyenne_geometrique", "moyenne_estimee_ridge", "moyenne_estimee_hedonic", "moyenne_estimee_rf"):
         if c in display.columns:
             display[c] = display[c].round(2)
+            
+    for c in ("var_hebdo_reel_pct", "var_hebdo_ridge_pct", "var_hebdo_hedonic_pct", "var_hebdo_rf_pct"):
+        if c in display.columns:
+            display[c] = display[c].round(2)
+
     cols = [
         {"field": "semaine", "headerName": "Semaine", "flex": 1},
         {"field": "n_produits", "headerName": "n produits", "type": "rightAligned", "flex": 1},
         {"field": "moyenne_geometrique", "headerName": "Prix réel (moy. géo., TND)", "type": "rightAligned", "flex": 2},
+        {"field": "var_hebdo_reel_pct", "headerName": "Δ Hebdo Réel (%)", "type": "rightAligned", "flex": 1},
         {"field": "moyenne_estimee_ridge", "headerName": "Estimé Ridge (TND)", "type": "rightAligned", "flex": 2},
+        {"field": "var_hebdo_ridge_pct", "headerName": "Δ Hebdo Ridge (%)", "type": "rightAligned", "flex": 1},
         {"field": "moyenne_estimee_hedonic", "headerName": "Estimé Hedonic (TND)", "type": "rightAligned", "flex": 2},
+        {"field": "var_hebdo_hedonic_pct", "headerName": "Δ Hebdo Hedonic (%)", "type": "rightAligned", "flex": 1},
         {"field": "moyenne_estimee_rf", "headerName": "Estimé RF (TND)", "type": "rightAligned", "flex": 2},
+        {"field": "var_hebdo_rf_pct", "headerName": "Δ Hebdo RF (%)", "type": "rightAligned", "flex": 1},
         {"field": "erreur_ridge_pct", "headerName": "Écart Ridge (%)", "type": "rightAligned", "flex": 1},
         {"field": "erreur_hedonic_pct", "headerName": "Écart Hedonic (%)", "type": "rightAligned", "flex": 1},
         {"field": "erreur_rf_pct", "headerName": "Écart RF (%)", "type": "rightAligned", "flex": 1},
@@ -893,10 +912,14 @@ def render_models(category):
 
     n1_rows = _cluster_overview_rows(category, "clusters_n1", n1_models_summary)
     n2_rows = _cluster_overview_rows(category, "clusters_n2", n2_models_summary)
-    n1_select_data = [{"value": r["segment"], "label": f"{r['cluster_display']} — n={r['n_lignes']} lignes poolées"}
-                       for r in n1_rows]
-    n2_select_data = [{"value": r["segment"], "label": f"{r['cluster_display']} — n={r['n_lignes']} lignes poolées"}
-                       for r in n2_rows]
+    
+    def _make_dropdown_label(r):
+        has_model = any(r.get(f"statut_{f}") == "Retenu" for f in ("hedonic_ols", "ridge", "random_forest"))
+        suffix = " (Modèle dédié retenu)" if has_model else " (Aucun modèle dédié — sans repli)"
+        return f"{r['cluster_display']} — n={r['n_lignes']} lignes poolées{suffix}"
+        
+    n1_select_data = [{"value": r["segment"], "label": _make_dropdown_label(r)} for r in n1_rows]
+    n2_select_data = [{"value": r["segment"], "label": _make_dropdown_label(r)} for r in n2_rows]
 
     cluster_models_tab = dmc.Stack([
         dmc.Alert(
