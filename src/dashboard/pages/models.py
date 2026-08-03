@@ -492,19 +492,19 @@ def _weekly_comparison_grid(weekly: pd.DataFrame) -> dag.AgGrid:
             display[c] = display[c].round(2)
 
     cols = [
-        {"field": "semaine", "headerName": "Semaine", "flex": 1},
-        {"field": "n_produits", "headerName": "n produits", "type": "rightAligned", "flex": 1},
-        {"field": "moyenne_geometrique", "headerName": "Prix réel (moy. géo., TND)", "type": "rightAligned", "flex": 2},
-        {"field": "var_hebdo_reel_pct", "headerName": "Δ Hebdo Réel (%)", "type": "rightAligned", "flex": 1},
-        {"field": "moyenne_estimee_ridge", "headerName": "Estimé Ridge (TND)", "type": "rightAligned", "flex": 2},
-        {"field": "var_hebdo_ridge_pct", "headerName": "Δ Hebdo Ridge (%)", "type": "rightAligned", "flex": 1},
-        {"field": "moyenne_estimee_hedonic", "headerName": "Estimé Hedonic (TND)", "type": "rightAligned", "flex": 2},
-        {"field": "var_hebdo_hedonic_pct", "headerName": "Δ Hebdo Hedonic (%)", "type": "rightAligned", "flex": 1},
-        {"field": "moyenne_estimee_rf", "headerName": "Estimé RF (TND)", "type": "rightAligned", "flex": 2},
-        {"field": "var_hebdo_rf_pct", "headerName": "Δ Hebdo RF (%)", "type": "rightAligned", "flex": 1},
-        {"field": "erreur_ridge_pct", "headerName": "Écart Ridge (%)", "type": "rightAligned", "flex": 1},
-        {"field": "erreur_hedonic_pct", "headerName": "Écart Hedonic (%)", "type": "rightAligned", "flex": 1},
-        {"field": "erreur_rf_pct", "headerName": "Écart RF (%)", "type": "rightAligned", "flex": 1},
+        {"field": "semaine", "headerName": "Sem.", "headerTooltip": "Semaine", "flex": 1, "minWidth": 70},
+        {"field": "n_produits", "headerName": "n", "headerTooltip": "Nombre de produits", "type": "rightAligned", "flex": 1, "minWidth": 60},
+        {"field": "moyenne_geometrique", "headerName": "Réel (TND)", "headerTooltip": "Prix réel moyen (moyenne géométrique, TND)", "type": "rightAligned", "flex": 2, "minWidth": 100},
+        {"field": "var_hebdo_reel_pct", "headerName": "Δ Réel %", "headerTooltip": "Variation hebdomadaire du prix réel (%)", "type": "rightAligned", "flex": 1, "minWidth": 90},
+        {"field": "moyenne_estimee_ridge", "headerName": "Ridge (TND)", "headerTooltip": "Prix estimé par le modèle Ridge (TND)", "type": "rightAligned", "flex": 2, "minWidth": 100},
+        {"field": "var_hebdo_ridge_pct", "headerName": "Δ Ridge %", "headerTooltip": "Variation hebdomadaire de l'estimation Ridge (%)", "type": "rightAligned", "flex": 1, "minWidth": 90},
+        {"field": "moyenne_estimee_hedonic", "headerName": "OLS (TND)", "headerTooltip": "Prix estimé par le modèle Hedonic OLS (TND)", "type": "rightAligned", "flex": 2, "minWidth": 100},
+        {"field": "var_hebdo_hedonic_pct", "headerName": "Δ OLS %", "headerTooltip": "Variation hebdomadaire de l'estimation Hedonic OLS (%)", "type": "rightAligned", "flex": 1, "minWidth": 90},
+        {"field": "moyenne_estimee_rf", "headerName": "RF (TND)", "headerTooltip": "Prix estimé par le modèle Random Forest (TND)", "type": "rightAligned", "flex": 2, "minWidth": 100},
+        {"field": "var_hebdo_rf_pct", "headerName": "Δ RF %", "headerTooltip": "Variation hebdomadaire de l'estimation Random Forest (%)", "type": "rightAligned", "flex": 1, "minWidth": 90},
+        {"field": "erreur_ridge_pct", "headerName": "Err. Ridge %", "headerTooltip": "Écart entre le prix estimé Ridge et le prix réel (%)", "type": "rightAligned", "flex": 1.5, "minWidth": 100},
+        {"field": "erreur_hedonic_pct", "headerName": "Err. OLS %", "headerTooltip": "Écart entre le prix estimé Hedonic OLS et le prix réel (%)", "type": "rightAligned", "flex": 1.5, "minWidth": 100},
+        {"field": "erreur_rf_pct", "headerName": "Err. RF %", "headerTooltip": "Écart entre le prix estimé Random Forest et le prix réel (%)", "type": "rightAligned", "flex": 1.5, "minWidth": 100},
     ]
     return dag.AgGrid(
         className="ag-theme-quartz-dark",
